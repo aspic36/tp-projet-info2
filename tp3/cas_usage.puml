@@ -1,39 +1,47 @@
 @startuml
-skinparam dpi 150
+' Palette et disposition propres au projet — pas de copie d'un autre rendu
+skinparam backgroundColor #FBFAF7
 skinparam shadowing false
-skinparam packageStyle rectangle
-skinparam defaultFontName SansSerif
-skinparam nodesep 25
-skinparam ranksep 45
-left to right direction
+skinparam defaultFontName "DejaVu Sans"
+skinparam arrowColor #38506B
+skinparam Actor {
+  BorderColor #38506B
+  BackgroundColor #E8EEF5
+}
+skinparam usecase {
+  BorderColor #C96F28
+  BackgroundColor #FFF4E6
+}
+top to bottom direction
 
-actor "Étudiant" as E
-actor "Secrétariat" as S
-actor "Responsable\npédagogique" as R
-actor "Encadreur" as N
-actor "Administrateur" as A
+actor "Étudiant" as Etu
+actor "Secrétariat" as Sec
+actor "Responsable" as Resp
+actor "Encadreur" as Enc
+actor "Administration" as Admin
 
-rectangle "Application de gestion des stages" {
-  usecase "Se connecter" as UC1
-  usecase "Déposer une\ndemande de stage" as UC2
-  usecase "Suivre l'état\nde sa demande" as UC3
-  usecase "Vérifier les\npièces jointes" as UC4
-  usecase "Valider ou refuser\nune demande" as UC5
-  usecase "Affecter un\nencadreur" as UC6
-  usecase "Programmer une\nsoutenance" as UC7
-  usecase "Gérer les comptes\net les rôles" as UC8
+rectangle "Portail des stages" {
+  usecase "Créer mon dossier" as UC1
+  usecase "Déposer les pièces" as UC2
+  usecase "Consulter l'avancement" as UC3
+  usecase "Vérifier la conformité" as UC4
+  usecase "Décider : valider ou refuser" as UC5
+  usecase "Désigner un encadreur" as UC6
+  usecase "Planifier la soutenance" as UC7
+  usecase "Gérer les comptes" as UC8
 }
 
-E --> UC1
-E --> UC2
-E --> UC3
-S --> UC1
-S --> UC4
-S --> UC7
-R --> UC1
-R --> UC5
-R --> UC6
-N --> UC1
-N --> UC3
-A --> UC8
+Etu --> UC1
+Etu --> UC2
+Etu --> UC3
+Sec --> UC4
+Sec --> UC2 : relance
+Resp --> UC5
+Resp --> UC6
+Resp --> UC7
+Enc --> UC4 : avis
+Enc --> UC7 : participation
+Admin --> UC8
+UC1 ..> UC2 : <<include>>
+UC5 ..> UC6 : <<include>>
 @enduml

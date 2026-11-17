@@ -1,164 +1,190 @@
-<!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8"><title>TP3 — UML et modélisation des données</title>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP3 — UML et modélisation des données</title>
 <style>
-  @page { size: A4; margin: 15mm 16mm 13mm 16mm; }
-  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 8.4pt; line-height: 1.22; color: #000; margin: 0; }
-  .tete { text-align: center; margin-bottom: 5pt; }
-  .tete .petit, .tete .date, .tete .groupe { font-size: 8pt; }
-  .tete h1 { font-size: 12.5pt; margin: 2pt 0; }
-  h2 { font-size: 9.5pt; margin: 7pt 0 3pt; page-break-after: avoid; }
-  p { margin: 0 0 3pt; text-align: justify; }
-  .note { font-size: 7.8pt; font-style: italic; color: #333; }
-  figure { margin: 1pt 0 3pt; text-align: center; page-break-inside: avoid; }
-  img { max-width: 100%; }
-  table { width: 100%; border-collapse: collapse; font-size: 7pt; margin: 1pt 0 3pt; }
-  th, td { border: 0.4pt solid #666; padding: 1.8pt 3pt; vertical-align: top; text-align: left; }
-  th { font-weight: bold; }
-  thead { display: table-header-group; } tr { page-break-inside: avoid; }
-  pre { font-family: "DejaVu Sans Mono", monospace; font-size: 6pt; line-height: 1.18; background: #f7f7f7;
-        border: 0.4pt solid #999; padding: 3pt 5pt; margin: 1pt 0 3pt; white-space: pre; overflow: hidden; }
-  footer { margin-top: 6pt; font-size: 7.5pt; color: #444; text-align: center; }
-</style></head><body>
-<div class="tete">
-  <div class="petit">Projet informatique 2 — L3 SIL</div>
-  <h1>UML et modélisation des données</h1>
-  <div class="date">TP3 — 17 novembre 2026</div>
-  <div class="groupe">Groupe : n° ____ — nom, nom, nom (, nom)</div>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 9.5pt; line-height: 1.35; color: #1d2733; }
+  h1 { font-size: 18pt; margin: 0 0 2mm 0; color: #243b53; }
+  h2 { font-size: 11.5pt; margin: 4mm 0 1.5mm 0; padding-bottom: 1mm; border-bottom: 2px solid #c96f28; color: #243b53; }
+  h3 { font-size: 10.5pt; margin: 4mm 0 1.5mm 0; color: #38506b; }
+  p { margin: 1.5mm 0; text-align: justify; }
+  ul, ol { margin: 1.5mm 0 1.5mm 5mm; padding: 0; }
+  li { margin: 0.8mm 0; }
+  .sub { color: #5b6b7b; font-size: 9pt; margin-bottom: 4mm; }
+  .fill { border-bottom: 1px solid #98a6b4; padding: 0 2mm; }
+  .fig { text-align: center; margin: 3mm 0 2mm 0; }
+  .fig img { display: block; margin: 0 auto; }
+  .legend { font-size: 8.5pt; color: #5b6b7b; text-align: center; margin-top: 1mm; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0; font-size: 8.5pt; }
+  th, td { border: 1px solid #c8d2dc; padding: 1mm 1.5mm; vertical-align: top; text-align: left; }
+  th { background: #eef3f8; color: #243b53; font-weight: bold; }
+  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.5pt; background: #f4f6f8; padding: 0 1mm; }
+  pre { background: #f7f8fa; border: 1px solid #d6dde4; padding: 2mm; font-size: 6.2pt; line-height: 1.1; white-space: pre; overflow: hidden; margin: 1.5mm 0; }
+  .box { background: #fff7ed; border-left: 4px solid #c96f28; padding: 2mm 3mm; margin: 3mm 0; font-size: 9pt; }
+  .pb { break-before: page; }
+  .small { font-size: 8.5pt; color: #5b6b7b; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TP3 — UML et modélisation des données</h1>
+  <div class="sub">Projet informatique 2 &middot; L3 SIL &middot; Gestion des stages et des soutenances<br>
+  Groupe : <span class="fill">n° ____</span> &nbsp; Membres : <span class="fill">nom, nom, nom (, nom)</span> &nbsp; Date : <span class="fill">__ / __ / 2026</span></div>
+</header>
+
+<h2>1. Périmètre et acteurs retenus</h2>
+<p>
+Le service scolaire suit un dossier de stage depuis son dépôt jusqu'à la soutenance. Cinq profils interviennent
+dans le portail : l'étudiant alimente son dossier, le secrétariat vérifie les pièces, le responsable décide et
+planifie, l'encadreur donne un avis et accompagne la soutenance, enfin l'administration gère les comptes.
+</p>
+<ul>
+  <li><strong>Étudiant</strong> : crée un dossier, joint les pièces, consulte l'avancement.</li>
+  <li><strong>Secrétariat</strong> : contrôle la conformité et demande une régularisation.</li>
+  <li><strong>Responsable</strong> : valide ou refuse, désigne l'encadreur, fixe le créneau.</li>
+  <li><strong>Encadreur</strong> : rend un avis et participe à la soutenance.</li>
+  <li><strong>Administration</strong> : crée, désactive et met à jour les comptes.</li>
+</ul>
+
+<h2>2. Diagramme des cas d'utilisation</h2>
+<p>
+Le regroupement « Portail des stages » contient huit services. Deux relations <code>&lt;&lt;include&gt;&gt;</code>
+expriment qu'un dossier créé doit recevoir ses pièces, et qu'une décision positive entraîne la désignation
+d'un encadreur. Le secrétariat peut relancer l'étudiant sans changer le statut du dossier.
+</p>
+<div class="fig">
+  <img src="cas_usage.png" width="430" height="107" alt="Diagramme des cas d'utilisation">
+  <div class="legend">Figure 1 — Cas d'utilisation du portail des stages</div>
 </div>
 
-<h2>1. Diagramme de cas d'utilisation</h2>
-<p>Cinq acteurs interagissent avec l'application. Chaque cas d'utilisation renvoie à une exigence fonctionnelle du TP2 ;
-l'authentification est commune à tous les acteurs et n'est donc pas répétée sur chaque association.</p>
-<figure><img src="cas_usage.png" width="272" height="391"></figure>
+<h2>3. Diagramme de classes et multiplicités</h2>
+<p>
+Huit classes structurent le modèle. Un compte donne lieu à une fiche étudiant ou encadreur au plus ; un étudiant
+dépose plusieurs demandes, une entreprise en accueille plusieurs, et un encadreur en suit plusieurs. Une demande
+contient au plus deux pièces, porte un journal de transitions et aboutit à une seule soutenance.
+</p>
+<div class="fig">
+  <img src="classes.png" width="330" height="360" alt="Diagramme de classes">
+  <div class="legend">Figure 2 — Classes du domaine et cardinalités</div>
+</div>
+<div class="box">
+  <strong>Choix de modélisation.</strong> La classe <code>Soutenance</code> est conservée car l'EF-07 du TP2
+  porte sur les conflits de créneaux. <code>PieceJointe</code> matérialise la limite de 5 Mo (ENF-02) et
+  <code>Historique</code> garde une trace des décisions. En revanche, la règle « encadreur seulement après
+  validation » est laissée à la couche applicative : MySQL 8 refuse un <code>CHECK</code> sur une colonne
+  utilisée par une clé étrangère en <code>ON DELETE SET NULL</code>.
+</div>
+
+<h2 class="pb">4. Scénario : valider une demande</h2>
+<p>
+<strong>Objectif.</strong> Transformez un dossier déposé en dossier validé, prêt pour l'affectation d'un
+encadreur et la programmation d'une soutenance. <strong>Acteur principal :</strong> responsable des stages.
+<strong>Préconditions :</strong> le dossier est au statut <code>DEPOSEE</code> et les pièces sont contrôlées.
+</p>
 <table>
-  <thead><tr><th style="width:36%">Cas d'utilisation</th><th style="width:30%">Acteur principal</th><th style="width:34%">Exigence</th></tr></thead>
-  <tbody>
-    <tr><td>Se connecter</td><td>Tous les acteurs</td><td>EF-01</td></tr>
-    <tr><td>Déposer une demande de stage</td><td>Étudiant</td><td>EF-02</td></tr>
-    <tr><td>Suivre l'état de sa demande</td><td>Étudiant</td><td>EF-03</td></tr>
-    <tr><td>Vérifier les pièces jointes</td><td>Secrétariat</td><td>EF-04</td></tr>
-    <tr><td>Valider ou refuser une demande</td><td>Responsable</td><td>EF-05</td></tr>
-    <tr><td>Affecter un encadreur</td><td>Responsable</td><td>EF-06</td></tr>
-    <tr><td>Programmer une soutenance</td><td>Secrétariat</td><td>EF-07</td></tr>
-    <tr><td>Gérer les comptes et les rôles</td><td>Administrateur</td><td>EF-08</td></tr>
-  </tbody>
+  <tr><th>Étape</th><th>Action</th><th>Résultat ou erreur</th></tr>
+  <tr><td>1</td><td>Le responsable ouvre la file des dossiers déposés.</td><td>Liste triée par date de dépôt.</td></tr>
+  <tr><td>2</td><td>Il vérifie la convention et l'attestation.</td><td><code>E-03</code> : pièce absente → <code>INCOMPLETE</code> avec motif.</td></tr>
+  <tr><td>3</td><td>Il confirme la validation.</td><td><code>E-04</code> : date de décision manquante ; <code>E-01</code> : entreprise inconnue (FK).</td></tr>
+  <tr><td>4</td><td>Le système désigne un encadreur disponible.</td><td><code>E-07</code> : encadreur inactif → blocage.</td></tr>
+  <tr><td>5</td><td>Il réserve une salle et un créneau de 40 minutes.</td><td><code>E-08</code> : créneau déjà occupé → en proposer un autre.</td></tr>
+  <tr><td>6</td><td>Le système écrit le journal et notifie l'étudiant.</td><td>Fin : statut <code>VALIDEE</code>, soutenance créée.</td></tr>
 </table>
+<p class="small">
+Erreurs complémentaires : <code>E-02</code> fichier supérieur à 5 Mo au dépôt ; <code>E-05</code> refus sans motif ;
+<code>E-06</code> doublon de dossier étudiant/entreprise. Le refus suit le même chemin jusqu'à l'étape 3, puis
+écrit <code>REFUSEE</code> sans créer de soutenance.
+</p>
 
-<h2>2. Diagramme de classes et multiplicités</h2>
-<p>Huit classes couvrent le périmètre : Soutenance est maintenue dans le MVP (EF-07), Utilisateur porte les droits,
-PieceJointe les pièces vérifiées (EF-04) et Historique la traçabilité des décisions.</p>
-<figure><img src="classes.png" width="400" height="346"></figure>
+<h2 class="pb">5. Scripts de création et de contrôle</h2>
+<p>
+Les trois scripts sont exécutés dans cet ordre sur une base vide :
+<code>001_schema.sql</code> (tables, clés et vues), <code>002_seed.sql</code> (jeu fictif),
+puis <code>003_verification.sql</code> (contrôles). MySQL 8.0.46 et utf8mb4_unicode_ci ont été utilisés.
+</p>
 <table>
-  <thead><tr><th style="width:36%">Association et multiplicités</th><th style="width:64%">Traduction dans le schéma relationnel</th></tr></thead>
-  <tbody>
-    <tr><td>Utilisateur 1 — 0..1 Étudiant</td><td>etudiant.utilisateur_id NOT NULL UNIQUE</td></tr>
-    <tr><td>Utilisateur 1 — 0..1 Encadreur</td><td>encadreur.utilisateur_id NOT NULL UNIQUE</td></tr>
-    <tr><td>Étudiant 1 — 0..* DemandeStage</td><td>demande_stage.etudiant_id NOT NULL (FK)</td></tr>
-    <tr><td>Entreprise 1 — 0..* DemandeStage</td><td>demande_stage.entreprise_id NOT NULL (FK)</td></tr>
-    <tr><td>Encadreur 1 — 0..* DemandeStage</td><td>demande_stage.encadreur_id NULL (FK, affectation postérieure à la validation)</td></tr>
-    <tr><td>DemandeStage 1 — 0..* PieceJointe</td><td>piece_jointe.demande_id NOT NULL (FK, ON DELETE CASCADE)</td></tr>
-    <tr><td>DemandeStage 1 — 0..* Historique</td><td>historique.demande_id NOT NULL (FK, ON DELETE CASCADE)</td></tr>
-    <tr><td>Utilisateur 1 — 0..* Historique</td><td>historique.auteur_id NOT NULL (FK,signature de la décision)</td></tr>
-    <tr><td>DemandeStage 1 — 0..1 Soutenance</td><td>soutenance.demande_id NOT NULL UNIQUE (FK)</td></tr>
-  </tbody>
+  <tr><th>Table</th><th>Règles vérifiées</th></tr>
+  <tr><td>utilisateur</td><td>email unique <code>uq_compte_email</code>, rôle énuméré, mot de passe haché bcrypt.</td></tr>
+  <tr><td>etudiant / encadreur</td><td>un compte = une fiche, matricule unique côté étudiant.</td></tr>
+  <tr><td>demande_stage</td><td>FK vers étudiant, entreprise et encadreur ; motif et dates exigés selon le statut.</td></tr>
+  <tr><td>piece_jointe</td><td>au plus une pièce par catégorie et par dossier, <code>chk_piece_taille</code> ≤ 5 Mo.</td></tr>
+  <tr><td>historique</td><td>statut avant/après, auteur, motif et horodatage.</td></tr>
+  <tr><td>soutenance</td><td>une par dossier, unicité salle + créneau, durée entre 20 et 90 minutes.</td></tr>
 </table>
-<p class="note">Règle appliquée : une association 1—0..* devient une clé étrangère du côté « plusieurs » ; une association 1—0..1
-devient une clé étrangère déclarée UNIQUE, ce qui interdit deux fiches pour un même compte ou deux soutenances pour une même demande.</p>
-
-<h2>3. Scénario « Valider une demande »</h2>
-<p>Le scénario suit sept étapes ; chaque échec renvoie un code distinct, ce qui permet de le vérifier par un test.</p>
+<p>Six insertions volontairement invalides ont été tentées après le chargement :</p>
 <table>
-  <thead><tr><th style="width:6%">#</th><th style="width:43%">Acteur ou composant</th><th style="width:31%">Échec possible</th><th style="width:20%">Code</th></tr></thead>
-  <tbody>
-    <tr><td>1</td><td>Contrôleur — vérifier la session</td><td>Session absente</td><td>401</td></tr>
-    <tr><td>2</td><td>DemandeRepository::findById</td><td>Demande inexistante</td><td>404</td></tr>
-    <tr><td>3</td><td>DemandeService — autorisation</td><td>Rôle insuffisant (étudiant qui valide)</td><td>403</td></tr>
-    <tr><td>4</td><td>DemandeService — statut</td><td>Transition interdite (déjà validée)</td><td>409</td></tr>
-    <tr><td>5</td><td>DemandeService — motif et date</td><td>Refus sans motif ou décision sans date</td><td>400</td></tr>
-    <tr><td>6</td><td>Repository — UPDATE statut + INSERT historique (transaction)</td><td>Erreur technique</td><td>500 + rollback</td></tr>
-    <tr><td>7</td><td>Contrôleur — réponse</td><td>—</td><td>200</td></tr>
-  </tbody>
+  <tr><th>Cas</th><th>Erreur MySQL observée</th></tr>
+  <tr><td>Motif absent sur <code>INCOMPLETE</code></td><td><code>ERROR 3819 — chk_motif_requis is violated</code></td></tr>
+  <tr><td>Étudiant inexistant</td><td><code>ERROR 1452 — demande_fk_etudiant</code></td></tr>
+  <tr><td>Email déjà pris</td><td><code>ERROR 1062 — uq_compte_email</code></td></tr>
+  <tr><td>Décision sans date</td><td><code>ERROR 3819 — chk_date_decision_requise is violated</code></td></tr>
+  <tr><td>Salle et créneau déjà réservés</td><td><code>ERROR 1062 — uq_creneau_salle</code></td></tr>
+  <tr><td>Pièce de 6 Mo</td><td><code>ERROR 3819 — chk_piece_taille is violated</code></td></tr>
 </table>
-<p class="note">Les étapes 5 et 6 sont indissociables : le changement de statut et l'écriture dans l'historique forment une seule
-transaction (commit complet ou rollback complet). Les contraintes CHECK de la base servent de dernier filet si le service oublie une vérification.</p>
+<p class="small">Après ces six échecs, les comptages restent inchangés : 4 demandes, 8 comptes et 1 soutenance.</p>
 
-<h2>4. Schéma relationnel et scripts</h2>
-<p>Trois scripts versionnés reconstruisent la base à l'identique :</p>
-<table>
-  <thead><tr><th style="width:24%">Fichier</th><th style="width:76%">Contenu</th></tr></thead>
-  <tbody>
-    <tr><td>001_schema.sql</td><td>Création des huit tables, clés primaires, clés étrangères, clés UNIQUE, contraintes CHECK et des deux vues v_dossiers_incomplets et v_soutenances_planifiees.</td></tr>
-    <tr><td>002_seed.sql</td><td>Jeu d'essai fictif : 8 comptes, 3 étudiants, 2 encadreurs, 2 entreprises, 4 demandes, 5 pièces, 7 lignes d'historique, 1 soutenance.</td></tr>
-    <tr><td>003_verification.sql</td><td>Contrôles de chargement : comptages par table, répartition par statut, indicateurs, cohérence de l'historique et du planning.</td></tr>
-  </tbody>
-</table>
-<p>Quatre règles sont portées par la base : motif obligatoire pour INCOMPLETE/REFUSEE (ck_demande_motif), date de
-décision pour VALIDEE/REFUSEE (ck_demande_decision), date de dépôt hors brouillon (ck_demande_depot), pièce ≤ 5 Mo
-(ck_piece_taille). La clé uk_soutenance_salle_date interdit deux soutenances dans la même salle au même créneau.
-La règle « encadreur uniquement pour une demande validée » reste applicative : MySQL 8 refuse un CHECK sur une
-colonne utilisée par ON DELETE SET NULL. Les scripts sont rejouables (DROP en ordre inverse des dépendances).</p>
+<h2 class="pb">6. Jeu d'essai et sortie réelle</h2>
+<p>
+Le jeu d'essai contient 8 comptes, 3 étudiants, 2 encadreurs, 2 entreprises, 4 demandes, 5 pièces,
+7 transitions et 1 soutenance. Les quatre demandes couvrent les statuts <code>INCOMPLETE</code>,
+<code>DEPOSEE</code>, <code>VALIDEE</code> et <code>REFUSEE</code>. La sortie ci-dessous a été obtenue
+en rejouant les trois scripts sur une base vide ; elle sert de résultat attendu.
+</p>
+<pre>+---------------+----+
+| element       | nb |
++---------------+----+
+| demande_stage |  4 |
+| encadreur     |  2 |
+| entreprise    |  2 |
+| etudiant      |  3 |
+| historique    |  7 |
+| piece_jointe  |  5 |
+| soutenance    |  1 |
+| utilisateur   |  8 |
++---------------+----+
++----------------+----+
+| statut_dossier | nb |
++----------------+----+
+| DEPOSEE        |  1 |
+| INCOMPLETE     |  1 |
+| VALIDEE        |  1 |
+| REFUSEE        |  1 |
++----------------+----+
++----------------------+----+
+| indicateur           | nb |
++----------------------+----+
+| dossiers_a_completer |  1 |
+| soutenances_prevues  |  1 |
++----------------------+----+
++------------+----------+-----------------------------------+---------------------+
+| dossier_id | etudiant | motif                             | date_depot          |
++------------+----------+-----------------------------------+---------------------+
+|          1 | KPANOU   | Attestation d&#x27;assurance manquante | 2026-09-14 08:45:00 |
++------------+----------+-----------------------------------+---------------------+
++------------+--------------+--------------+----------+------------------+
+| demande_id | statut_avant | statut_apres | auteur   | horodatage       |
++------------+--------------+--------------+----------+------------------+
+|          4 | BROUILLON    | DEPOSEE      | KPANOU   | 2026-08-25 16:10 |
+|          4 | DEPOSEE      | REFUSEE      | OGOUNA   | 2026-08-30 10:00 |
+|          3 | BROUILLON    | DEPOSEE      | VODOUNOU | 2026-09-02 09:15 |
+|          3 | DEPOSEE      | VALIDEE      | OGOUNA   | 2026-09-09 11:30 |
+|          1 | BROUILLON    | DEPOSEE      | KPANOU   | 2026-09-14 08:45 |
+|          1 | DEPOSEE      | INCOMPLETE   | ATCHADE  | 2026-09-16 10:05 |
+|          2 | BROUILLON    | DEPOSEE      | SODJINOU | 2026-09-28 14:20 |
++------------+--------------+--------------+----------+------------------+
++---------------------+-------+---------+----------+----------------------+
+| date_heure          | salle | minutes | etudiant | entreprise           |
++---------------------+-------+---------+----------+----------------------+
+| 2026-12-10 10:30:00 | B2    |      40 | VODOUNOU | Sahara Data Services |
++---------------------+-------+---------+----------+----------------------+</pre>
+<p class="small">
+Le dossier 1 illustre le statut <code>INCOMPLETE</code> (attestation manquante), le dossier 3 la validation avec
+soutenance en salle B2 le 10 décembre 2026, et le dossier 4 le refus pour absence de lien avec le cursus.
+</p>
 
-<h2>5. Jeu d'essai et vérification</h2>
-<p>Résultat obtenu en exécutant les trois scripts sur une base vide, sous MySQL 8.0.46 (conteneur Docker éphémère).
-Sortie brute de 003_verification.sql :</p>
-<pre>+---------------+--------+
-| table_        | lignes |
-+---------------+--------+
-| utilisateur   |      8 |
-| etudiant      |      3 |
-| encadreur     |      2 |
-| entreprise    |      2 |
-| demande_stage |      4 |
-| piece_jointe  |      5 |
-| historique    |      7 |
-| soutenance    |      1 |
-+---------------+--------+
-+------------+----------+
-| statut     | demandes |
-+------------+----------+
-| DEPOSEE    |        1 |
-| INCOMPLETE |        1 |
-| VALIDEE    |        1 |
-| REFUSEE    |        1 |
-+------------+----------+
-+------------------------+--------+
-| indicateur             | valeur |
-+------------------------+--------+
-| dossiers_incomplets    |      1 |
-| soutenances_planifiees |      1 |
-+------------------------+--------+
-+----+------------+----------------+------------------------+
-| id | demande_id | nouveau_statut | auteur                 |
-+----+------------+----------------+------------------------+
-|  1 |          1 | DEPOSEE        | koffi.adjovi@univ.test |
-|  2 |          1 | INCOMPLETE     | secretariat@univ.test  |
-|  3 |          2 | DEPOSEE        | aicha.bello@univ.test  |
-|  4 |          3 | DEPOSEE        | marc.dossou@univ.test  |
-|  5 |          3 | VALIDEE        | resp.pedago@univ.test  |
-|  6 |          4 | DEPOSEE        | koffi.adjovi@univ.test |
-|  7 |          4 | REFUSEE        | resp.pedago@univ.test  |
-+----+------------+----------------+------------------------+</pre>
-
-<p><b>Contraintes éprouvées par des insertions invalides</b></p>
-<table>
-  <thead><tr><th style="width:26%">Cas testé</th><th style="width:27%">Requête</th><th style="width:34%">Erreur renvoyée par la base</th><th style="width:13%">Effet</th></tr></thead>
-  <tbody>
-    <tr><td>Refus sans motif</td><td>INSERT … statut = 'REFUSEE', motif NULL</td><td>ERROR 3819 : CHECK `ck_demande_motif` is violated</td><td>Aucune ligne créée</td></tr>
-    <tr><td>Entreprise inexistante</td><td>INSERT … entreprise_id = 999</td><td>ERROR 1452 : foreign key constraint fails (`fk_demande_entreprise`)</td><td>Aucune ligne créée</td></tr>
-    <tr><td>Email en double</td><td>INSERT utilisateur avec un email existant</td><td>ERROR 1062 : Duplicate entry for key 'uk_utilisateur_email'</td><td>Aucune ligne créée</td></tr>
-    <tr><td>Validée sans date de décision</td><td>INSERT … statut = 'VALIDEE', date_decision NULL</td><td>ERROR 3819 : CHECK `ck_demande_decision` is violated</td><td>Aucune ligne créée</td></tr>
-    <tr><td>Salle déjà réservée</td><td>INSERT soutenance … 'Salle A', '2026-12-18 09:00'</td><td>ERROR 1062 : Duplicate entry for key 'uk_soutenance_salle_date'</td><td>Aucune ligne créée</td></tr>
-    <tr><td>Pièce de 6 Mo</td><td>INSERT piece_jointe … taille_octets = 6000000</td><td>ERROR 3819 : CHECK `ck_piece_taille` is violated</td><td>Aucune ligne créée</td></tr>
-  </tbody>
-</table>
-<p class="note">Après les six tentatives, les comptages sont restés identiques (4 demandes, 8 utilisateurs, 1 soutenance) :
-aucune écriture partielle n'a été conservée. Le mot de passe de démonstration Demo1234! correspond à l'empreinte bcrypt
-versionnée dans 002_seed.sql (vérifié avec password_verify sous PHP 8).</p>
-
-<h2>6. Ce qui reste à faire</h2>
-<p>Le modèle est figé pour la v1 ; restent à écrire le code d'accès aux données (TP4/TP6) et les tests T-02 à T-11 annoncés dans la
-matrice du TP2. Les diagrammes sont versionnés en sources PlantUML (cas_usage.puml, classes.puml), donc régénérables : une
-correction du modèle se fait dans le texte, pas dans une image.</p>
-
-<footer>Projet informatique 2 — L3 SIL — UML et modélisation des données (TP3) — 17/11/2026 — github.com/aspic36/tp-projet-info2</footer>
-</body></html>
+</body>
+</html>

@@ -1,0 +1,39 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultFontName SansSerif
+skinparam nodesep 25
+skinparam ranksep 45
+left to right direction
+
+actor "Étudiant" as E
+actor "Secrétariat" as S
+actor "Responsable\npédagogique" as R
+actor "Encadreur" as N
+actor "Administrateur" as A
+
+rectangle "Application de gestion des stages" {
+  usecase "Se connecter" as UC1
+  usecase "Déposer une\ndemande de stage" as UC2
+  usecase "Suivre l'état\nde sa demande" as UC3
+  usecase "Vérifier les\npièces jointes" as UC4
+  usecase "Valider ou refuser\nune demande" as UC5
+  usecase "Affecter un\nencadreur" as UC6
+  usecase "Programmer une\nsoutenance" as UC7
+  usecase "Gérer les comptes\net les rôles" as UC8
+}
+
+E --> UC1
+E --> UC2
+E --> UC3
+S --> UC1
+S --> UC4
+S --> UC7
+R --> UC1
+R --> UC5
+R --> UC6
+N --> UC1
+N --> UC3
+A --> UC8
+@enduml

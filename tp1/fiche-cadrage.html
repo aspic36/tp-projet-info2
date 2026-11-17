@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP1 - Fiche de cadrage</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  body {
+    font-family: "Liberation Sans", Arial, sans-serif;
+    font-size: 9.2pt;
+    line-height: 1.28;
+    color: #1a1a1a;
+    margin: 0;
+  }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 6px; }
+  .kicker { font-size: 7.6pt; letter-spacing: 0.5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.4pt; color: #444; }
+  h2 {
+    font-size: 9.8pt; color: #0b5d8a; margin: 7px 0 3px;
+    border-left: 3pt solid #0b5d8a; padding-left: 5px;
+  }
+  p { margin: 2px 0; text-align: justify; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: 0.6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 8.2pt; }
+  th { background-color: #e6eef4; color: #0b3c5d; text-align: left; font-weight: bold; }
+  td.c, th.c { text-align: center; }
+  .nw { white-space: nowrap; }
+  ul { margin: 2px 0 2px 14px; padding: 0; }
+  li { margin-bottom: 1px; }
+  .colbox { border: 0.6pt solid #9fb4c4; padding: 4px 6px; }
+  .colbox h3 { margin: 0 0 2px; font-size: 8.6pt; text-transform: uppercase; letter-spacing: 0.3px; }
+  .inclus h3 { color: #1c6b3a; }
+  .exclus h3 { color: #8a2b2b; }
+  .colbox li { font-size: 8.1pt; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; margin-top: 2px; }
+  .fill { color: #777; font-style: italic; }
+  footer { margin-top: 6px; border-top: 0.6pt solid #9fb4c4; padding-top: 3px; font-size: 7.2pt; color: #666; }
+  .sig td { border: none; border-top: 0.6pt solid #333; padding: 8px 0 0; font-size: 8pt; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP1</div>
+  <h1>Fiche de cadrage &mdash; Gestion des stages et des soutenances</h1>
+  <div class="sub">
+    Groupe : <span class="fill">n&deg; ____</span> &nbsp;&middot;&nbsp;
+    Membres : <span class="fill">nom, nom, nom (, nom)</span> &nbsp;&middot;&nbsp;
+    D&eacute;p&ocirc;t GitHub : <span class="fill">lien</span> &nbsp;&middot;&nbsp;
+    Date : <span class="fill">__ / __ / 2026</span>
+  </div>
+</header>
+
+<h2>1. Probl&egrave;me et valeur attendue</h2>
+<p>
+Aujourd'hui, les dossiers de stage du d&eacute;partement circulent en papier : des pi&egrave;ces se perdent
+et des validations restent sans trace. Pour savoir o&ugrave; en est un dossier, il faut appeler le
+secr&eacute;tariat ou se d&eacute;placer, et deux soutenances sont parfois programm&eacute;es sur le m&ecirc;me cr&eacute;neau.
+L'application web centralise le d&eacute;p&ocirc;t de la demande, la v&eacute;rification des pi&egrave;ces, la d&eacute;cision
+motiv&eacute;e, l'affectation d'un encadreur et la programmation des soutenances. Elle donne &agrave; chaque
+acteur une vision &agrave; jour de l'&eacute;tat du dossier. La valeur attendue est un circuit plus court,
+tra&ccedil;able et sans conflit de calendrier, avec des donn&eacute;es fictives uniquement.
+</p>
+
+<h2>2. Indicateurs mesurables</h2>
+<table>
+  <colgroup><col style="width:34%"><col style="width:13%"><col style="width:53%"></colgroup>
+  <tr><th>Indicateur</th><th class="c">Unit&eacute;</th><th>Mode de mesure</th></tr>
+  <tr>
+    <td>D&eacute;lai moyen de validation d'un dossier</td>
+    <td class="c">jours</td>
+    <td>&Eacute;cart entre l'horodatage du d&eacute;p&ocirc;t et celui de la d&eacute;cision, calcul&eacute; sur les dossiers de la p&eacute;riode de test.</td>
+  </tr>
+  <tr>
+    <td>Part de dossiers incomplets &agrave; la premi&egrave;re lecture</td>
+    <td class="c">%</td>
+    <td>Nombre de dossiers refus&eacute;s pour pi&egrave;ce manquante divis&eacute; par le nombre de dossiers d&eacute;pos&eacute;s (jeu de 20 dossiers fictifs).</td>
+  </tr>
+  <tr>
+    <td>Conflits de calendrier par session</td>
+    <td class="c">nombre</td>
+    <td>Cr&eacute;neaux ou salles attribu&eacute;s deux fois, compt&eacute;s par le contr&ocirc;le automatique avant publication du planning.</td>
+  </tr>
+</table>
+<p class="note">Valeurs de r&eacute;f&eacute;rence &agrave; relever avant le projet (m&ecirc;me approximatives) pour comparer apr&egrave;s la mise en service.</p>
+
+<h2>3. Parties prenantes et attentes</h2>
+<table>
+  <colgroup><col style="width:26%"><col style="width:56%"><col style="width:18%"></colgroup>
+  <tr><th>Partie prenante</th><th>Attente principale</th><th class="c">Dans le MVP</th></tr>
+  <tr><td>&Eacute;tudiant</td><td>D&eacute;poser sa demande et suivre son &eacute;tat sans se d&eacute;placer.</td><td class="c">Oui</td></tr>
+  <tr><td>Secr&eacute;tariat</td><td>V&eacute;rifier les pi&egrave;ces et planifier les soutenances.</td><td class="c">Oui</td></tr>
+  <tr><td>Responsable p&eacute;dagogique</td><td>Valider ou refuser un dossier avec un motif explicite.</td><td class="c">Oui</td></tr>
+  <tr><td>Encadreur</td><td>Consulter la liste de ses &eacute;tudiants affect&eacute;s.</td><td class="c">Oui</td></tr>
+  <tr><td>Administrateur technique</td><td>G&eacute;rer les comptes et les droits d'acc&egrave;s.</td><td class="c">Oui</td></tr>
+  <tr><td>Entreprise (portail)</td><td>D&eacute;poser elle-m&ecirc;me des offres de stage.</td><td class="c">Non (v2)</td></tr>
+</table>
+
+<h2>4. P&eacute;rim&egrave;tre du MVP</h2>
+<table>
+  <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+  <tr>
+    <td class="colbox inclus">
+      <h3>Inclus (5 minimum)</h3>
+      <ul>
+        <li>Authentification et contr&ocirc;le d'acc&egrave;s par r&ocirc;le.</li>
+        <li>D&eacute;p&ocirc;t d'une demande de stage avec pi&egrave;ces jointes.</li>
+        <li>V&eacute;rification des pi&egrave;ces par le secr&eacute;tariat.</li>
+        <li>Validation ou refus motiv&eacute; par le responsable.</li>
+        <li>Affectation d'un encadreur &agrave; un dossier valid&eacute;.</li>
+        <li>Programmation des soutenances avec d&eacute;tection de conflit.</li>
+      </ul>
+    </td>
+    <td class="colbox exclus">
+      <h3>Exclus (3 minimum)</h3>
+      <ul>
+        <li>Paiement en ligne : hors p&eacute;rim&egrave;tre administratif et trop co&ucirc;teux pour 25 h.</li>
+        <li>Notifications SMS : service payant, indisponible dans l'environnement local.</li>
+        <li>Portail entreprise : d&eacute;pend d'un acteur externe, report&eacute; en version 2.</li>
+        <li>PDF officiels sign&eacute;s : n&eacute;cessite une validation juridique.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h2>5. Objectifs SMART</h2>
+<table>
+  <tr><th width="27%">Objectif</th><th width="15%">Mesure</th><th width="27%">Test</th><th width="12%" class="c nw">Seuil</th><th width="19%">Preuve</th></tr>
+  <tr>
+    <td>Retrouver un dossier depuis l'interface d'administration.</td>
+    <td>Nombre de recherches</td>
+    <td>Chronom&eacute;trer 5 essais sur des dossiers diff&eacute;rents.</td>
+    <td class="c nw">&le;&#160;3</td>
+    <td>Fiche de test remplie et capture d'&eacute;cran.</td>
+  </tr>
+  <tr>
+    <td>Valider une demande compl&egrave;te de bout en bout.</td>
+    <td>Dur&eacute;e du parcours</td>
+    <td>D&eacute;monstration film&eacute;e sur un dossier fictif complet.</td>
+    <td class="c nw">&lt;&#160;2&#160;min</td>
+    <td>Vid&eacute;o ou journal des &eacute;tapes.</td>
+  </tr>
+  <tr>
+    <td>Interdire l'acc&egrave;s &agrave; une page sans le r&ocirc;le requis.</td>
+    <td>Code HTTP</td>
+    <td>Requ&ecirc;te directe sur l'URL prot&eacute;g&eacute;e avec un compte &eacute;tudiant.</td>
+    <td class="c nw">403</td>
+    <td>Sortie de la requ&ecirc;te et extrait du contr&ocirc;le d'acc&egrave;s.</td>
+  </tr>
+</table>
+
+<h2>6. Risques</h2>
+<table>
+  <colgroup><col style="width:26%"><col style="width:5%"><col style="width:5%"><col style="width:8%"><col style="width:40%"><col style="width:16%"></colgroup>
+  <tr><th>Risque</th><th class="c">P</th><th class="c">I</th><th class="c">Criticit&eacute;</th><th>Action pr&eacute;ventive</th><th>Propri&eacute;taire</th></tr>
+  <tr>
+    <td>Serveur MySQL indisponible ou mal configur&eacute;.</td>
+    <td class="c">2</td><td class="c">3</td><td class="c">6</td>
+    <td>Installer MariaDB local d&egrave;s la s&eacute;ance 1 et tester la connexion avant chaque s&eacute;ance.</td>
+    <td>Administrateur</td>
+  </tr>
+  <tr>
+    <td>Conflit Git en fin de projet.</td>
+    <td class="c">3</td><td class="c">2</td><td class="c">6</td>
+    <td>Fusions fr&eacute;quentes, branches courtes et une t&acirc;che par branche.</td>
+    <td>Chef de projet</td>
+  </tr>
+  <tr>
+    <td>Fuite de donn&eacute;es r&eacute;elles.</td>
+    <td class="c">1</td><td class="c">3</td><td class="c">3</td>
+    <td>Jeu de donn&eacute;es fictif uniquement, aucun fichier r&eacute;el dans le d&eacute;p&ocirc;t.</td>
+    <td>Tous</td>
+  </tr>
+  <tr>
+    <td>Retard sur le planning des 25 heures.</td>
+    <td class="c">2</td><td class="c">2</td><td class="c">4</td>
+    <td>D&eacute;couper le travail par jalon et v&eacute;rifier l'avancement &agrave; chaque fin de s&eacute;ance.</td>
+    <td>Chef de projet</td>
+  </tr>
+</table>
+<p class="note">Criticit&eacute; = probabilit&eacute; &times; impact (1 &agrave; 3 chacun). Un risque de criticit&eacute; 6 ou 9 est trait&eacute; en priorit&eacute;.</p>
+
+<h2>7. Contraintes et hypoth&egrave;ses</h2>
+<table>
+  <colgroup><col style="width:30%"><col style="width:70%"></colgroup>
+  <tr><th>Nature</th><th>Élément</th></tr>
+  <tr><td>Contrainte</td><td>Environnement local (PHP 8, MySQL ou MariaDB, Git, navigateur) et budget de 25 heures pour tout le projet.</td></tr>
+  <tr><td>Contrainte</td><td>Donn&eacute;es fictives uniquement ; aucun dossier r&eacute;el ne doit entrer dans la base ni dans le d&eacute;p&ocirc;t.</td></tr>
+  <tr><td>Hypoth&egrave;se</td><td>Un serveur MySQL ou MariaDB est disponible et accessible depuis les postes de travail.</td></tr>
+  <tr><td>Hypoth&egrave;se</td><td>Les membres du groupe disposent d'un acc&egrave;s r&eacute;gulier &agrave; un poste pour d&eacute;velopper et tester.</td></tr>
+</table>
+
+<h2>8. Relecture par un autre groupe</h2>
+<p>La fiche est relue par le groupe <span class="fill">____________</span>. Les remarques sont consign&eacute;es ci-dessous et les corrections apport&eacute;es sont indiqu&eacute;es dans la colonne de droite.</p>
+<table>
+  <colgroup><col style="width:6%"><col style="width:42%"><col style="width:42%"><col style="width:10%"></colgroup>
+  <tr><th class="c">N&deg;</th><th>Remarque du groupe relecteur</th><th>Correction apport&eacute;e (ou justification)</th><th class="c">Fait</th></tr>
+  <tr><td class="c">1</td><td>&nbsp;</td><td>&nbsp;</td><td class="c">[ &nbsp; ]</td></tr>
+  <tr><td class="c">2</td><td>&nbsp;</td><td>&nbsp;</td><td class="c">[ &nbsp; ]</td></tr>
+  <tr><td class="c">3</td><td>&nbsp;</td><td>&nbsp;</td><td class="c">[ &nbsp; ]</td></tr>
+  <tr><td class="c">4</td><td>&nbsp;</td><td>&nbsp;</td><td class="c">[ &nbsp; ]</td></tr>
+  <tr><td class="c">5</td><td>&nbsp;</td><td>&nbsp;</td><td class="c">[ &nbsp; ]</td></tr>
+</table>
+
+<h2>9. Preuves de travail</h2>
+<ul>
+  <li>Fiche de cadrage de 2 pages (ce document) d&eacute;pos&eacute;e dans le d&eacute;p&ocirc;t Git du groupe.</li>
+  <li>Commit explicite (ex. <em>TP1 : fiche de cadrage</em>) et historique conserv&eacute;.</li>
+  <li>Liste des remarques du groupe relecteur (section 8).</li>
+  <li>Justification de 2 &agrave; 5 lignes : choix du p&eacute;rim&egrave;tre et des indicateurs.</li>
+</ul>
+
+<h2>10. Validation</h2>
+<p>Chef de projet : ______________________________ &nbsp;&nbsp;&nbsp; Date : ____________</p>
+<p>Groupe relecteur : ___________________________ &nbsp;&nbsp;&nbsp; Date : ____________</p>
+
+<footer>
+  TP1 &middot; Projet informatique 2 &middot; L3 SIL &mdash; document de travail, donn&eacute;es fictives uniquement.
+</footer>
+
+</body>
+</html>

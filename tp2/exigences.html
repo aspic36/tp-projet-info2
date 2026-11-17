@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP2 - Exigences et matrice de traçabilité</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  body {
+    font-family: "Liberation Sans", Arial, sans-serif;
+    font-size: 9.2pt;
+    line-height: 1.28;
+    color: #1a1a1a;
+    margin: 0;
+  }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 6px; }
+  .kicker { font-size: 7.6pt; letter-spacing: 0.5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.4pt; color: #444; }
+  h2 {
+    font-size: 9.8pt; color: #0b5d8a; margin: 8px 0 3px;
+    border-left: 3pt solid #0b5d8a; padding-left: 5px;
+  }
+  p { margin: 2px 0; text-align: justify; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: 0.6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 8.2pt; }
+  th { background-color: #e6eef4; color: #0b3c5d; text-align: left; font-weight: bold; }
+  td.c, th.c { text-align: center; }
+  .id { white-space: nowrap; font-weight: bold; color: #0b3c5d; }
+  .must { color: #8a2b2b; font-weight: bold; }
+  .should { color: #8a6a1f; font-weight: bold; }
+  .story { border: 0.6pt solid #9fb4c4; padding: 5px 7px; margin: 4px 0; }
+  .story h3 { margin: 0 0 2px; font-size: 9pt; color: #0b3c5d; }
+  .story .role { font-size: 8.6pt; margin-bottom: 3px; }
+  .story table { margin: 3px 0 0; }
+  .story td { border: none; padding: 1px 4px 1px 0; }
+  .gwt { font-weight: bold; color: #0b5d8a; width: 60px; }
+  ul { margin: 2px 0 2px 14px; padding: 0; }
+  li { margin-bottom: 1px; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; margin-top: 2px; }
+  .fill { color: #777; font-style: italic; }
+  footer { margin-top: 6px; border-top: 0.6pt solid #9fb4c4; padding-top: 3px; font-size: 7.2pt; color: #666; }
+  .pagebreak { page-break-before: always; }
+  .story { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP2</div>
+  <h1>Exigences et matrice de tra&ccedil;abilit&eacute; &mdash; Gestion des stages</h1>
+  <div class="sub">
+    Groupe : <span class="fill">n&deg; ____</span> &nbsp;&middot;&nbsp;
+    Membres : <span class="fill">nom, nom, nom (, nom)</span> &nbsp;&middot;&nbsp;
+    D&eacute;p&ocirc;t GitHub : <span class="fill">lien</span> &nbsp;&middot;&nbsp;
+    Date : <span class="fill">__ / __ / 2026</span>
+  </div>
+</header>
+
+<p>Ce document formalise les exigences du p&eacute;rim&egrave;tre d&eacute;fini au TP1 et pr&eacute;pare leur v&eacute;rification.
+Priorit&eacute;s MoSCoW : <strong>Must</strong> (indispensable), <strong>Should</strong> (important, contournable),
+<strong>Could</strong> (confort), <strong>Won't</strong> (hors p&eacute;rim&egrave;tre de cette version).
+Chaque exigence est reli&eacute;e &agrave; un composant, un test et un statut dans la matrice (section 4).</p>
+
+<h2>1. Exigences fonctionnelles</h2>
+<table>
+  <tr><th width="9%">ID</th><th width="51%">Exigence testable</th><th width="24%">Acteur</th><th width="16%" class="c">Priorit&eacute;</th></tr>
+  <tr>
+    <td class="id">EF-01</td>
+    <td>Un utilisateur avec des identifiants valides acc&egrave;de &agrave; son espace ; un mot de passe erron&eacute; affiche un message g&eacute;n&eacute;rique et n'ouvre aucune session.</td>
+    <td>Tous</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-02</td>
+    <td>Un &eacute;tudiant cr&eacute;e une demande de stage (entreprise, dates, convention PDF &le; 5 Mo) ; la demande appara&icirc;t au statut &laquo; D&eacute;pos&eacute;e &raquo;.</td>
+    <td>&Eacute;tudiant</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-03</td>
+    <td>Un &eacute;tudiant consulte l'&eacute;tat et l'historique de ses demandes (date, statut, motif de d&eacute;cision).</td>
+    <td>&Eacute;tudiant</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-04</td>
+    <td>Le secr&eacute;tariat marque un dossier &laquo; Complet &raquo; ou &laquo; Incomplet &raquo; ; le motif est obligatoire en cas d'incomplet.</td>
+    <td>Secr&eacute;tariat</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-05</td>
+    <td>Le responsable valide ou refuse un dossier complet ; le motif est obligatoire en cas de refus et la d&eacute;cision est horodat&eacute;e.</td>
+    <td>Responsable p&eacute;dagogique</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-06</td>
+    <td>Le responsable affecte un encadreur actif &agrave; un dossier valid&eacute; ; l'affectation est visible par l'encadreur et l'&eacute;tudiant.</td>
+    <td>Responsable p&eacute;dagogique</td><td class="c must">Must</td>
+  </tr>
+  <tr>
+    <td class="id">EF-07</td>
+    <td>Le secr&eacute;tariat programme une soutenance (date, heure, salle) ; le syst&egrave;me refuse un cr&eacute;neau ou une salle d&eacute;j&agrave; occup&eacute;s.</td>
+    <td>Secr&eacute;tariat</td><td class="c should">Should</td>
+  </tr>
+  <tr>
+    <td class="id">EF-08</td>
+    <td>L'administrateur cr&eacute;e ou d&eacute;sactive un compte et attribue un r&ocirc;le parmi la liste autoris&eacute;e.</td>
+    <td>Administrateur</td><td class="c must">Must</td>
+  </tr>
+</table>
+<p class="note">Les fonctionnalit&eacute;s report&eacute;es (paiement en ligne, SMS, portail entreprise) sont hors p&eacute;rim&egrave;tre : elles ne figurent pas parmi les EF et sont trac&eacute;es en section 5.</p>
+
+<h2>2. Exigences non fonctionnelles</h2>
+<table>
+  <tr><th width="9%">ID</th><th width="43%">Exigence</th><th width="30%">Mesure et seuil</th><th width="18%">Preuve attendue</th></tr>
+  <tr>
+    <td class="id">ENF-01</td>
+    <td><strong>Autorisation.</strong> Toute action r&eacute;serv&eacute;e &agrave; un r&ocirc;le est refus&eacute;e aux autres r&ocirc;les, c&ocirc;t&eacute; serveur.</td>
+    <td>10 routes sensibles test&eacute;es ; 100 % des acc&egrave;s non autoris&eacute;s renvoient 403 sans &eacute;criture en base.</td>
+    <td>Sortie des requ&ecirc;tes et extrait du middleware.</td>
+  </tr>
+  <tr>
+    <td class="id">ENF-02</td>
+    <td><strong>Validation serveur.</strong> Toute entr&eacute;e invalide (champ obligatoire vide, format incorrect, pi&egrave;ce &gt; 5 Mo ou non PDF) est rejet&eacute;e m&ecirc;me si le contr&ocirc;le navigateur est contourn&eacute;.</td>
+    <td>20 cas de test ; 0 entr&eacute;e invalide accept&eacute;e ; message d'erreur explicite &agrave; chaque refus.</td>
+    <td>Jeu de tests et journal des r&eacute;ponses.</td>
+  </tr>
+  <tr>
+    <td class="id">ENF-03</td>
+    <td><strong>Sauvegarde test&eacute;e.</strong> La base est sauvegard&eacute;e quotidiennement et peut &ecirc;tre restaur&eacute;e sur une base vide.</td>
+    <td>Dump quotidien conserv&eacute; 7 jours ; restauration compl&egrave;te en &le; 10 min, chronom&eacute;tr&eacute;e une fois.</td>
+    <td>Script de sauvegarde et chrono de restauration.</td>
+  </tr>
+</table>
+
+<h2 class="pagebreak">3. User stories et crit&egrave;res d'acceptation</h2>
+
+<div class="story">
+  <h3>US-01 &mdash; D&eacute;p&ocirc;t d'une demande de stage <span class="must">(Must)</span></h3>
+  <div class="role">En tant qu'&eacute;tudiant, je veux d&eacute;poser ma demande avec ma convention afin qu'elle soit instruite par le secr&eacute;tariat.</div>
+  <table>
+    <tr><td class="gwt">Given</td><td>un &eacute;tudiant connect&eacute; et un formulaire complet avec une convention PDF de 2 Mo.</td></tr>
+    <tr><td class="gwt">When</td><td>il valide le formulaire.</td></tr>
+    <tr><td class="gwt">Then</td><td>la demande est cr&eacute;&eacute;e au statut &laquo; D&eacute;pos&eacute;e &raquo;, horodat&eacute;e et visible dans son suivi.</td></tr>
+  </table>
+</div>
+
+<div class="story">
+  <h3>US-02 &mdash; Blocage d'une d&eacute;cision non autoris&eacute;e <span class="must">(Must, cas d'erreur)</span></h3>
+  <div class="role">En tant qu'&eacute;tudiant, je ne dois pas pouvoir valider mon propre dossier afin que la d&eacute;cision reste au responsable p&eacute;dagogique.</div>
+  <table>
+    <tr><td class="gwt">Given</td><td>un &eacute;tudiant connect&eacute; sur une demande qui lui appartient.</td></tr>
+    <tr><td class="gwt">When</td><td>il envoie une requ&ecirc;te POST vers l'URL de validation du dossier.</td></tr>
+    <tr><td class="gwt">Then</td><td>le serveur r&eacute;pond 403, aucune d&eacute;cision n'est enregistr&eacute;e et l'&eacute;tudiant est renvoy&eacute; vers son suivi avec un message.</td></tr>
+  </table>
+</div>
+
+<p class="note">US-01 couvre le parcours nominal, US-02 le cas d'erreur exig&eacute; : une action interdite doit &eacute;chouer proprement, sans effet de bord.</p>
+
+<h2>4. Matrice de tra&ccedil;abilit&eacute;</h2>
+<table>
+  <tr><th width="9%">ID</th><th width="27%">Composant</th><th width="50%">Test</th><th width="14%" class="c">Statut</th></tr>
+  <tr><td class="id">EF-01</td><td>AuthController, middleware Auth</td><td>T-EF01 : connexion valide, mot de passe erron&eacute;, session expir&eacute;e.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-02</td><td>DemandeController, PieceService</td><td>T-EF02 : d&eacute;p&ocirc;t complet, champ manquant, pi&egrave;ce &gt; 5 Mo.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-03</td><td>DemandeController (show, index)</td><td>T-EF03 : suivi d'une demande, historique de statut, isolation entre &eacute;tudiants.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-04</td><td>VerificationController</td><td>T-EF04 : dossier complet, incomplet avec motif, incomplet sans motif (refus).</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-05</td><td>DecisionController, DemandeService</td><td>T-EF05 : validation, refus motiv&eacute;, transition interdite depuis &laquo; Incomplet &raquo;.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-06</td><td>AffectationController</td><td>T-EF06 : affectation valide, encadreur inactif (refus), visibilit&eacute; c&ocirc;t&eacute; encadreur.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-07</td><td>SoutenanceController, ConflitService</td><td>T-EF07 : cr&eacute;neau libre, salle occup&eacute;e (refus), m&ecirc;me heure pour deux soutenances (refus).</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">EF-08</td><td>AdminUserController</td><td>T-EF08 : cr&eacute;ation, d&eacute;sactivation, r&ocirc;le non autoris&eacute; (refus).</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">ENF-01</td><td>Middleware RoleMiddleware</td><td>T-ENF01 : 10 routes sensibles appel&eacute;es avec chaque r&ocirc;le, attente 403 hors droits.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">ENF-02</td><td>FormValidator, DemandeService</td><td>T-ENF02 : 20 entr&eacute;es invalides envoy&eacute;es directement au serveur, attente 0 acceptation.</td><td class="c">&Agrave; faire</td></tr>
+  <tr><td class="id">ENF-03</td><td>scripts/backup.sh, docs/restauration</td><td>T-ENF03 : dump, suppression de la base de test, restauration et contr&ocirc;le du nombre de lignes.</td><td class="c">&Agrave; faire</td></tr>
+</table>
+<p class="note">Statut : &Agrave; faire / En cours / Fait / Bloqu&eacute;. La colonne est mise &agrave; jour &agrave; chaque commit qui livre un test.</p>
+
+<h2 class="pagebreak">5. P&eacute;rim&egrave;tre minimal de 25 heures</h2>
+<table>
+  <tr><th width="52%">Lot de travail</th><th width="16%" class="c">Charge</th><th width="32%">Exigences couvertes</th></tr>
+  <tr><td>Mod&eacute;lisation et socle (base, authentification, r&ocirc;les)</td><td class="c">4 h</td><td>EF-01, EF-08, ENF-01</td></tr>
+  <tr><td>D&eacute;p&ocirc;t et suivi des demandes</td><td class="c">5 h</td><td>EF-02, EF-03, ENF-02</td></tr>
+  <tr><td>V&eacute;rification des pi&egrave;ces et d&eacute;cision</td><td class="c">4 h</td><td>EF-04, EF-05</td></tr>
+  <tr><td>Affectation des encadreurs</td><td class="c">3 h</td><td>EF-06</td></tr>
+  <tr><td>Programmation des soutenances et conflits</td><td class="c">3 h</td><td>EF-07</td></tr>
+  <tr><td>Tests, s&eacute;curit&eacute; et sauvegarde/restauration</td><td class="c">4 h</td><td>ENF-01, ENF-02, ENF-03</td></tr>
+  <tr><td>Int&eacute;gration, corrections et pr&eacute;paration de la d&eacute;monstration</td><td class="c">2 h</td><td>Toutes</td></tr>
+  <tr><th>Total</th><th class="c">25 h</th><th></th></tr>
+</table>
+
+<table>
+  <tr><th width="26%">Report&eacute; en version 2</th><th width="74%">Justification</th></tr>
+  <tr><td>Paiement en ligne</td><td>Hors p&eacute;rim&egrave;tre administratif, d&eacute;pend d'un prestataire et d'une validation financi&egrave;re.</td></tr>
+  <tr><td>Notifications SMS</td><td>Service payant, non disponible dans l'environnement local du projet.</td></tr>
+  <tr><td>Portail entreprise</td><td>N&eacute;cessite un acteur externe et un deuxi&egrave;me contr&ocirc;le d'acc&egrave;s ; hors des 25 heures.</td></tr>
+  <tr><td>PDF officiels sign&eacute;s</td><td>N&eacute;cessite une validation juridique et une signature &eacute;lectronique.</td></tr>
+  <tr><td>Notifications e-mail</td><td>Confort (Could) : le suivi dans l'application suffit au MVP.</td></tr>
+</table>
+
+<h2>6. Preuves et validation</h2>
+<ul>
+  <li>Document d'exigences et matrice de tra&ccedil;abilit&eacute; (ce document) dans le d&eacute;p&ocirc;t Git.</li>
+  <li>Commit explicite (ex. <em>TP2 : exigences et matrice</em>).</li>
+  <li>Chaque test de la matrice est ex&eacute;cut&eacute; et son r&eacute;sultat conserv&eacute; (sortie ou capture).</li>
+</ul>
+<p>R&eacute;daction : ______________________________ &nbsp;&nbsp;&nbsp; Date : ____________</p>
+<p>Relecture par un autre groupe : ______________________ &nbsp;&nbsp;&nbsp; Date : ____________</p>
+
+<footer>
+  TP2 &middot; Projet informatique 2 &middot; L3 SIL &mdash; document de travail, donn&eacute;es fictives uniquement.
+</footer>
+
+</body>
+</html>

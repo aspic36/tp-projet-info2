@@ -1,0 +1,30 @@
+﻿TP5 - Conflit provoque sur une ligne du README et sa resolution
+Date : 18/11/2026
+
+Branche A : feature/readme-securite  -> precise que le jeton couvre aussi les DELETE
+Branche B : feature/readme-tests     -> precise la taille du jeton en bits
+Les deux branches modifient la meme ligne de la section Securite.
+A est fusionnee d'abord ; la fusion de B echoue :
+
+$ git merge --no-ff -m "merge: doc taille du jeton" feature/readme-tests
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+
+--- marqueurs presents dans README.md ---
+## Sécurité
+
+- Mots de passe hachés avec `password_hash()` (bcrypt, coût 12) et vérifiés par
+  `password_verify()`.
+- `session_regenerate_id(true)` après connexion ; cookie `HttpOnly`, `SameSite=Lax`.
+<<<<<<< HEAD
+- Jeton CSRF aléatoire de 32 octets, comparé avec `hash_equals()` sur toute écriture,
+  y compris les `DELETE`.
+=======
+- Jeton CSRF aléatoire de 32 octets (256 bits), comparé avec `hash_equals()` sur toute
+  écriture.
+>>>>>>> feature/readme-tests
+- Requêtes préparées PDO : aucune concaténation de valeur dans le SQL.
+
+--- git status pendant le conflit ---
+UU README.md

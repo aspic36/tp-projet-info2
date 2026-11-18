@@ -1,0 +1,70 @@
+﻿TP5 - Historique Git du depot (git log --oneline --graph)
+Date : 18/11/2026 15:50
+Depot : https://github.com/aspic36/tp-projet-info2
+
+Note : cette capture est prise juste avant le commit qui ajoute ce fichier ;
+les commits de preuves (tp5, tp10) apparaissent donc au-dessus d'elle dans
+'git log' sur le depot. Le graphe des fusions, lui, est complet.
+
+$ git log --oneline --graph --all --decorate
+*   cef035e (HEAD -> main) merge: doc taille du jeton
+|\  
+| * f2367f5 (feature/readme-tests) doc: preciser la taille du jeton CSRF en bits
+* |   d9df9d3 merge: doc CSRF (revue: formulation)
+|\ \  
+| |/  
+|/|   
+| * 4fcbbf7 (feature/readme-securite) doc: preciser que le jeton CSRF couvre aussi les DELETE
+|/  
+*   0f68f75 merge: tp10 dossier et soutenance (revue: liste de controle)
+|\  
+| * a4da1c5 (feature/tp10-livraison) tp10: dossier de livraison, demonstration et soutenance
+|/  
+*   d57eee5 merge: tp5 kanban (revue: cartes et definition de fini)
+|\  
+| * 6e92c02 (feature/tp5-kanban) tp5: tableau kanban de huit cartes
+|/  
+*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump recharg├®)
+|\  
+| * 1f53e71 (feature/tp9-exploitation) tp9: installation, sauvegarde et restauration
+|/  
+*   cca22bf merge: tp8 tests et securite (revue: matrice, revue de code)
+|\  
+| * 8855463 (feature/tp8-tests) tp8: audit de securite et revue de code
+|/  
+*   6b467b7 merge: tp7 interface web (revue: parcours, accessibilite)
+|\  
+| * 9315514 (feature/tp7-interface) tp7: interface web des deux roles
+|/  
+*   3ad26a2 merge: tp6 API des demandes (revue: SQL prepare, transactions)
+|\  
+| * b7d1526 (feature/tp6-api) tp6: API des demandes et transitions de statut
+|/  
+*   3ac760c merge: tp4 socle technique (revue: arborescence, contrat, ADR)
+|\  
+| * 01aaacd (feature/tp4-socle) tp4: socle technique, configuration et contrat d'API
+|/  
+* a6e8e7d tp3: modele, jeu d'essai et preuves de contraintes
+* 7d5eee7 (origin/main, origin/HEAD) Refactor TP3 : mod├¿le et jeu d'essai originaux
+* 8652839 Feat TP3 : UML et sch├®ma SQL
+* 8d709cf Clean PDF metadata
+* 2ddc9e2 Add TP2 : exigences et matrice de tra├ºabilit├®
+* db55314 Add TP1 : fiche de cadrage
+
+$ git shortlog -sn --all
+    19	Luc
+     5	aspic36
+
+$ git branch -a
+  feature/readme-securite
+  feature/readme-tests
+  feature/tp10-livraison
+  feature/tp4-socle
+  feature/tp5-kanban
+  feature/tp6-api
+  feature/tp7-interface
+  feature/tp8-tests
+  feature/tp9-exploitation
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main

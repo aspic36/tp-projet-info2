@@ -1,0 +1,41 @@
+﻿=== 2. Restauration dans stages_test ===
+Source : C:\Users\Back Office Permis\Documents\projet-stages\sauvegardes\stages-20261118-154238.sql
+Restauration terminee : C:\Users\Back Office Permis\Documents\projet-stages\sauvegardes\stages-20261118-154238.sql -> stages_test
+--- objets crees dans stages_test ---
++------------+---+
+| TABLE_TYPE | n |
++------------+---+
+| BASE TABLE | 7 |
+| VIEW       | 2 |
++------------+---+
++------+---+
+| quoi | n |
++------+---+
+| vues | 2 |
++------+---+
+--- comparaison exacte ---
+table             stages,stages_test
+------------------------------------
+utilisateur                   -1
+etudiant                      -1
+encadreur                     -1
+entreprise                    -1
+demande_stage                 -1
+historique                    -1
+soutenance                    -1
+
+Totaux par base : stages,stages_test = 0
+Verdict : IDENTIQUES
+--- comparaison exacte (corrigee) ---
+table                     stages   stages_test
+----------------------------------------------
+utilisateur                    8             8
+etudiant                       3             3
+encadreur                      2             2
+entreprise                     2             2
+demande_stage                  4             4
+historique                     5             5
+soutenance                     1             1
+
+Totaux par base : stages = 25 | stages_test = 25
+Verdict : IDENTIQUES

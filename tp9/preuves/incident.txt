@@ -1,0 +1,66 @@
+﻿=== 3. Simulation d'incident sur stages_test ===
+Incident simule : suppression accidentelle de la table 'historique'.
+Base touchee   : stages_test (la base de production 'stages' reste intacte).
+
+--- etat avant incident ---
++-------------------+
+| lignes_historique |
++-------------------+
+|                 5 |
++-------------------+
++-----------+
+| nb_tables |
++-----------+
+|         7 |
++-----------+
+
+--- incident ---
+mysql> DROP TABLE historique;
++-----------+
+| nb_tables |
++-----------+
+|         6 |
++-----------+
+
+--- l'application ne peut plus lire l'historique ---
+mysql> SELECT * FROM historique ORDER BY id;
+mysql.exe : ERROR 1146 (42S02) at line 1: Table 'stages_test.historique' doesn't exist
+ 
+
+=== 4. Restauration apres incident ===
+Commande : restauration.ps1 -Fichier C:\Users\Back Office Permis\Documents\projet-stages\sauvegardes\stages-20261118-154238.sql -Cible stages_test
+Restauration terminee : C:\Users\Back Office Permis\Documents\projet-stages\sauvegardes\stages-20261118-154238.sql -> stages_test
+Duree de la restauration : 2.51 s
+
+--- verification apres restauration ---
++-------------------+
+| lignes_historique |
++-------------------+
+|                 5 |
++-------------------+
++----+------------+--------------+--------------+
+| id | demande_id | statut_avant | statut_apres |
++----+------------+--------------+--------------+
+|  1 |          1 | BROUILLON    | SOUMISE      |
+|  2 |          2 | BROUILLON    | SOUMISE      |
+|  3 |          2 | SOUMISE      | VALIDEE      |
+|  4 |          4 | BROUILLON    | SOUMISE      |
+|  5 |          4 | SOUMISE      | REFUSEE      |
++----+------------+--------------+--------------+
++-----------+
+| nb_tables |
++-----------+
+|         7 |
++-----------+
+table                     stages   stages_test
+----------------------------------------------
+utilisateur                    8             8
+etudiant                       3             3
+encadreur                      2             2
+entreprise                     2             2
+demande_stage                  4             4
+historique                     5             5
+soutenance                     1             1
+
+Totaux par base : stages = 25 | stages_test = 25
+Verdict : IDENTIQUES

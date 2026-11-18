@@ -1,0 +1,12 @@
+﻿table                     stages
+--------------------------------
+utilisateur                    8
+etudiant                       3
+encadreur                      2
+entreprise                     2
+demande_stage                  4
+historique                     5
+soutenance                     1
+
+Totaux par base : stages = 25
+Verdict : IDENTIQUES

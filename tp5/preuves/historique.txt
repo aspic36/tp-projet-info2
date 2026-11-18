@@ -1,13 +1,17 @@
 ﻿TP5 - Historique Git du depot (git log --oneline --graph)
-Date : 18/11/2026 15:50
+Date : 18/11/2026 15:51 - Auteur local : Luc <lucgbemeondji@gmail.com>
 Depot : https://github.com/aspic36/tp-projet-info2
 
 Note : cette capture est prise juste avant le commit qui ajoute ce fichier ;
-les commits de preuves (tp5, tp10) apparaissent donc au-dessus d'elle dans
-'git log' sur le depot. Le graphe des fusions, lui, est complet.
+les commits de preuves apparaissent donc au-dessus d'elle dans 'git log' sur le
+depot. Le graphe des fusions, lui, est complet.
 
 $ git log --oneline --graph --all --decorate
-*   cef035e (HEAD -> main) merge: doc taille du jeton
+*   19286b0 (HEAD -> main) merge: tp5 preuves (revue: graphe et conflit)
+|\  
+| * 8639a01 (feature/tp5-preuves) tp5: preuves git (graphe, conflit resolu, tests verts)
+|/  
+*   cef035e merge: doc taille du jeton
 |\  
 | * f2367f5 (feature/readme-tests) doc: preciser la taille du jeton CSRF en bits
 * |   d9df9d3 merge: doc CSRF (revue: formulation)
@@ -24,7 +28,7 @@ $ git log --oneline --graph --all --decorate
 |\  
 | * 6e92c02 (feature/tp5-kanban) tp5: tableau kanban de huit cartes
 |/  
-*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump recharg├®)
+*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump rechargé)
 |\  
 | * 1f53e71 (feature/tp9-exploitation) tp9: installation, sauvegarde et restauration
 |/  
@@ -45,14 +49,14 @@ $ git log --oneline --graph --all --decorate
 | * 01aaacd (feature/tp4-socle) tp4: socle technique, configuration et contrat d'API
 |/  
 * a6e8e7d tp3: modele, jeu d'essai et preuves de contraintes
-* 7d5eee7 (origin/main, origin/HEAD) Refactor TP3 : mod├¿le et jeu d'essai originaux
-* 8652839 Feat TP3 : UML et sch├®ma SQL
+* 7d5eee7 (origin/main, origin/HEAD) Refactor TP3 : modèle et jeu d'essai originaux
+* 8652839 Feat TP3 : UML et schéma SQL
 * 8d709cf Clean PDF metadata
-* 2ddc9e2 Add TP2 : exigences et matrice de tra├ºabilit├®
+* 2ddc9e2 Add TP2 : exigences et matrice de traçabilité
 * db55314 Add TP1 : fiche de cadrage
 
 $ git shortlog -sn --all
-    19	Luc
+    21	Luc
      5	aspic36
 
 $ git branch -a
@@ -61,6 +65,7 @@ $ git branch -a
   feature/tp10-livraison
   feature/tp4-socle
   feature/tp5-kanban
+  feature/tp5-preuves
   feature/tp6-api
   feature/tp7-interface
   feature/tp8-tests
@@ -68,3 +73,4 @@ $ git branch -a
 * main
   remotes/origin/HEAD -> origin/main
   remotes/origin/main
+

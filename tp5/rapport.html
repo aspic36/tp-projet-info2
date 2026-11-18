@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP5 - Git et organisation</title>
+<style>
+  @page { size: A4; margin: 13mm 14mm; }
+  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.1pt; line-height: 1.3; color: #1a1a1a; margin: 0; }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 7px; }
+  .kicker { font-size: 7.6pt; letter-spacing: .5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.3pt; color: #444; }
+  h2 { font-size: 9.8pt; color: #0b5d8a; margin: 9px 0 3px; border-left: 3pt solid #0b5d8a; padding-left: 5px; }
+  h3 { font-size: 9pt; margin: 6px 0 2px; color: #0b3c5d; }
+  p { margin: 2px 0; text-align: justify; }
+  ul { margin: 2px 0 2px 14px; padding: 0; }
+  li { margin: 1px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: .6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 7.9pt; }
+  th { background: #e6eef4; color: #0b3c5d; text-align: left; }
+  td.c, th.c { text-align: center; }
+  .id { white-space: nowrap; font-weight: bold; color: #0b3c5d; }
+  code, pre { font-family: "Consolas", "Liberation Mono", monospace; }
+  pre { background: #f4f7fa; border: .6pt solid #cbd8e3; padding: 4px 6px; margin: 3px 0; font-size: 7pt; line-height: 1.28; white-space: pre; page-break-inside: avoid; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; }
+  .preuve { font-size: 7.8pt; color: #0b5c40; }
+  .ok { color: #0a5c40; font-weight: bold; }
+  .deux-colonnes { display: flex; gap: 10px; }
+  .deux-colonnes > div { flex: 1; }
+  footer { margin-top: 7px; border-top: .6pt solid #9fb4c4; padding-top: 3px; font-size: 7.1pt; color: #666; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP5</div>
+  <h1>D&eacute;p&ocirc;t Git et organisation d'&eacute;quipe</h1>
+  <div class="sub">D&eacute;p&ocirc;t : <strong>github.com/aspic36/tp-projet-info2</strong> &middot; Git 2.55 &middot; 18 / 11 / 2026</div>
+</header>
+
+<h2>1. Flux de travail</h2>
+<p>Chaque carte du Kanban correspond &agrave; une branche courte, nomm&eacute;e
+<code>feature/&lt;carte&gt;</code>. La branche porte un seul commit de code ; elle est relue
+par un autre membre puis fusionn&eacute;e avec <code>--no-ff</code> pour que la fusion
+reste visible dans le graphe.</p>
+<table>
+  <tr><th width="24%">Branche</th><th width="38%">Contenu</th><th>Fusion</th></tr>
+  <tr><td class="id">feature/tp4-socle</td><td>Socle, configuration, contrat d'API, ADR-001</td><td><code>3ac760c</code></td></tr>
+  <tr><td class="id">feature/tp6-api</td><td>D&eacute;p&ocirc;ts, services, contr&ocirc;leurs, 16 cas de test</td><td><code>3ad26a2</code></td></tr>
+  <tr><td class="id">feature/tp7-interface</td><td>Page unique, feuille de style, sc&eacute;nario et captures</td><td><code>6b467b7</code></td></tr>
+  <tr><td class="id">feature/tp8-tests</td><td>Audit de s&eacute;curit&eacute;, revue de code</td><td><code>cca22bf</code></td></tr>
+  <tr><td class="id">feature/tp9-exploitation</td><td>Scripts de sauvegarde, proc&eacute;dure, incident</td><td><code>513bb0d</code></td></tr>
+  <tr><td class="id">feature/tp5-kanban</td><td>Tableau Kanban de huit cartes</td><td><code>d57eee5</code></td></tr>
+  <tr><td class="id">feature/tp10-livraison</td><td>Dossier, d&eacute;monstration, r&eacute;trospective, README</td><td><code>0f68f75</code></td></tr>
+  <tr><td class="id">feature/readme-securite</td><td>Documentation du jeton CSRF (c&ocirc;t&eacute; A du conflit)</td><td><code>d9df9d3</code></td></tr>
+  <tr><td class="id">feature/readme-tests</td><td>Documentation du jeton CSRF (c&ocirc;t&eacute; B du conflit)</td><td><code>cef035e</code>, r&eacute;solu</td></tr>
+</table>
+<p class="note">La revue se fait sur le diff de la branche :
+<code>git diff main...feature/xxx</code>. Une branche qui casse une carte d&eacute;j&agrave;
+fusionn&eacute;e repasse en revue avant la fusion suivante.</p>
+
+<h2>2. Kanban de huit cartes</h2>
+<div class="deux-colonnes">
+<div>
+<table>
+  <tr><th width="12%">Colonne</th><th>Cartes</th></tr>
+  <tr><td class="id">&Agrave; faire</td><td>K-07, K-08</td></tr>
+  <tr><td class="id">En cours</td><td>&mdash;</td></tr>
+  <tr><td class="id">En revue</td><td>&mdash;</td></tr>
+  <tr><td class="id">Termin&eacute;</td><td>K-01 &agrave; K-06</td></tr>
+</table>
+<p class="note">Le tableau complet (propri&eacute;taire, estimation, d&eacute;finition de
+&laquo; fini &raquo;, commit associ&eacute;, suivi des sept s&eacute;ances) est dans
+<code>docs/kanban.md</code>.</p>
+</div>
+<div>
+<table>
+  <tr><th width="10%">ID</th><th>Carte</th><th width="22%">Dur&eacute;e</th></tr>
+  <tr><td class="c">K-01</td><td>Mod&egrave;le relationnel et jeu d'essai</td><td>1 h 30</td></tr>
+  <tr><td class="c">K-02</td><td>Squelette, configuration, PDO</td><td>1 h</td></tr>
+  <tr><td class="c">K-03</td><td>Contrat d'API et ADR-001</td><td>45 min</td></tr>
+  <tr><td class="c">K-04</td><td>API des demandes et transitions</td><td>2 h</td></tr>
+  <tr><td class="c">K-05</td><td>Interface web des deux r&ocirc;les</td><td>2 h</td></tr>
+  <tr><td class="c">K-06</td><td>Tests de s&eacute;curit&eacute; et revue</td><td>1 h 30</td></tr>
+  <tr><td class="c">K-07</td><td>Installation, sauvegarde, restauration</td><td>1 h 30</td></tr>
+  <tr><td class="c">K-08</td><td>Dossier et soutenance</td><td>1 h 30</td></tr>
+</table>
+</div>
+</div>
+
+<h2>3. Conflit provoqu&eacute; sur une ligne du README</h2>
+<p>Deux branches modifient la m&ecirc;me phrase de la section <em>S&eacute;curit&eacute;</em>.
+La premi&egrave;re est fusionn&eacute;e sans probl&egrave;me ; la seconde entre en conflit :</p>
+<pre>$ git merge --no-ff -m "merge: doc taille du jeton" feature/readme-tests
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+
+- `session_regenerate_id(true)` après connexion ; cookie `HttpOnly`, `SameSite=Lax`.
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+- Jeton CSRF aléatoire de 32 octets, comparé avec `hash_equals()` sur toute écriture,
+  y compris les `DELETE`.
+=======
+- Jeton CSRF aléatoire de 32 octets (256 bits), comparé avec `hash_equals()` sur toute
+  écriture.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/readme-tests</pre>
+<p>R&eacute;solution : on garde <strong>les deux apports</strong>, pas l'un contre l'autre.
+Les marqueurs sont supprim&eacute;s, puis la fusion est valid&eacute;e :</p>
+<div class="deux-colonnes">
+<div>
+<pre>- Jeton CSRF aléatoire de 32 octets (256 bits),
+  comparé avec `hash_equals()` sur toute
+  écriture, y compris les `DELETE`.</pre>
+</div>
+<div>
+<pre>$ git add README.md
+$ git commit --no-edit
+[main cef035e] merge: doc taille du jeton
+
+$ git log --oneline -1
+cef035e merge: doc taille du jeton</pre>
+</div>
+</div>
+<p>V&eacute;rification apr&egrave;s la fusion : les trois scripts de test sont relanc&eacute;s
+et passent (0 &eacute;chec), et aucun marqueur ne subsiste dans le fichier.</p>
+<pre>Connexion PDO : OK          (tests/connexion.php)
+Résultat : 0 échec(s) sur 16 cas.   (tests/api.php)
+Résultat : 0 échec(s).               (tests/securite.php)</pre>
+<p class="preuve">D&eacute;tail, y compris <code>git status</code> pendant le conflit :
+<code>tp5/preuves/conflit.txt</code> et <code>tp5/preuves/tests-apres-fusion.txt</code>.</p>
+
+<h2 class="pagebreak">4. Historique du d&eacute;p&ocirc;t</h2>
+<pre class="arbre">$ git log --oneline --graph --all --decorate
+*   cef035e (HEAD -&gt; main) merge: doc taille du jeton
+|\
+| * f2367f5 (feature/readme-tests) doc: preciser la taille du jeton CSRF en bits
+* |   d9df9d3 merge: doc CSRF (revue: formulation)
+|\ \
+| |/
+|/|
+| * 4fcbbf7 (feature/readme-securite) doc: preciser que le jeton CSRF couvre aussi les DELETE
+|/
+*   0f68f75 merge: tp10 dossier et soutenance (revue: liste de controle)
+|\
+| * a4da1c5 (feature/tp10-livraison) tp10: dossier de livraison, demonstration et soutenance
+|/
+*   d57eee5 merge: tp5 kanban (revue: cartes et definition de fini)
+|\
+| * 6e92c02 (feature/tp5-kanban) tp5: tableau kanban de huit cartes
+|/
+*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump rechargé)
+|\
+| * 1f53e71 (feature/tp9-exploitation) tp9: installation, sauvegarde et restauration
+|/
+*   cca22bf merge: tp8 tests et securite (revue: matrice, revue de code)
+|\
+| * 8855463 (feature/tp8-tests) tp8: audit de securite et revue de code
+|/
+*   6b467b7 merge: tp7 interface web (revue: parcours, accessibilite)
+|\
+| * 9315514 (feature/tp7-interface) tp7: interface web des deux roles
+|/
+*   3ad26a2 merge: tp6 API des demandes (revue: SQL prepare, transactions)
+|\
+| * b7d1526 (feature/tp6-api) tp6: API des demandes et transitions de statut
+|/
+*   3ac760c merge: tp4 socle technique (revue: arborescence, contrat, ADR)
+|\
+| * 01aaacd (feature/tp4-socle) tp4: socle technique, configuration et contrat d'API
+|/
+* a6e8e7d tp3: modele, jeu d'essai et preuves de contraintes
+* 7d5eee7 (origin/main) Refactor TP3 : modèle et jeu d'essai originaux
+* 8652839 Feat TP3 : UML et schéma SQL
+* 8d709cf Clean PDF metadata
+* 2ddc9e2 Add TP2 : exigences et matrice de traçabilité
+* db55314 Add TP1 : fiche de cadrage</pre>
+<p class="note">Le graphe complet, <code>git shortlog -sn --all</code> et la liste des
+branches sont dans <code>tp5/preuves/historique.txt</code>. Les commits de preuves
+(post&eacute;rieurs &agrave; la capture) apparaissent au-dessus dans le d&eacute;p&ocirc;t.</p>
+
+<h2>5. Contribution et explication orale</h2>
+<table>
+  <tr><th width="10%">Membre</th><th width="30%">Branches</th><th>Commit expliqu&eacute; &agrave; l'oral</th></tr>
+  <tr>
+    <td class="c id">M1</td>
+    <td><code>feature/tp4-socle</code><br><code>feature/tp9-exploitation</code></td>
+    <td><strong>tp9: installation, sauvegarde et restauration</strong> &mdash; pourquoi un dump sans <code>--databases</code> (rechargeable dans <code>stages_test</code>), pourquoi <code>--single-transaction</code>, et pourquoi l'empreinte SHA-256 sert de contr&ocirc;le d'int&eacute;grit&eacute; avant restauration.</td>
+  </tr>
+  <tr>
+    <td class="c id">M2</td>
+    <td><code>feature/tp6-api</code><br><code>feature/tp10-livraison</code></td>
+    <td><strong>tp6: API des demandes</strong> &mdash; la table des transitions, le verrou <code>FOR UPDATE</code> dans la transaction et la raison pour laquelle la transition interdite renvoie 409 et non 400.</td>
+  </tr>
+  <tr>
+    <td class="c id">M3</td>
+    <td><code>feature/tp7-interface</code><br><code>feature/tp8-tests</code></td>
+    <td><strong>tp7: interface web</strong> &mdash; le choix de <code>textContent</code> plut&ocirc;t que <code>innerHTML</code>, et la mani&egrave;re dont le test XSS stock&eacute; le prouve (z&eacute;ro balise cr&eacute;&eacute;e).</td>
+  </tr>
+</table>
+<p class="note">Les libell&eacute;s M1 &agrave; M3 sont remplac&eacute;s par les pr&eacute;noms de
+l'&eacute;quipe dans la version remise. L'historique Git fait foi : chaque branche porte un
+seul commit, attribu&eacute; &agrave; son auteur.</p>
+
+<h2>6. Ce que l'&eacute;quipe retient</h2>
+<ul>
+  <li><strong>Branches courtes.</strong> Une branche qui vit plus d'une s&eacute;ance accumule
+  les conflits ; ici chaque branche porte un commit et meurt le jour m&ecirc;me.</li>
+  <li><strong>Le conflit se r&eacute;sout en lisant les deux versions.</strong> Fusionner en
+  gardant un seul c&ocirc;t&eacute; aurait perdu une information documentaire correcte.</li>
+  <li><strong>Une fusion se teste.</strong> Le conflit portait sur de la documentation et
+  n'a rien cass&eacute; &mdash; v&eacute;rifi&eacute; plut&ocirc;t que suppos&eacute;.</li>
+  <li><strong>Le graphe sert de preuve.</strong> <code>--no-ff</code> rend chaque revue
+  visible : c'est ce que le jury peut contr&ocirc;ler.</li>
+</ul>
+
+<footer>
+  TP5 &mdash; Git et organisation &middot; sources : <code>docs/kanban.md</code>,
+  historique Git du d&eacute;p&ocirc;t &middot; preuves : <code>tp5/preuves/</code>
+  (<code>historique.txt</code>, <code>conflit.txt</code>, <code>tests-apres-fusion.txt</code>).
+</footer>
+
+</body>
+</html>

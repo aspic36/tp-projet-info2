@@ -1,0 +1,10 @@
+﻿+---------------+-----------+
+| table_name    | nb_lignes |
++---------------+-----------+
+| etudiant      |         3 |
+| entreprise    |         2 |
+| demande_stage |         4 |
+| soutenance    |         1 |
+| historique    |         5 |
+| utilisateur   |         8 |
++---------------+-----------+

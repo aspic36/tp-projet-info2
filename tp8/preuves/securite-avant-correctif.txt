@@ -1,0 +1,21 @@
+﻿Audit de s├®curit├® ÔÇö base http://127.0.0.1:8000
+================================================================================================
+S-01  connexion des deux ├®tudiants                        OK
+S-02  ├®tudiant B lit le dossier #1 de l'├®tudiant A       attendu 403 | obtenu 403 | OK
+S-03  la r├®ponse 403 ne contient aucune donn├®e du dossier OK
+S-04  ├®tudiant affecte un encadreur                       attendu 403 | obtenu 403 | OK
+S-05  ├®tudiant lit la liste des comptes                   attendu 403 | obtenu 403 | OK
+S-06  identifiant ┬½ 1 OR 1=1 ┬╗                           attendu 404 | obtenu 404 | OK
+S-07  recherche ┬½ ' OR 1=1 -- ┬╗                          attendu 200 | obtenu 500 | ECHEC
+S-08  aucune ligne retourn├®e par la cha├«ne inject├®e     ECHEC
+S-09  connexion avec ┬½ admin' OR 1=1 -- ┬╗                attendu 401 | obtenu 401 | OK
+S-10  tous les mots de passe sont hach├®s en bcrypt        OK
+S-11  aucun mot de passe stock├® en clair                  OK
+S-12  password_verify accepte le mot de passe de d├®monstration OK
+S-13  ├®criture sans jeton CSRF                            attendu 403 | obtenu 403 | OK
+S-14  ├®criture avec un faux jeton CSRF                    attendu 403 | obtenu 403 | OK
+S-15  ├®criture avec le jeton valide (cr├®ation brouillon) attendu 201 | obtenu 201 | OK
+S-16  statut inconnu                                       attendu 400 | obtenu 400 | OK
+S-17  aucun d├®tail SQL/PDO dans la r├®ponse               OK
+================================================================================================
+R├®sultat : 2 ├®chec(s).

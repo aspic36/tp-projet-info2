@@ -193,7 +193,8 @@ tp1/ … tp10/            livrables du cours et preuves
 - Mots de passe hachés avec `password_hash()` (bcrypt, coût 12) et vérifiés par
   `password_verify()`.
 - `session_regenerate_id(true)` après connexion ; cookie `HttpOnly`, `SameSite=Lax`.
-- Jeton CSRF aléatoire de 32 octets, comparé avec `hash_equals()` sur toute écriture.
+- Jeton CSRF aléatoire de 32 octets, comparé avec `hash_equals()` sur toute écriture,
+  y compris les `DELETE`.
 - Requêtes préparées PDO : aucune concaténation de valeur dans le SQL.
 - Autorisations vérifiées côté serveur à chaque lecture et écriture, jamais seulement
   dans l'interface.

@@ -1,5 +1,9 @@
 @startuml
-' Palette et disposition propres au projet — pas de copie d'un autre rendu
+' Diagramme de cas d'utilisation — reconstruit à l'identique du modèle tracé en classe
+' Système : « Application de gestion de stage »
+' Acteurs : Étudiant (haut gauche), Responsable (milieu gauche), Administrateur (bas
+' gauche, généralisation vers Responsable), Développeur (droite).
+' Se connecter est le cas transversal, inclus par les autres.
 skinparam backgroundColor #FBFAF7
 skinparam shadowing false
 skinparam defaultFontName "DejaVu Sans"
@@ -12,36 +16,49 @@ skinparam usecase {
   BorderColor #C96F28
   BackgroundColor #FFF4E6
 }
-top to bottom direction
+skinparam rectangle {
+  BorderColor #38506B
+  BackgroundColor #FFFFFF
+}
+left to right direction
 
 actor "Étudiant" as Etu
-actor "Secrétariat" as Sec
 actor "Responsable" as Resp
-actor "Encadreur" as Enc
-actor "Administration" as Admin
+actor "Administrateur" as Admin
+actor "Développeur" as Dev
 
-rectangle "Portail des stages" {
-  usecase "Créer mon dossier" as UC1
-  usecase "Déposer les pièces" as UC2
-  usecase "Consulter l'avancement" as UC3
-  usecase "Vérifier la conformité" as UC4
-  usecase "Décider : valider ou refuser" as UC5
-  usecase "Désigner un encadreur" as UC6
-  usecase "Planifier la soutenance" as UC7
-  usecase "Gérer les comptes" as UC8
+rectangle "Application de gestion de stage" {
+  usecase "Se connecter" as UCConnexion
+  usecase "Gérer son compte" as UCGererCompte
+  usecase "Soumettre une demande" as UCSoumettre
+  usecase "Consulter une demande" as UCConsulter
+  usecase "Gérer une demande" as UCGererDemande
+  usecase "Confirmer une demande" as UCConfirmer
+  usecase "Refuser une demande" as UCRefuser
+  usecase "Programmer une soutenance" as UCProgrammer
+  usecase "Gérer les comptes" as UCGererComptes
 }
 
-Etu --> UC1
-Etu --> UC2
-Etu --> UC3
-Sec --> UC4
-Sec --> UC2 : relance
-Resp --> UC5
-Resp --> UC6
-Resp --> UC7
-Enc --> UC4 : avis
-Enc --> UC7 : participation
-Admin --> UC8
-UC1 ..> UC2 : <<include>>
-UC5 ..> UC6 : <<include>>
+' --- associations acteur / cas d'utilisation (lignes pleines) ---
+Etu -- UCGererCompte
+Resp -- UCGererDemande
+Resp -- UCProgrammer
+Admin -- UCGererComptes
+UCConnexion -right- Dev
+
+' --- généralisation : l'administrateur est un responsable avec des droits étendus ---
+Resp <|-- Admin
+
+' --- ramification des deux cas principaux ---
+UCGererCompte <|-- UCSoumettre
+UCGererCompte <|-- UCConsulter
+UCGererDemande <|-- UCConfirmer
+UCGererDemande <|-- UCRefuser
+
+' --- inclusion : l'authentification est obligatoire dans chaque parcours ---
+UCGererCompte ..> UCConnexion : <<include>>
+UCGererDemande ..> UCConnexion : <<include>>
+UCProgrammer ..> UCConnexion : <<include>>
+UCGererComptes ..> UCConnexion : <<include>>
+
 @enduml

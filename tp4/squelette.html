@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP4 - Squelette technique et contrat d'API</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  body {
+    font-family: "Liberation Sans", Arial, sans-serif;
+    font-size: 9.2pt;
+    line-height: 1.3;
+    color: #1a1a1a;
+    margin: 0;
+  }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 7px; }
+  .kicker { font-size: 7.6pt; letter-spacing: 0.5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.4pt; color: #444; }
+  h2 {
+    font-size: 9.8pt; color: #0b5d8a; margin: 9px 0 3px;
+    border-left: 3pt solid #0b5d8a; padding-left: 5px;
+  }
+  h3 { font-size: 9pt; margin: 6px 0 2px; color: #0b3c5d; }
+  p { margin: 2px 0; text-align: justify; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: 0.6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 8.2pt; }
+  th { background-color: #e6eef4; color: #0b3c5d; text-align: left; font-weight: bold; }
+  td.c, th.c { text-align: center; }
+  .id { white-space: nowrap; font-weight: bold; color: #0b3c5d; }
+  code, pre { font-family: "Consolas", "Liberation Mono", monospace; }
+  pre {
+    background: #f4f7fa; border: 0.6pt solid #cbd8e3; border-radius: 3px;
+    padding: 5px 7px; margin: 3px 0; font-size: 7.5pt; line-height: 1.32;
+    white-space: pre-wrap; page-break-inside: avoid;
+  }
+  .arbre { font-size: 7.8pt; line-height: 1.28; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; margin-top: 2px; }
+  .preuve { font-size: 7.9pt; color: #0b5c40; }
+  .deux-colonnes { display: flex; gap: 10px; }
+  .deux-colonnes > div { flex: 1; }
+  .ok { color: #0a5c40; font-weight: bold; }
+  .ko { color: #8c1d18; font-weight: bold; }
+  footer { margin-top: 7px; border-top: 0.6pt solid #9fb4c4; padding-top: 3px; font-size: 7.2pt; color: #666; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP4</div>
+  <h1>Squelette technique et contrat d'API &mdash; Gestion des stages</h1>
+  <div class="sub">
+    D&eacute;p&ocirc;t : <strong>github.com/aspic36/tp-projet-info2</strong> &nbsp;&middot;&nbsp;
+    PHP 8.3.33 &middot; MySQL 8.4.3 &nbsp;&middot;&nbsp;
+    Date : 18 / 11 / 2026
+  </div>
+</header>
+
+<p>Le socle technique met en place l'arborescence, la configuration locale, la connexion
+PDO et le premier point d'entr&eacute;e. Aucun secret n'est versionn&eacute; et chaque couche
+a une responsabilit&eacute; unique : les contr&ocirc;leurs traduisent HTTP, les services portent
+les r&egrave;gles m&eacute;tier, les d&eacute;p&ocirc;ts contiennent le SQL.</p>
+
+<h2>1. Arborescence et s&eacute;paration des couches</h2>
+<div class="deux-colonnes">
+<div>
+<pre class="arbre">projet-stages/
+├── public/
+│   ├── index.php        front controller
+│   ├── index.html       interface
+│   ├── app.js           appels fetch
+│   └── style.css
+├── src/
+│   ├── bootstrap.php    autoload, erreurs, session
+│   ├── Kernel.php       fabrique des services
+│   ├── Controllers/     couche HTTP
+│   ├── Services/        règles métier
+│   ├── Repositories/    SQL préparé
+│   ├── Http/            Request, Response, Router,
+│   │                    Validator, ApiException
+│   ├── Database/        connexion PDO
+│   └── Support/         Env, Config, Csrf, Log
+├── config/
+│   ├── config.php
+│   └── routes.php
+├── tests/
+│   ├── bootstrap.php
+│   ├── connexion.php
+│   ├── api.php
+│   └── securite.php
+├── docs/                contrat d'API, ADR, Kanban
+├── tp1/ … tp10/         livrables et preuves
+├── .env.example
+├── .gitignore
+└── README.md</pre>
+</div>
+<div>
+<table>
+  <tr><th width="26%">Couche</th><th>Responsabilit&eacute;</th></tr>
+  <tr><td class="id">public/</td><td>Point d'entr&eacute;e unique ; aucun traitement m&eacute;tier.</td></tr>
+  <tr><td class="id">Http/</td><td>Lire la requ&ecirc;te, router, valider le format, produire la r&eacute;ponse et le code HTTP.</td></tr>
+  <tr><td class="id">Controllers/</td><td>Appeler le service ad&eacute;quat ; aucune requ&ecirc;te SQL.</td></tr>
+  <tr><td class="id">Services/</td><td>Transitions de statut, autorisations, transactions, r&egrave;gles de date.</td></tr>
+  <tr><td class="id">Repositories/</td><td>Seule couche qui &eacute;crit du SQL ; requ&ecirc;tes pr&eacute;par&eacute;es uniquement.</td></tr>
+  <tr><td class="id">Support/</td><td>Configuration, CSRF, journalisation.</td></tr>
+</table>
+<p class="note">L'autoload PSR-4 est enregistr&eacute; dans <code>src/bootstrap.php</code> :
+<code>App\Services\DemandeService</code> &rarr; <code>src/Services/DemandeService.php</code>.
+Aucune d&eacute;pendance Composer n'est n&eacute;cessaire.</p>
+</div>
+</div>
+
+<h2>2. Configuration et secrets</h2>
+<div class="deux-colonnes">
+<div>
+<h3><code>.env.example</code> (versionn&eacute;, valeurs factices)</h3>
+<pre>APP_ENV=dev
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=stages
+DB_USER=stages_app
+DB_PASS=changez-moi
+DB_CHARSET=utf8mb4</pre>
+</div>
+<div>
+<h3><code>.gitignore</code> (extrait)</h3>
+<pre># Secrets et configuration locale
+.env
+.env.*
+!.env.example
+
+# Journaux et sauvegardes
+logs/
+*.log
+sauvegardes/</pre>
+</div>
+</div>
+<p>Le fichier <code>.env</code> local contient le mot de passe du compte applicatif
+<code>stages_app</code> ; il n'est jamais ajout&eacute; &agrave; l'index Git. Preuve :</p>
+<pre>$ git check-ignore -v .env
+.gitignore:2:.env	.env</pre>
+<p class="preuve">Sortie compl&egrave;te : <code>tp4/preuves/git-ignore-env.txt</code></p>
+
+<h2>3. Connexion PDO avec exceptions</h2>
+<pre>final class Database
+{
+    private static ?PDO $pdo = null;
+
+    public static function pdo(): PDO
+    {
+        if (self::$pdo instanceof PDO) {
+            return self::$pdo;
+        }
+        $db = Config::get('db');                 // valeurs issues de .env
+        $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s',
+            $db['host'], $db['port'], $db['name'], $db['charset']);
+
+        self::$pdo = new PDO($dsn, $db['user'], $db['pass'], [
+            PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   =&gt; false,
+        ]);
+        return self::$pdo;
+    }
+}</pre>
+<p>Test de connexion (<code>php tests/connexion.php</code>) :</p>
+<pre>Connexion PDO : OK
+Serveur MySQL : 8.4.3
+Base courante : stages
+Tables         : 7
+Demandes       : 5</pre>
+<p class="preuve">Code retour 0. Sortie compl&egrave;te : <code>tp4/preuves/connexion.txt</code></p>
+
+<h2 class="pagebreak">4. Contrat des trois routes</h2>
+<p>Contrat complet (champs, exemples, erreurs) : <code>docs/contrat-api.md</code>. Toutes les
+r&eacute;ponses sont en JSON ; les &eacute;critures exigent le jeton <code>X-CSRF-Token</code>.</p>
+
+<table>
+  <tr>
+    <th width="8%">M&eacute;thode</th><th width="22%">Chemin</th><th width="26%">Corps</th>
+    <th width="14%" class="c">Succ&egrave;s</th><th>Erreurs</th>
+  </tr>
+  <tr>
+    <td class="id">GET</td><td><code>/api/demandes</code></td>
+    <td>Aucun. Filtres facultatifs <code>?statut=</code> et <code>?q=</code>.</td>
+    <td class="c">200</td>
+    <td>400 statut inconnu ; 401 non connect&eacute;</td>
+  </tr>
+  <tr>
+    <td class="id">POST</td><td><code>/api/demandes</code></td>
+    <td><code>{"entrepriseId": 2, "soumettre": true}</code></td>
+    <td class="c">201</td>
+    <td>400 entreprise absente ou inconnue ; 401 ; 403 compte non &eacute;tudiant</td>
+  </tr>
+  <tr>
+    <td class="id">PATCH</td><td><code>/api/demandes/{id}/statut</code></td>
+    <td><code>{"statut": "REFUSEE", "motif": "…"}</code></td>
+    <td class="c">200</td>
+    <td>400 motif absent ; 401 ; 403 r&ocirc;le sans droit ; 404 ; 409 transition interdite</td>
+  </tr>
+</table>
+
+<h3>Exemples de r&eacute;ponses</h3>
+<div class="deux-colonnes">
+<div>
+<pre>POST /api/demandes          → 201
+{"data": {
+  "id": 5,
+  "statut": "SOUMISE",
+  "date_soumission": "2026-11-18 15:32:10",
+  "entreprise": "Sahara Data Services",
+  "etudiant_prenom": "Rachid",
+  "etudiant_nom": "KPANOU"
+}}</pre>
+</div>
+<div>
+<pre>PATCH /api/demandes/5/statut → 409
+{"message":
+ "Transition interdite : VALIDEE vers REFUSEE."}
+
+PATCH /api/demandes/5/statut → 400
+{"message": "Données invalides.",
+ "details": {"motif":
+   "Le motif de refus est obligatoire."}}</pre>
+</div>
+</div>
+
+<h2>5. Route de sant&eacute;</h2>
+<p><code>GET /api/sante</code> ex&eacute;cute <code>SELECT 1</code> : elle r&eacute;pond
+<strong>200</strong> si la base est joignable et <strong>503</strong> sinon, sans exposer de
+secret ni de d&eacute;tail technique.</p>
+<div class="deux-colonnes">
+<div>
+<pre>Base joignable
+$ curl -i http://127.0.0.1:8000/api/sante
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"status":"ok","database":"ok",
+ "php":"8.3.33",
+ "heure":"2026-11-18T15:36:10+01:00"}</pre>
+</div>
+<div>
+<pre>Base injoignable (port 3307 fermé)
+$ curl -i http://127.0.0.1:8001/api/sante
+HTTP/1.1 503 Service Unavailable
+
+{"status":"degraded",
+ "database":"unreachable",
+ "heure":"2026-11-18T15:36:14+01:00"}</pre>
+</div>
+</div>
+<p class="preuve">Sorties compl&egrave;tes : <code>tp4/preuves/sante-200.txt</code> et
+<code>tp4/preuves/sante-503.txt</code>. Le cas 503 est obtenu avec un fichier
+<code>.env</code> de test pointant vers un port MySQL ferm&eacute;, sans arr&ecirc;ter le serveur
+de d&eacute;veloppement.</p>
+
+<h2>6. ADR-001 &mdash; Monolithe modulaire PHP sans framework</h2>
+<table>
+  <tr><th width="16%">D&eacute;cision</th><td>Monolithe modulaire PHP 8, front controller unique, PDO, couches
+  <code>Controllers → Services → Repositories</code>, sans framework ni Composer.</td></tr>
+  <tr><th>Contexte</th><td>Projet universitaire de 2 h par s&eacute;ance, postes Windows sans Composer
+  garanti, installation exig&eacute;e sur un second poste &agrave; partir du seul d&eacute;p&ocirc;t.</td></tr>
+  <tr><th>Cons&eacute;quences</th><td>Installation r&eacute;duite &agrave; PHP et MySQL ; autoload, routeur et
+  validation &eacute;crits &agrave; la main (environ 400 lignes testables) ; SQL explicite en requ&ecirc;tes
+  pr&eacute;par&eacute;es ; couches rempla&ccedil;ables ind&eacute;pendamment.</td></tr>
+  <tr><th>Alternatives</th><td>Laravel (&eacute;cart&eacute; : installation lourde, hors du temps disponible) ;
+  SQLite (&eacute;cart&eacute; : le cours impose MySQL) ; micro-services (surdimensionn&eacute;).</td></tr>
+</table>
+
+<footer>
+  TP4 &mdash; Squelette technique et contrat d'API &middot; sources : <code>README.md</code>,
+  <code>docs/contrat-api.md</code>, <code>docs/ADR-001.md</code>, <code>src/</code>,
+  <code>config/</code>, <code>tests/</code> &middot; preuves : <code>tp4/preuves/</code>.
+</footer>
+
+</body>
+</html>

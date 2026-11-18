@@ -1,0 +1,2 @@
+﻿HTTP 503 (port MySQL 3307 ferme)
+{"status":"degraded","database":"unreachable","heure":"2026-11-18T15:36:14+01:00"}

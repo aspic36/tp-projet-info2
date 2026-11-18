@@ -1,0 +1,5 @@
+﻿Connexion PDO : OK
+Serveur MySQL : 8.4.3
+Base courante : stages
+Tables         : 7
+Demandes       : 5

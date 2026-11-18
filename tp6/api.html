@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP6 - API des demandes</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.2pt; line-height: 1.3; color: #1a1a1a; margin: 0; }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 7px; }
+  .kicker { font-size: 7.6pt; letter-spacing: .5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.4pt; color: #444; }
+  h2 { font-size: 9.8pt; color: #0b5d8a; margin: 9px 0 3px; border-left: 3pt solid #0b5d8a; padding-left: 5px; }
+  h3 { font-size: 9pt; margin: 6px 0 2px; color: #0b3c5d; }
+  p { margin: 2px 0; text-align: justify; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: .6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 8.1pt; }
+  th { background: #e6eef4; color: #0b3c5d; text-align: left; }
+  td.c, th.c { text-align: center; }
+  .id { white-space: nowrap; font-weight: bold; color: #0b3c5d; }
+  code, pre { font-family: "Consolas", "Liberation Mono", monospace; }
+  pre { background: #f4f7fa; border: .6pt solid #cbd8e3; padding: 5px 7px; margin: 3px 0; font-size: 7.4pt; line-height: 1.3; white-space: pre-wrap; page-break-inside: avoid; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; }
+  .ok { color: #0a5c40; font-weight: bold; }
+  .ko { color: #8c1d18; font-weight: bold; }
+  .deux-colonnes { display: flex; gap: 10px; }
+  .deux-colonnes > div { flex: 1; }
+  footer { margin-top: 7px; border-top: .6pt solid #9fb4c4; padding-top: 3px; font-size: 7.2pt; color: #666; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP6</div>
+  <h1>API des demandes &mdash; cr&eacute;ation, lecture, validation</h1>
+  <div class="sub">PHP 8.3.33 &middot; MySQL 8.4.3 &middot; <code>php -S 127.0.0.1:8000 -t public public/index.php</code> &middot; 18 / 11 / 2026</div>
+</header>
+
+<h2>1. D&eacute;p&ocirc;t de donn&eacute;es et requ&ecirc;tes pr&eacute;par&eacute;es</h2>
+<p><code>DemandeRepository</code> expose des op&eacute;rations nomm&eacute;es ; aucun contr&ocirc;leur
+n'&eacute;crit de SQL. Toutes les valeurs passent par des param&egrave;tres li&eacute;s.</p>
+<table>
+  <tr><th width="30%">M&eacute;thode</th><th>R&ocirc;le</th></tr>
+  <tr><td class="id">findById(int $id)</td><td>Lit une demande avec les jointures &eacute;tudiant, entreprise et encadreur.</td></tr>
+  <tr><td class="id">findByIdForUpdate(int $id)</td><td>M&ecirc;me lecture avec <code>FOR UPDATE</code> : verrou pessimiste pendant la transaction.</td></tr>
+  <tr><td class="id">search(array $scope, ?string $statut, ?string $q)</td><td>Filtre par p&eacute;rim&egrave;tre de r&ocirc;le, statut et recherche textuelle.</td></tr>
+  <tr><td class="id">create(...)</td><td>Ins&egrave;re une demande au statut <code>BROUILLON</code> ou <code>SOUMISE</code>.</td></tr>
+  <tr><td class="id">updateStatut(...)</td><td>Met &agrave; jour statut, motif et dates de soumission/d&eacute;cision.</td></tr>
+  <tr><td class="id">affecterEncadreur(int $id, int $encadreurId)</td><td>Renseigne l'encadreur d'une demande valid&eacute;e.</td></tr>
+</table>
+
+<pre>public function findById(int $id): ?array
+{
+    $stmt = $this-&gt;pdo-&gt;prepare(self::SELECT_BASE . ' WHERE d.id = :id');
+    $stmt-&gt;execute([':id' =&gt; $id]);
+    $row = $stmt-&gt;fetch();
+    return $row === false ? null : $this-&gt;normaliser($row);
+}</pre>
+
+<h2>2. Table des transitions et refus 409</h2>
+<div class="deux-colonnes">
+<div>
+<pre>public const TRANSITIONS = [
+    'BROUILLON' =&gt; ['SOUMISE'],
+    'SOUMISE'   =&gt; ['VALIDEE', 'REFUSEE'],
+    'REFUSEE'   =&gt; ['BROUILLON'],
+    'VALIDEE'   =&gt; [],
+];
+
+public static function peutPasser(string $de, string $vers): bool
+{
+    return in_array($vers, self::TRANSITIONS[$de] ?? [], true);
+}</pre>
+</div>
+<div>
+<p>Le service v&eacute;rifie aussi <strong>qui</strong> peut effectuer la transition :</p>
+<table>
+  <tr><td class="id">SOUMISE</td><td>&eacute;tudiant propri&eacute;taire uniquement</td></tr>
+  <tr><td class="id">BROUILLON</td><td>&eacute;tudiant propri&eacute;taire (correction apr&egrave;s refus)</td></tr>
+  <tr><td class="id">VALIDEE<br>REFUSEE</td><td>responsable p&eacute;dagogique uniquement</td></tr>
+</table>
+<p class="note">Une cible inconnue renvoie 400 ; une transition non list&eacute;e renvoie 409 sans
+aucune &eacute;criture.</p>
+</div>
+</div>
+
+<h2>3. Connexion et session</h2>
+<pre>if (!password_verify($password, $row['mot_de_passe'])) {
+    // message identique &agrave; celui d'un compte inconnu
+    throw new ApiException(401, 'Identifiants incorrects.');
+}
+session_regenerate_id(true);            // emp&ecirc;che la fixation de session
+$_SESSION['user_id'] = (int) $row['id'];</pre>
+<p>Les mots de passe sont stock&eacute;s en bcrypt (<code>password_hash</code>, co&ucirc;t 12) ; le
+message d'&eacute;chec ne distingue pas un compte inconnu d'un mot de passe faux. Le cookie de
+session est <code>HttpOnly</code> et <code>SameSite=Lax</code>.</p>
+
+<h2>4. Transaction de validation</h2>
+<pre>$pdo-&gt;beginTransaction();
+try {
+    $courante = $demandes-&gt;findByIdForUpdate($id);        // 1. verrou + statut courant
+    if (!peutPasser($courante['statut'], $cible)) {        // 2. contr&ocirc;le de transition
+        throw new ApiException(409, 'Transition interdite…');
+    }
+    $demandes-&gt;updateStatut(...);                          // 3. UPDATE demande_stage
+    $historique-&gt;add($id, $courante['statut'], $cible, $user['id'], $motif); // 4. INSERT
+    $pdo-&gt;commit();
+} catch (Throwable $e) {
+    $pdo-&gt;rollBack();                                      // aucun &eacute;tat partiel
+    throw $e;
+}</pre>
+<p>Si l'insertion d'historique &eacute;choue, le <code>rollBack()</code> annule aussi la mise &agrave;
+jour du statut : la base reste dans son &eacute;tat ant&eacute;rieur.</p>
+
+<h2 class="pagebreak">5. Six cas test&eacute;s avec sorties</h2>
+<p>Script reproductible : <code>php tests/api.php</code> (serveur d&eacute;marr&eacute;). Sortie r&eacute;elle
+du 18/11/2026 :</p>
+<pre>Scénario API — base http://127.0.0.1:8000
+================================================================================================
+T-00 GET /api/sante                            attendu 200 | obtenu 200 | OK
+T-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
+T-02 POST /api/session (étudiant)              attendu 200 | obtenu 200 | OK
+T-03 POST /api/demandes                        attendu 201 | obtenu 201 | OK
+T-04 GET /api/demandes                         attendu 200 | obtenu 200 | OK
+T-05 PATCH statut par l’étudiant               attendu 403 | obtenu 403 | OK
+T-06 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
+T-07 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
+T-08 SOUMISE→VALIDEE par le responsable        attendu 200 | obtenu 200 | OK
+T-09 VALIDEE→REFUSEE interdite                 attendu 409 | obtenu 409 | OK
+T-10 PATCH sans jeton CSRF                     attendu 403 | obtenu 403 | OK
+T-11 GET historique                            attendu 200 | obtenu 200 | OK
+T-12 soutenance le 2026-02-30                  attendu 400 | obtenu 400 | OK
+T-13 soutenance dans le passé                  attendu 400 | obtenu 400 | OK
+T-14 POST /api/soutenances                     attendu 201 | obtenu 201 | OK
+T-15 deuxième soutenance (doublon)            attendu 409 | obtenu 409 | OK
+================================================================================================
+Demande créée pour le test : #7
+Événements d'historique : —→SOUMISE, SOUMISE→VALIDEE
+Résultat : 0 échec(s) sur 16 cas.</pre>
+<p class="note">Sortie compl&egrave;te : <code>tp6/preuves/api.txt</code>. Les cas 400, 401, 403,
+404 et 409 sont tous couverts ; le cas 201 est le succ&egrave;s de cr&eacute;ation.</p>
+
+<h2>6. Codes HTTP et messages</h2>
+<table>
+  <tr><th width="8%">Code</th><th width="34%">Cas d&eacute;clencheur</th><th>Message renvoy&eacute;</th></tr>
+  <tr><td class="c">201</td><td>Cr&eacute;ation d'une demande valide</td><td><code>{"data": {…}}</code> avec statut et dates</td></tr>
+  <tr><td class="c">400</td><td>Refus sans motif, statut inconnu, entreprise absente</td><td><code>{"message":"Données invalides.","details":{…}}</code></td></tr>
+  <tr><td class="c">401</td><td>Session absente ou expir&eacute;e, identifiants faux</td><td><code>{"message":"Authentification requise."}</code></td></tr>
+  <tr><td class="c">403</td><td>&Eacute;tudiant qui valide, dossier d'un autre &eacute;tudiant, CSRF absent</td><td><code>{"message":"Rôle insuffisant pour cette action."}</code></td></tr>
+  <tr><td class="c">404</td><td>Demande 999999</td><td><code>{"message":"Demande introuvable."}</code></td></tr>
+  <tr><td class="c">409</td><td><code>VALIDEE → REFUSEE</code>, cr&eacute;neau de soutenance occup&eacute;</td><td><code>{"message":"Transition interdite : VALIDEE vers REFUSEE."}</code></td></tr>
+  <tr><td class="c">500</td><td>Base injoignable, erreur non pr&eacute;vue</td><td><code>{"message":"Erreur interne du serveur."}</code></td></tr>
+</table>
+<p>Le d&eacute;tail technique (PDO, fichier, ligne) est &eacute;crit dans <code>logs/app.log</code> et
+n'appara&icirc;t jamais dans la r&eacute;ponse HTTP ; <code>display_errors</code> est d&eacute;sactiv&eacute;.</p>
+
+<footer>
+  TP6 &mdash; API des demandes &middot; sources : <code>src/Repositories/DemandeRepository.php</code>,
+  <code>src/Services/DemandeService.php</code>, <code>src/Services/AuthService.php</code>,
+  <code>config/routes.php</code> &middot; preuve : <code>tp6/preuves/api.txt</code>.
+</footer>
+
+</body>
+</html>

@@ -1,19 +1,18 @@
-﻿mysql.exe : ERROR 3819 (HY000) at line 7: Check constraint 'chk_demande_statut' is violated.
-Au caractère Ligne:1 : 177
-+ ... sql" -Raw | & $mysql -u root --default-character-set=utf8mb4 --force  ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (ERROR 3819 (HY0...t' is violated.:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
+TP3 - Preuves que la base refuse les etats incoherents
+Date : 18/11/2026 - MySQL 8.4.3 - base stages
+Commande : mysql -u root -t --force --default-character-set=utf8mb4 stages < tp3/004_contraintes.sql
+Cinq insertions volontairement invalides : les cinq doivent echouer.
+
+ERROR 3819 (HY000) at line 7: Check constraint 'chk_demande_statut' is violated.
 ERROR 3819 (HY000) at line 11: Check constraint 'chk_demande_motif' is violated.
 ERROR 1062 (23000) at line 15: Duplicate entry '2' for key 'soutenance.uq_soutenance_demande'
 ERROR 1062 (23000) at line 20: Duplicate entry 'B12-2026-12-10 09:00:00' for key 'soutenance.uq_soutenance_creneau'
-ERROR 1452 (23000) at line 24: Cannot add or update a child row: a foreign key constraint fails 
-(`stages`.`demande_stage`, CONSTRAINT `fk_demande_entreprise` FOREIGN KEY (`entreprise_id`) REFERENCES `entreprise` 
-(`id`))
+ERROR 1452 (23000) at line 24: Cannot add or update a child row: a foreign key constraint fails (`stages`.`demande_stage`, CONSTRAINT `fk_demande_entreprise` FOREIGN KEY (`entreprise_id`) REFERENCES `entreprise` (`id`))
 +---------------+-----------+
 | table_name    | nb_lignes |
 +---------------+-----------+
 | demande_stage |         4 |
 | soutenance    |         1 |
 +---------------+-----------+
+Lecture : chaque ligne ERROR est le resultat attendu. Les comptages finaux (4 demandes,
+1 soutenance) prouvent qu'aucune ligne n'a ete ajoutee.

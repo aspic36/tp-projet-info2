@@ -9,23 +9,25 @@
   body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 9.5pt; line-height: 1.35; color: #1d2733; }
   h1 { font-size: 18pt; margin: 0 0 2mm 0; color: #243b53; }
   h2 { font-size: 11.5pt; margin: 4mm 0 1.5mm 0; padding-bottom: 1mm; border-bottom: 2px solid #c96f28; color: #243b53; }
-  h3 { font-size: 10.5pt; margin: 4mm 0 1.5mm 0; color: #38506b; }
+  h3 { font-size: 10.5pt; margin: 3mm 0 1.5mm 0; color: #38506b; }
   p { margin: 1.5mm 0; text-align: justify; }
   ul, ol { margin: 1.5mm 0 1.5mm 5mm; padding: 0; }
   li { margin: 0.8mm 0; }
   .sub { color: #5b6b7b; font-size: 9pt; margin-bottom: 4mm; }
   .fill { border-bottom: 1px solid #98a6b4; padding: 0 2mm; }
   .fig { text-align: center; margin: 3mm 0 2mm 0; }
-  .fig img { display: block; margin: 0 auto; }
+  .fig img { display: block; margin: 0 auto; max-width: 100%; }
   .legend { font-size: 8.5pt; color: #5b6b7b; text-align: center; margin-top: 1mm; }
-  table { width: 100%; border-collapse: collapse; margin: 2mm 0; font-size: 8.5pt; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0; font-size: 8.3pt; }
   th, td { border: 1px solid #c8d2dc; padding: 1mm 1.5mm; vertical-align: top; text-align: left; }
   th { background: #eef3f8; color: #243b53; font-weight: bold; }
-  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.5pt; background: #f4f6f8; padding: 0 1mm; }
-  pre { background: #f7f8fa; border: 1px solid #d6dde4; padding: 2mm; font-size: 6.2pt; line-height: 1.1; white-space: pre; overflow: hidden; margin: 1.5mm 0; }
-  .box { background: #fff7ed; border-left: 4px solid #c96f28; padding: 2mm 3mm; margin: 3mm 0; font-size: 9pt; }
+  td.c { text-align: center; }
+  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.3pt; background: #f4f6f8; padding: 0 1mm; }
+  pre { background: #f7f8fa; border: 1px solid #d6dde4; padding: 2mm; font-size: 6.6pt; line-height: 1.15; white-space: pre; overflow: hidden; margin: 1.5mm 0; }
+  .box { background: #fff7ed; border-left: 4px solid #c96f28; padding: 2mm 3mm; margin: 3mm 0; font-size: 8.8pt; }
   .pb { break-before: page; }
-  .small { font-size: 8.5pt; color: #5b6b7b; }
+  .small { font-size: 8.4pt; color: #5b6b7b; }
+  .mono { font-family: "DejaVu Sans Mono", monospace; font-size: 7.8pt; }
 </style>
 </head>
 <body>
@@ -36,155 +38,176 @@
   Groupe : <span class="fill">n° ____</span> &nbsp; Membres : <span class="fill">nom, nom, nom (, nom)</span> &nbsp; Date : <span class="fill">__ / __ / 2026</span></div>
 </header>
 
-<h2>1. Périmètre et acteurs retenus</h2>
+<h2>1. Système et acteurs</h2>
 <p>
-Le service scolaire suit un dossier de stage depuis son dépôt jusqu'à la soutenance. Cinq profils interviennent
-dans le portail : l'étudiant alimente son dossier, le secrétariat vérifie les pièces, le responsable décide et
-planifie, l'encadreur donne un avis et accompagne la soutenance, enfin l'administration gère les comptes.
+Le système modélisé s'appelle <strong>« Application de gestion de stage »</strong>. Il couvre le parcours
+d'un dossier, du dépôt par l'étudiant jusqu'à la soutenance. Le diagramme de cas d'utilisation retient
+quatre acteurs, conformément au modèle tracé en classe.
 </p>
 <ul>
-  <li><strong>Étudiant</strong> : crée un dossier, joint les pièces, consulte l'avancement.</li>
-  <li><strong>Secrétariat</strong> : contrôle la conformité et demande une régularisation.</li>
-  <li><strong>Responsable</strong> : valide ou refuse, désigne l'encadreur, fixe le créneau.</li>
-  <li><strong>Encadreur</strong> : rend un avis et participe à la soutenance.</li>
-  <li><strong>Administration</strong> : crée, désactive et met à jour les comptes.</li>
+  <li><strong>Étudiant</strong> : gère son compte, soumet et consulte ses demandes.</li>
+  <li><strong>Responsable</strong> : instruit les demandes (confirmer ou refuser) et programme les soutenances.</li>
+  <li><strong>Administrateur</strong> : gère les comptes ; il est une spécialisation du responsable, dont il
+  reprend les cas d'utilisation et auxquels s'ajoute la gestion des comptes.</li>
+  <li><strong>Développeur</strong> : intervient sur l'accès technique au système ; il passe par
+  l'authentification comme les autres acteurs.</li>
 </ul>
 
 <h2>2. Diagramme des cas d'utilisation</h2>
 <p>
-Le regroupement « Portail des stages » contient huit services. Deux relations <code>&lt;&lt;include&gt;&gt;</code>
-expriment qu'un dossier créé doit recevoir ses pièces, et qu'une décision positive entraîne la désignation
-d'un encadreur. Le secrétariat peut relancer l'étudiant sans changer le statut du dossier.
+Le rectangle délimite l'application. Le cas <strong>« Se connecter »</strong> est transversal : les quatre
+cas principaux le <code>&lt;&lt;include&gt;&gt;</code>, ce qui traduit l'obligation de s'authentifier avant
+toute opération. Les cas <strong>« Gérer son compte »</strong> et <strong>« Gérer une demande »</strong> se
+ramifient en deux cas spécialisés : soumettre ou consulter pour l'étudiant, confirmer ou refuser pour le
+responsable.
 </p>
 <div class="fig">
-  <img src="cas_usage.png" width="430" height="107" alt="Diagramme des cas d'utilisation">
-  <div class="legend">Figure 1 — Cas d'utilisation du portail des stages</div>
+  <img src="cas_usage.png" width="640" height="373" alt="Diagramme des cas d'utilisation">
+  <div class="legend">Figure 1 — Cas d'utilisation de l'application de gestion de stage</div>
 </div>
-
-<h2>3. Diagramme de classes et multiplicités</h2>
-<p>
-Huit classes structurent le modèle. Un compte donne lieu à une fiche étudiant ou encadreur au plus ; un étudiant
-dépose plusieurs demandes, une entreprise en accueille plusieurs, et un encadreur en suit plusieurs. Une demande
-contient au plus deux pièces, porte un journal de transitions et aboutit à une seule soutenance.
-</p>
-<div class="fig">
-  <img src="classes.png" width="330" height="360" alt="Diagramme de classes">
-  <div class="legend">Figure 2 — Classes du domaine et cardinalités</div>
-</div>
-<div class="box">
-  <strong>Choix de modélisation.</strong> La classe <code>Soutenance</code> est conservée car l'EF-07 du TP2
-  porte sur les conflits de créneaux. <code>PieceJointe</code> matérialise la limite de 5 Mo (ENF-02) et
-  <code>Historique</code> garde une trace des décisions. En revanche, la règle « encadreur seulement après
-  validation » est laissée à la couche applicative : MySQL 8 refuse un <code>CHECK</code> sur une colonne
-  utilisée par une clé étrangère en <code>ON DELETE SET NULL</code>.
-</div>
-
-<h2 class="pb">4. Scénario : valider une demande</h2>
-<p>
-<strong>Objectif.</strong> Transformez un dossier déposé en dossier validé, prêt pour l'affectation d'un
-encadreur et la programmation d'une soutenance. <strong>Acteur principal :</strong> responsable des stages.
-<strong>Préconditions :</strong> le dossier est au statut <code>DEPOSEE</code> et les pièces sont contrôlées.
-</p>
 <table>
-  <tr><th>Étape</th><th>Action</th><th>Résultat ou erreur</th></tr>
-  <tr><td>1</td><td>Le responsable ouvre la file des dossiers déposés.</td><td>Liste triée par date de dépôt.</td></tr>
-  <tr><td>2</td><td>Il vérifie la convention et l'attestation.</td><td><code>E-03</code> : pièce absente → <code>INCOMPLETE</code> avec motif.</td></tr>
-  <tr><td>3</td><td>Il confirme la validation.</td><td><code>E-04</code> : date de décision manquante ; <code>E-01</code> : entreprise inconnue (FK).</td></tr>
-  <tr><td>4</td><td>Le système désigne un encadreur disponible.</td><td><code>E-07</code> : encadreur inactif → blocage.</td></tr>
-  <tr><td>5</td><td>Il réserve une salle et un créneau de 40 minutes.</td><td><code>E-08</code> : créneau déjà occupé → en proposer un autre.</td></tr>
-  <tr><td>6</td><td>Le système écrit le journal et notifie l'étudiant.</td><td>Fin : statut <code>VALIDEE</code>, soutenance créée.</td></tr>
+  <tr><th style="width:26%">Relation</th><th>Justification</th></tr>
+  <tr><td class="mono">Étudiant — Gérer son compte</td><td>Seul l'étudiant dépose et consulte ses propres demandes ; le compte porte le matricule.</td></tr>
+  <tr><td class="mono">Responsable — Gérer une demande</td><td>La décision appartient au responsable : confirmation ou refus motivé.</td></tr>
+  <tr><td class="mono">Responsable — Programmer une soutenance</td><td>La programmation suit la validation et engage la salle et le créneau.</td></tr>
+  <tr><td class="mono">Administrateur — Gérer les comptes</td><td>Création, désactivation et changement de rôle des comptes.</td></tr>
+  <tr><td class="mono">Administrateur ◁— Responsable</td><td>Généralisation : l'administrateur hérite des cas du responsable et y ajoute la gestion des comptes.</td></tr>
+  <tr><td class="mono">Gérer son compte ◁— Soumettre / Consulter</td><td>Spécialisation : les deux sous-cas précisent le cas général.</td></tr>
+  <tr><td class="mono">Gérer une demande ◁— Confirmer / Refuser</td><td>Les deux issues possibles d'une instruction, jamais simultanées.</td></tr>
+  <tr><td class="mono">Les quatre cas — Se connecter</td><td><code>&lt;&lt;include&gt;&gt;</code> : aucune opération sans authentification préalable.</td></tr>
+</table>
+
+<h2 class="pb">3. Diagramme de classes</h2>
+<p>
+Sept classes correspondent aux sept tables du schéma. Un compte (<code>utilisateur</code>) donne lieu à une
+fiche étudiant <em>ou</em> à une fiche encadreur, jamais aux deux. Un étudiant dépose plusieurs demandes,
+une entreprise en accueille plusieurs, un encadreur en suit plusieurs. Une demande porte un journal de
+transitions et aboutit au plus à une soutenance ; l'unicité est tenue par <code>UNIQUE (demande_id)</code>.
+</p>
+<div class="fig">
+  <img src="classes.png" width="620" height="476" alt="Diagramme de classes">
+  <div class="legend">Figure 2 — Classes du domaine, clés et cardinalités</div>
+</div>
+<table>
+  <tr><th style="width:34%">Association</th><th style="width:16%">Cardinalités</th><th>Traduction SQL</th></tr>
+  <tr><td>Utilisateur — Étudiant</td><td class="c">1 — 0..1</td><td><code>etudiant.utilisateur_id</code> UNIQUE + FK <code>ON DELETE CASCADE</code></td></tr>
+  <tr><td>Utilisateur — Encadreur</td><td class="c">1 — 0..1</td><td><code>encadreur.utilisateur_id</code> UNIQUE + FK <code>ON DELETE CASCADE</code></td></tr>
+  <tr><td>Utilisateur — Historique</td><td class="c">1 — 0..*</td><td><code>historique.auteur_id</code> FK (auteur de la transition)</td></tr>
+  <tr><td>Étudiant — DemandeStage</td><td class="c">1 — 0..*</td><td><code>demande_stage.etudiant_id</code> FK <code>ON DELETE CASCADE</code></td></tr>
+  <tr><td>Entreprise — DemandeStage</td><td class="c">1 — 0..*</td><td><code>demande_stage.entreprise_id</code> FK (pas de suppression en cascade)</td></tr>
+  <tr><td>Encadreur — DemandeStage</td><td class="c">0..1 — 0..*</td><td><code>demande_stage.encadreur_id</code> NULL, FK <code>ON DELETE SET NULL</code></td></tr>
+  <tr><td>DemandeStage — Historique</td><td class="c">1 — 0..*</td><td><code>historique.demande_id</code> FK <code>ON DELETE CASCADE</code></td></tr>
+  <tr><td>DemandeStage — Soutenance</td><td class="c">1 — 0..1</td><td><code>soutenance.demande_id</code> UNIQUE + FK <code>ON DELETE CASCADE</code></td></tr>
+</table>
+
+<h3>Dictionnaire des données</h3>
+<table>
+  <tr><th style="width:15%">Table</th><th style="width:52%">Colonnes</th><th>Règles portées par la base</th></tr>
+  <tr><td class="mono">utilisateur</td><td class="mono">id, email, mot_de_passe, role, prenom, nom, actif</td><td><code>email</code> UNIQUE ; <code>role</code> dans les cinq valeurs ; mot de passe haché bcrypt</td></tr>
+  <tr><td class="mono">etudiant</td><td class="mono">id, utilisateur_id, matricule, filiere, promotion</td><td><code>utilisateur_id</code> UNIQUE ; <code>matricule</code> UNIQUE</td></tr>
+  <tr><td class="mono">encadreur</td><td class="mono">id, utilisateur_id, grade, departement</td><td><code>utilisateur_id</code> UNIQUE ; un compte = une fiche</td></tr>
+  <tr><td class="mono">entreprise</td><td class="mono">id, raison_sociale, ville, email_contact</td><td><code>(raison_sociale, ville)</code> UNIQUE ; <code>email_contact</code> facultatif</td></tr>
+  <tr><td class="mono">demande_stage</td><td class="mono">id, etudiant_id, entreprise_id, encadreur_id, statut, motif_refus, date_soumission, date_decision</td><td>Quatre <code>CHECK</code> : statut énuméré, motif obligatoire si refus, dates cohérentes avec le statut</td></tr>
+  <tr><td class="mono">historique</td><td class="mono">id, demande_id, statut_avant, statut_apres, auteur_id, motif, horodatage</td><td>Statuts avant/après contrôlés ; horodatage par défaut <code>CURRENT_TIMESTAMP</code></td></tr>
+  <tr><td class="mono">soutenance</td><td class="mono">id, demande_id, date_heure, salle, duree_min</td><td><code>demande_id</code> UNIQUE ; <code>(salle, date_heure)</code> UNIQUE ; durée entre 20 et 90 min</td></tr>
 </table>
 <p class="small">
-Erreurs complémentaires : <code>E-02</code> fichier supérieur à 5 Mo au dépôt ; <code>E-05</code> refus sans motif ;
-<code>E-06</code> doublon de dossier étudiant/entreprise. Le refus suit le même chemin jusqu'à l'étape 3, puis
-écrit <code>REFUSEE</code> sans créer de soutenance.
+Deux vues complètent le schéma : <code>v_demandes_a_traiter</code> (les demandes au statut
+<code>SOUMISE</code>, pour la file du responsable) et <code>v_planning_soutenances</code> (planning avec
+étudiant, entreprise et encadreur). Les vues ne stockent rien : elles évitent de dupliquer les jointures
+dans le code.
 </p>
 
-<h2 class="pb">5. Scripts de création et de contrôle</h2>
+<h2 class="pb">4. Scénario : instruire une demande</h2>
 <p>
-Les trois scripts sont exécutés dans cet ordre sur une base vide :
-<code>001_schema.sql</code> (tables, clés et vues), <code>002_seed.sql</code> (jeu fictif),
-puis <code>003_verification.sql</code> (contrôles). MySQL 8.0.46 et utf8mb4_unicode_ci ont été utilisés.
+<strong>Objectif.</strong> Faire passer une demande de <code>SOUMISE</code> à <code>VALIDEE</code> ou à
+<code>REFUSEE</code>, puis permettre l'affectation d'un encadreur et la programmation d'une soutenance.
+<strong>Acteur principal :</strong> responsable. <strong>Précondition :</strong> la demande est au statut
+<code>SOUMISE</code> et son auteur est l'étudiant propriétaire.
 </p>
 <table>
-  <tr><th>Table</th><th>Règles vérifiées</th></tr>
-  <tr><td>utilisateur</td><td>email unique <code>uq_compte_email</code>, rôle énuméré, mot de passe haché bcrypt.</td></tr>
-  <tr><td>etudiant / encadreur</td><td>un compte = une fiche, matricule unique côté étudiant.</td></tr>
-  <tr><td>demande_stage</td><td>FK vers étudiant, entreprise et encadreur ; motif et dates exigés selon le statut.</td></tr>
-  <tr><td>piece_jointe</td><td>au plus une pièce par catégorie et par dossier, <code>chk_piece_taille</code> ≤ 5 Mo.</td></tr>
-  <tr><td>historique</td><td>statut avant/après, auteur, motif et horodatage.</td></tr>
-  <tr><td>soutenance</td><td>une par dossier, unicité salle + créneau, durée entre 20 et 90 minutes.</td></tr>
+  <tr><th style="width:6%">Étape</th><th style="width:42%">Action</th><th>Résultat ou erreur</th></tr>
+  <tr><td class="c">1</td><td>Le responsable ouvre la file des demandes à traiter.</td><td>Liste issue de <code>v_demandes_a_traiter</code>.</td></tr>
+  <tr><td class="c">2</td><td>Il choisit <em>Confirmer</em>.</td><td>Statut <code>VALIDEE</code>, <code>date_decision</code> renseignée.</td></tr>
+  <tr><td class="c">3</td><td>Il choisit <em>Refuser</em> sans saisir de motif.</td><td><code>400</code> : « Le motif de refus est obligatoire. »</td></tr>
+  <tr><td class="c">4</td><td>Il saisit un motif puis confirme le refus.</td><td>Statut <code>REFUSEE</code>, motif conservé ; l'étudiant peut repasser en <code>BROUILLON</code>.</td></tr>
+  <tr><td class="c">5</td><td>Il tente de décider une demande déjà <code>VALIDEE</code>.</td><td><code>409</code> : transition <code>VALIDEE → REFUSEE</code> interdite.</td></tr>
+  <tr><td class="c">6</td><td>L'administrateur affecte un encadreur à une demande validée.</td><td><code>VALIDEE</code> exigée, sinon <code>409</code>.</td></tr>
+  <tr><td class="c">7</td><td>Il programme la soutenance (salle B12, 10/12/2026 09:00, 40 min).</td><td>Ligne créée ; un créneau déjà pris renvoie <code>409</code>.</td></tr>
 </table>
-<p>Six insertions volontairement invalides ont été tentées après le chargement :</p>
+<p class="small">
+Chaque transition écrit une ligne d'<code>historique</code> (auteur, statut avant, statut après, motif,
+horodatage) dans la même transaction que le changement de statut : soit les deux sont écrits, soit aucun.
+</p>
+
+<h2>5. Contraintes en base et preuves</h2>
+<p>
+Le schéma ne se contente pas de décrire les données : il refuse les états incohérents. Cinq insertions
+volontairement invalides ont été exécutées après le chargement du jeu d'essai ; les cinq ont échoué, ce
+qui est le résultat attendu.
+</p>
 <table>
-  <tr><th>Cas</th><th>Erreur MySQL observée</th></tr>
-  <tr><td>Motif absent sur <code>INCOMPLETE</code></td><td><code>ERROR 3819 — chk_motif_requis is violated</code></td></tr>
-  <tr><td>Étudiant inexistant</td><td><code>ERROR 1452 — demande_fk_etudiant</code></td></tr>
-  <tr><td>Email déjà pris</td><td><code>ERROR 1062 — uq_compte_email</code></td></tr>
-  <tr><td>Décision sans date</td><td><code>ERROR 3819 — chk_date_decision_requise is violated</code></td></tr>
-  <tr><td>Salle et créneau déjà réservés</td><td><code>ERROR 1062 — uq_creneau_salle</code></td></tr>
-  <tr><td>Pièce de 6 Mo</td><td><code>ERROR 3819 — chk_piece_taille is violated</code></td></tr>
+  <tr><th style="width:34%">Donnée tentée</th><th style="width:30%">Contrainte violée</th><th>Erreur observée</th></tr>
+  <tr><td>Statut <code>ARCHIVEE</code></td><td><code>chk_demande_statut</code></td><td><code>ERROR 3819 — Check constraint is violated</code></td></tr>
+  <tr><td>Refus sans motif</td><td><code>chk_demande_motif</code></td><td><code>ERROR 3819 — Check constraint is violated</code></td></tr>
+  <tr><td>Deuxième soutenance pour la même demande</td><td><code>uq_soutenance_demande</code></td><td><code>ERROR 1062 — Duplicate entry '2'</code></td></tr>
+  <tr><td>Salle et créneau déjà réservés</td><td><code>uq_soutenance_creneau</code></td><td><code>ERROR 1062 — Duplicate entry 'B12-2026-12-10 09:00:00'</code></td></tr>
+  <tr><td>Entreprise inexistante (<code>id = 999</code>)</td><td><code>fk_demande_entreprise</code></td><td><code>ERROR 1452 — a foreign key constraint fails</code></td></tr>
 </table>
-<p class="small">Après ces six échecs, les comptages restent inchangés : 4 demandes, 8 comptes et 1 soutenance.</p>
+<pre>+---------------+-----------+
+| table_name    | nb_lignes |
++---------------+-----------+
+| demande_stage |         4 |
+| soutenance    |         1 |
++---------------+-----------+</pre>
+<p class="small">
+Les comptages sont identiques avant et après les tentatives : aucune ligne n'a été ajoutée. Sortie
+complète : <code>tp3/preuves/contraintes.txt</code>.
+</p>
 
 <h2 class="pb">6. Jeu d'essai et sortie réelle</h2>
 <p>
-Le jeu d'essai contient 8 comptes, 3 étudiants, 2 encadreurs, 2 entreprises, 4 demandes, 5 pièces,
-7 transitions et 1 soutenance. Les quatre demandes couvrent les statuts <code>INCOMPLETE</code>,
-<code>DEPOSEE</code>, <code>VALIDEE</code> et <code>REFUSEE</code>. La sortie ci-dessous a été obtenue
-en rejouant les trois scripts sur une base vide ; elle sert de résultat attendu.
+Le jeu d'essai contient 8 comptes, 3 étudiants, 2 encadreurs, 2 entreprises, 4 demandes, 5 événements
+d'historique et 1 soutenance. Les quatre demandes couvrent les quatre statuts du cycle de vie. La sortie
+ci-dessous a été obtenue en rejouant <code>001_schema.sql</code> puis <code>002_seed.sql</code> sur une base
+vide, suivis de <code>003_verification.sql</code>.
 </p>
-<pre>+---------------+----+
-| element       | nb |
-+---------------+----+
-| demande_stage |  4 |
-| encadreur     |  2 |
-| entreprise    |  2 |
-| etudiant      |  3 |
-| historique    |  7 |
-| piece_jointe  |  5 |
-| soutenance    |  1 |
-| utilisateur   |  8 |
-+---------------+----+
-+----------------+----+
-| statut_dossier | nb |
-+----------------+----+
-| DEPOSEE        |  1 |
-| INCOMPLETE     |  1 |
-| VALIDEE        |  1 |
-| REFUSEE        |  1 |
-+----------------+----+
-+----------------------+----+
-| indicateur           | nb |
-+----------------------+----+
-| dossiers_a_completer |  1 |
-| soutenances_prevues  |  1 |
-+----------------------+----+
-+------------+----------+-----------------------------------+---------------------+
-| dossier_id | etudiant | motif                             | date_depot          |
-+------------+----------+-----------------------------------+---------------------+
-|          1 | KPANOU   | Attestation d&#x27;assurance manquante | 2026-09-14 08:45:00 |
-+------------+----------+-----------------------------------+---------------------+
-+------------+--------------+--------------+----------+------------------+
-| demande_id | statut_avant | statut_apres | auteur   | horodatage       |
-+------------+--------------+--------------+----------+------------------+
-|          4 | BROUILLON    | DEPOSEE      | KPANOU   | 2026-08-25 16:10 |
-|          4 | DEPOSEE      | REFUSEE      | OGOUNA   | 2026-08-30 10:00 |
-|          3 | BROUILLON    | DEPOSEE      | VODOUNOU | 2026-09-02 09:15 |
-|          3 | DEPOSEE      | VALIDEE      | OGOUNA   | 2026-09-09 11:30 |
-|          1 | BROUILLON    | DEPOSEE      | KPANOU   | 2026-09-14 08:45 |
-|          1 | DEPOSEE      | INCOMPLETE   | ATCHADE  | 2026-09-16 10:05 |
-|          2 | BROUILLON    | DEPOSEE      | SODJINOU | 2026-09-28 14:20 |
-+------------+--------------+--------------+----------+------------------+
-+---------------------+-------+---------+----------+----------------------+
-| date_heure          | salle | minutes | etudiant | entreprise           |
-+---------------------+-------+---------+----------+----------------------+
-| 2026-12-10 10:30:00 | B2    |      40 | VODOUNOU | Sahara Data Services |
-+---------------------+-------+---------+----------+----------------------+</pre>
+<pre>+---------------+-----------+
+| table_name    | nb_lignes |
++---------------+-----------+
+| etudiant      |         3 |
+| entreprise    |         2 |
+| demande_stage |         4 |
+| soutenance    |         1 |
+| historique    |         5 |
+| utilisateur   |         8 |
++---------------+-----------+
++-----------+-------------+
+| statut    | nb_demandes |
++-----------+-------------+
+| BROUILLON |           1 |
+| SOUMISE   |           1 |
+| VALIDEE   |           1 |
+| REFUSEE   |           1 |
++-----------+-------------+
++------------+--------------+-----------------+-----------+----------------------+---------+---------------------+
+| demande_id | etudiant_nom | etudiant_prenom | matricule | entreprise           | ville   | date_soumission     |
++------------+--------------+-----------------+-----------+----------------------+---------+---------------------+
+|          1 | KPANOU       | Rachid          | SIL-23117 | Sahara Data Services | Cotonou | 2026-09-14 08:45:00 |
++------------+--------------+-----------------+-----------+----------------------+---------+---------------------+</pre>
 <p class="small">
-Le dossier 1 illustre le statut <code>INCOMPLETE</code> (attestation manquante), le dossier 3 la validation avec
-soutenance en salle B2 le 10 décembre 2026, et le dossier 4 le refus pour absence de lien avec le cursus.
+La vue <code>v_demandes_a_traiter</code> ne renvoie que la demande <code>SOUMISE</code> : c'est exactement
+la file que voit le responsable. Le planning (<code>v_planning_soutenances</code>) contient la soutenance de
+Clarisse SODJINOU chez Delta Logistique, salle B12, le 10 décembre 2026 à 09:00.
 </p>
+
+<div class="box">
+  <strong>Écart assumé avec le modèle de données.</strong> Le diagramme de cas d'utilisation retient quatre
+  acteurs, alors que la table <code>utilisateur</code> porte cinq rôles : <code>SECRETARIAT</code> et
+  <code>ENCADREUR</code> s'ajoutent aux trois acteurs métier. Ce ne sont pas des tables
+  supplémentaires : ce sont des comptes de la même table, avec des autorisations différentes. Le
+  découpage du diagramme reste celui qui a été tracé en classe ; le code applique le rôle stocké en base.
+</div>
 
 </body>
 </html>

@@ -1,66 +1,80 @@
 @startuml
-' Modèle de classes — entités imposées par le cours, dessin et cardinalités revisités
+' Diagramme de classes — aligné sur tp3/001_schema.sql (7 tables, 2 vues)
+' Chaque classe correspond à une table ; les attributs portent le nom exact des colonnes.
 skinparam backgroundColor #FBFAF7
 skinparam shadowing false
 skinparam defaultFontName "DejaVu Sans"
 skinparam arrowColor #C96F28
+skinparam classAttributeIconSize 0
 skinparam class {
   BorderColor #38506B
   BackgroundColor #F2F6FA
+  HeaderBackgroundColor #DCE7F1
+}
+skinparam note {
+  BorderColor #C96F28
+  BackgroundColor #FFF4E6
 }
 top to bottom direction
 
-class Utilisateur {
-  +id : int
-  +email : string
-  +mot_de_passe : string
+class Utilisateur <<table>> {
+  +id : int <<PK>>
+  +email : varchar(100) <<UNIQUE>>
+  +mot_de_passe : varchar(255)
   +role : enum
-  +prenom : string
-  +nom : string
-  +actif : bool
+  +prenom : varchar(60)
+  +nom : varchar(60)
+  +actif : tinyint(1)
 }
-class Etudiant {
-  +id : int
-  +matricule : string
-  +filiere : string
-  +promotion : string
+
+class Etudiant <<table>> {
+  +id : int <<PK>>
+  +utilisateur_id : int <<FK, UNIQUE>>
+  +matricule : varchar(20) <<UNIQUE>>
+  +filiere : varchar(60)
+  +promotion : varchar(20)
 }
-class Encadreur {
-  +id : int
-  +grade : string
-  +departement : string
+
+class Encadreur <<table>> {
+  +id : int <<PK>>
+  +utilisateur_id : int <<FK, UNIQUE>>
+  +grade : varchar(60)
+  +departement : varchar(60)
 }
-class Entreprise {
-  +id : int
-  +raison_sociale : string
-  +ville : string
-  +email_contact : string
+
+class Entreprise <<table>> {
+  +id : int <<PK>>
+  +raison_sociale : varchar(80)
+  +ville : varchar(60)
+  +email_contact : varchar(100)
 }
-class DemandeStage {
-  +id : int
-  +statut : enum
-  +motif : string
-  +date_depot : datetime
+
+class DemandeStage <<table>> {
+  +id : int <<PK>>
+  +etudiant_id : int <<FK>>
+  +entreprise_id : int <<FK>>
+  +encadreur_id : int <<FK, NULL>>
+  +statut : varchar(10)
+  +motif_refus : varchar(255)
+  +date_soumission : datetime
   +date_decision : datetime
 }
-class PieceJointe {
-  +id : int
-  +categorie : enum
-  +chemin_fichier : string
-  +octets : int
-  +controlee : bool
-}
-class Historique {
-  +id : int
-  +statut_avant : enum
-  +statut_apres : enum
-  +motif : string
+
+class Historique <<table>> {
+  +id : int <<PK>>
+  +demande_id : int <<FK>>
+  +statut_avant : varchar(10)
+  +statut_apres : varchar(10)
+  +auteur_id : int <<FK>>
+  +motif : varchar(255)
   +horodatage : datetime
 }
-class Soutenance {
-  +id : int
+
+class Soutenance <<table>> {
+  +id : int <<PK>>
+  +demande_id : int <<FK, UNIQUE>>
   +date_heure : datetime
-  +salle : string
+  +salle : varchar(40)
   +duree_min : int
 }
 
@@ -70,7 +84,36 @@ Utilisateur "1" -- "0..*" Historique : écrit >
 Etudiant "1" -- "0..*" DemandeStage : dépose >
 Entreprise "1" -- "0..*" DemandeStage : accueille >
 Encadreur "0..1" -- "0..*" DemandeStage : suit >
-DemandeStage "1" -- "0..2" PieceJointe : contient >
 DemandeStage "1" -- "0..*" Historique : journalise >
-DemandeStage "0..1" -- "0..1" Soutenance : aboutit à >
+DemandeStage "1" -- "0..1" Soutenance : aboutit à >
+
+note right of DemandeStage
+  CHECK chk_demande_statut :
+    statut IN ('BROUILLON','SOUMISE',
+               'VALIDEE','REFUSEE')
+  CHECK chk_demande_motif :
+    REFUSEE => motif_refus obligatoire
+  CHECK chk_demande_soumission :
+    hors BROUILLON => date_soumission
+end note
+
+note right of Soutenance
+  UNIQUE (demande_id) traduit la
+  cardinalité 0..1 côté demande.
+  UNIQUE (salle, date_heure)
+  interdit deux soutenances
+  sur le même créneau.
+end note
+
+note bottom of Utilisateur
+  role : ETUDIANT | SECRETARIAT | RESPONSABLE
+       | ENCADREUR | ADMIN
+end note
+
+note top of Entreprise
+  Vues de lecture (hors classes) :
+    v_demandes_a_traiter  (statut = SOUMISE)
+    v_planning_soutenances (planning complet)
+end note
+
 @enduml

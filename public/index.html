@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestion des stages — L3 SIL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <header class="entete">
+    <div class="marque">
+      <span class="logo" aria-hidden="true">GS</span>
+      <div>
+        <h1>Gestion des stages</h1>
+        <p>L3 SIL — Projet informatique 2</p>
+      </div>
+    </div>
+    <div id="zone-utilisateur" class="zone-utilisateur" hidden>
+      <span id="nom-utilisateur" class="nom-utilisateur"></span>
+      <span id="role-utilisateur" class="badge"></span>
+      <button id="btn-deconnexion" type="button" class="btn btn-discret">Se déconnecter</button>
+    </div>
+  </header>
+
+  <div id="bandeau" class="bandeau" role="alert" aria-live="assertive" hidden></div>
+
+  <main id="contenu">
+    <section id="vue-connexion" class="carte carte-connexion" aria-labelledby="titre-connexion">
+      <h2 id="titre-connexion">Connexion</h2>
+      <p class="aide">Données fictives uniquement. Chaque rôle donne accès à des actions différentes.</p>
+
+      <form id="form-connexion" novalidate>
+        <div class="champ">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" name="email" type="email" autocomplete="username" required
+                 aria-describedby="erreur-email">
+          <p class="erreur" id="erreur-email" role="alert"></p>
+        </div>
+        <div class="champ">
+          <label for="mot-de-passe">Mot de passe</label>
+          <input id="mot-de-passe" name="motDePasse" type="password" autocomplete="current-password"
+                 required aria-describedby="erreur-mot-de-passe">
+          <p class="erreur" id="erreur-mot-de-passe" role="alert"></p>
+        </div>
+        <button class="btn btn-principal" type="submit">Se connecter</button>
+      </form>
+
+      <details class="comptes-demo">
+        <summary>Comptes de démonstration (mot de passe : Stage2026!)</summary>
+        <ul>
+          <li><strong>Étudiant</strong> — rachid.kpanou@campus.test</li>
+          <li><strong>Responsable</strong> — responsable.stages@campus.test</li>
+          <li><strong>Secrétariat</strong> — accueil@campus.test</li>
+          <li><strong>Encadreur</strong> — arsene.djegba@campus.test</li>
+          <li><strong>Administrateur</strong> — administrateur@campus.test</li>
+        </ul>
+      </details>
+    </section>
+
+    <section id="vue-application" hidden aria-labelledby="titre-demandes">
+      <div class="barre-titre">
+        <div>
+          <h2 id="titre-demandes">Demandes de stage</h2>
+          <p id="resume-demandes" class="aide"></p>
+        </div>
+        <div id="filtres" class="filtres" hidden>
+          <div class="champ-champ">
+            <label for="filtre-q">Rechercher</label>
+            <input id="filtre-q" type="search" placeholder="Nom, matricule, entreprise">
+          </div>
+          <div class="champ-champ">
+            <label for="filtre-statut">Statut</label>
+            <select id="filtre-statut">
+              <option value="">Tous</option>
+              <option value="BROUILLON">Brouillon</option>
+              <option value="SOUMISE">Soumise</option>
+              <option value="VALIDEE">Validée</option>
+              <option value="REFUSEE">Refusée</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <section id="bloc-etudiant" class="carte carte-formulaire" hidden aria-labelledby="titre-depot">
+        <h2 id="titre-depot">Déposer une demande</h2>
+        <form id="form-demande" novalidate>
+          <div class="champ">
+            <label for="entreprise">Entreprise d'accueil</label>
+            <select id="entreprise" name="entrepriseId" required aria-describedby="erreur-entreprise">
+              <option value="">Choisir une entreprise…</option>
+            </select>
+            <p class="erreur" id="erreur-entreprise" role="alert"></p>
+          </div>
+          <div class="champ champ-inline">
+            <input id="soumettre" name="soumettre" type="checkbox" checked>
+            <label for="soumettre">Déposer immédiatement (sinon brouillon)</label>
+          </div>
+          <button class="btn btn-principal" type="submit">Créer la demande</button>
+        </form>
+      </section>
+
+      <section class="carte" aria-label="Liste des demandes">
+        <div class="tableau-enveloppe">
+          <table class="tableau">
+            <caption class="sr-only">Liste des demandes de stage accessibles à votre rôle</caption>
+            <thead>
+              <tr>
+                <th scope="col">Demandeur</th>
+                <th scope="col">Entreprise</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Encadreur</th>
+                <th scope="col">Déposée le</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="corps-demandes"></tbody>
+          </table>
+        </div>
+        <p id="etat-vide" class="vide" hidden>Aucune demande ne correspond à ce périmètre.</p>
+      </section>
+
+      <section id="bloc-planning" class="carte" hidden aria-labelledby="titre-planning">
+        <h2 id="titre-planning">Planning des soutenances</h2>
+        <div class="tableau-enveloppe">
+          <table class="tableau">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Salle</th>
+                <th scope="col">Étudiant</th>
+                <th scope="col">Entreprise</th>
+                <th scope="col">Durée</th>
+              </tr>
+            </thead>
+            <tbody id="corps-planning"></tbody>
+          </table>
+        </div>
+        <p id="planning-vide" class="vide" hidden>Aucune soutenance programmée.</p>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="dialogue-refus" aria-labelledby="titre-refus">
+    <form method="dialog" id="form-refus" class="dialogue-contenu" novalidate>
+      <h2 id="titre-refus">Refuser la demande</h2>
+      <p class="aide">Le motif est obligatoire et sera conservé dans l'historique.</p>
+      <div class="champ">
+        <label for="motif-refus">Motif du refus</label>
+        <textarea id="motif-refus" rows="4" maxlength="255" required aria-describedby="erreur-motif"></textarea>
+        <p class="erreur" id="erreur-motif" role="alert"></p>
+      </div>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-refus">Annuler</button>
+        <button type="submit" class="btn btn-danger">Confirmer le refus</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialogue-soutenance" aria-labelledby="titre-soutenance">
+    <form method="dialog" id="form-soutenance" class="dialogue-contenu" novalidate>
+      <h2 id="titre-soutenance">Programmer une soutenance</h2>
+      <div class="champ">
+        <label for="date-soutenance">Date et heure</label>
+        <input id="date-soutenance" type="datetime-local" required aria-describedby="erreur-date">
+        <p class="erreur" id="erreur-date" role="alert"></p>
+      </div>
+      <div class="champ">
+        <label for="salle-soutenance">Salle</label>
+        <input id="salle-soutenance" type="text" maxlength="40" required aria-describedby="erreur-salle">
+        <p class="erreur" id="erreur-salle" role="alert"></p>
+      </div>
+      <div class="champ">
+        <label for="duree-soutenance">Durée (minutes)</label>
+        <input id="duree-soutenance" type="number" min="20" max="90" step="5" value="30" required
+               aria-describedby="erreur-duree">
+        <p class="erreur" id="erreur-duree" role="alert"></p>
+      </div>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-soutenance">Annuler</button>
+        <button type="submit" class="btn btn-principal">Programmer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialogue-historique" aria-labelledby="titre-historique">
+    <div class="dialogue-contenu">
+      <h2 id="titre-historique">Historique de la demande</h2>
+      <ol id="liste-historique" class="chronologie"></ol>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-historique">Fermer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

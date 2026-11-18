@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TP7 - Interface web</title>
+<style>
+  @page { size: A4; margin: 13mm 14mm; }
+  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.1pt; line-height: 1.3; color: #1a1a1a; margin: 0; }
+  header { border-bottom: 2.5pt solid #0b5d8a; padding-bottom: 4px; margin-bottom: 7px; }
+  .kicker { font-size: 7.6pt; letter-spacing: .5px; color: #0b5d8a; text-transform: uppercase; font-weight: bold; }
+  h1 { font-size: 15pt; margin: 2px 0 1px; color: #0b3c5d; }
+  .sub { font-size: 8.3pt; color: #444; }
+  h2 { font-size: 9.8pt; color: #0b5d8a; margin: 9px 0 3px; border-left: 3pt solid #0b5d8a; padding-left: 5px; }
+  h3 { font-size: 9pt; margin: 6px 0 2px; color: #0b3c5d; }
+  p { margin: 2px 0; text-align: justify; }
+  ul { margin: 2px 0 2px 14px; padding: 0; }
+  li { margin: 1px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 3px 0 2px; table-layout: fixed; }
+  th, td { border: .6pt solid #9fb4c4; padding: 2px 4px; vertical-align: top; font-size: 8.1pt; }
+  th { background: #e6eef4; color: #0b3c5d; text-align: left; }
+  td.c, th.c { text-align: center; }
+  .id { white-space: nowrap; font-weight: bold; color: #0b3c5d; }
+  code, pre { font-family: "Consolas", "Liberation Mono", monospace; }
+  pre { background: #f4f7fa; border: .6pt solid #cbd8e3; padding: 4px 6px; margin: 3px 0; font-size: 7.4pt; line-height: 1.3; white-space: pre-wrap; page-break-inside: avoid; }
+  .note { font-size: 7.8pt; color: #555; font-style: italic; }
+  .preuve { font-size: 7.8pt; color: #0b5c40; }
+  .galerie { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
+  .capture { width: 48.6%; border: .6pt solid #9fb4c4; page-break-inside: avoid; }
+  .capture .cadre { height: 62mm; overflow: hidden; background: #fff; }
+  .capture img { width: 100%; display: block; }
+  .capture figcaption { font-size: 7pt; padding: 1.5px 3px; background: #eef3f7; color: #0b3c5d; border-top: .6pt solid #cbd8e3; }
+  .deux-colonnes { display: flex; gap: 10px; }
+  .deux-colonnes > div { flex: 1; }
+  .ok { color: #0a5c40; font-weight: bold; }
+  footer { margin-top: 7px; border-top: .6pt solid #9fb4c4; padding-top: 3px; font-size: 7.1pt; color: #666; }
+  .pagebreak { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Projet informatique 2 &middot; L3 SIL &middot; TP7</div>
+  <h1>Interface web &mdash; parcours des deux r&ocirc;les</h1>
+  <div class="sub">PHP 8.3.33 &middot; MySQL 8.4.3 &middot; <code>http://127.0.0.1:8000</code> &middot; jeu d'essai <code>tp3/002_seed.sql</code> &middot; 18 / 11 / 2026</div>
+</header>
+
+<p>L'interface est une page unique (<code>public/index.html</code>, rendue par
+<code>public/app.js</code>) qui consomme l'API en <code>fetch</code> et affiche les
+&eacute;crans selon le r&ocirc;le renvoy&eacute; par <code>GET /api/session</code>. Aucun HTML
+n'est g&eacute;n&eacute;r&eacute; c&ocirc;t&eacute; serveur : c'est bien une s&eacute;paration
+front / back, ce qui rend l'API r&eacute;utilisable par un futur client mobile.</p>
+
+<h2>1. &Eacute;crans par r&ocirc;le</h2>
+<div class="deux-colonnes">
+<div>
+<h3>&Eacute;tudiant (4 &eacute;crans)</h3>
+<table>
+  <tr><th width="30%">&Eacute;cran</th><th>Contenu</th></tr>
+  <tr><td class="id">Connexion</td><td>E-mail, mot de passe, erreurs sous chaque champ.</td></tr>
+  <tr><td class="id">Mes demandes</td><td>Tableau filtr&eacute; c&ocirc;t&eacute; serveur sur <code>etudiant_id</code> ; boutons <em>Soumettre</em>, <em>Corriger</em>, <em>Historique</em>.</td></tr>
+  <tr><td class="id">D&eacute;p&ocirc;t</td><td>Choix de l'entreprise, case &laquo; D&eacute;poser imm&eacute;diatement &raquo;.</td></tr>
+  <tr><td class="id">Historique</td><td>Fen&ecirc;tre modale : chaque transition, son auteur, son motif, son horodatage.</td></tr>
+</table>
+</div>
+<div>
+<h3>Responsable / secr&eacute;tariat (3 &eacute;crans)</h3>
+<table>
+  <tr><th width="34%">&Eacute;cran</th><th>Contenu</th></tr>
+  <tr><td class="id">Connexion</td><td>Identique, redirection selon le r&ocirc;le.</td></tr>
+  <tr><td class="id">Demandes &agrave; traiter</td><td>Recherche par nom, matricule ou entreprise ; filtre par statut ; compteur du p&eacute;rim&egrave;tre.</td></tr>
+  <tr><td class="id">D&eacute;cision</td><td><em>Valider</em>, <em>Refuser</em> (motif obligatoire), <em>Affecter</em> un encadreur, <em>Programmer</em> une soutenance.</td></tr>
+  <tr><td class="id">Planning</td><td>Tableau des soutenances tri&eacute;es par date.</td></tr>
+</table>
+</div>
+</div>
+<p class="note">L'administrateur partage l'&eacute;cran du responsable avec un p&eacute;rim&egrave;tre
+total et l'acc&egrave;s aux comptes ; l'encadreur ne voit que les dossiers qui lui sont affect&eacute;s.</p>
+
+<h2>2. Captures d'&eacute;cran</h2>
+<div class="galerie">
+  <figure class="capture"><div class="cadre"><img src="preuves/01-connexion.jpeg" alt=""></div>
+    <figcaption>01 &mdash; Connexion (aucune erreur affich&eacute;e au premier chargement)</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/02-etudiant-liste.jpeg" alt=""></div>
+    <figcaption>02 &mdash; &Eacute;tudiant : 2 demandes, 1 soumise et 1 refus&eacute;e</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/03-etudiant-formulaire.jpeg" alt=""></div>
+    <figcaption>03 &mdash; Formulaire de d&eacute;p&ocirc;t, entreprise s&eacute;lectionn&eacute;e</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/04-etudiant-depot.jpeg" alt=""></div>
+    <figcaption>04 &mdash; Bandeau &laquo; Demande d&eacute;pos&eacute;e. &raquo; et 3<sup>e</sup> ligne au statut <em>Soumise</em></figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/05-responsable-liste.jpeg" alt=""></div>
+    <figcaption>05 &mdash; Responsable : 5 demandes, boutons <em>Valider</em> / <em>Refuser</em></figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/06-refus-dialogue.jpeg" alt=""></div>
+    <figcaption>06 &mdash; Dialogue de refus, motif saisi, focus pi&eacute;g&eacute; dans la modale</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/07-refus-confirme.jpeg" alt=""></div>
+    <figcaption>07 &mdash; Statut <em>Refus&eacute;e</em> et motif affich&eacute; sous le badge</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/08-validation.jpeg" alt=""></div>
+    <figcaption>08 &mdash; Validation d'une deuxi&egrave;me demande</figcaption></figure>
+  <figure class="capture"><div class="cadre"><img src="preuves/09-affectation.jpeg" alt=""></div>
+    <figcaption>09 &mdash; Secr&eacute;tariat : encadreur affect&eacute; (A. DJEGBA)</figcaption></figure>
+  <figure class="capture"><div class="cadre" style="height:62mm; padding:4px; font-size:7.2pt; background:#f7fafc;">
+    <strong>Capture 10 (planning)</strong><br>Le tableau du planning affiche apr&egrave;s
+    enregistrement :<br><br>
+    10/12/2026 09:00 &middot; B12 &middot; Clarisse SODJINOU &middot; Delta Logistique &middot; 40 min<br>
+    11/12/2026 10:00 &middot; Salle C3 &middot; Rachid KPANOU &middot; Sahara Data Services &middot; 40 min<br><br>
+    Preuve SQL&nbsp;: <code>preuves/planning.txt</code>.</div>
+    <figcaption>10 &mdash; Planning apr&egrave;s programmation (preuve SQL)</figcaption></figure>
+</div>
+<p class="preuve">Les fichiers complets (pleine hauteur) sont dans <code>tp7/preuves/</code> ;
+les cadres ci-dessus n'en montrent que le haut. Sc&eacute;nario d&eacute;taill&eacute;
+et commandes de v&eacute;rification : <code>tp7/scenario.md</code>.</p>
+
+<h2 class="pagebreak">3. Sc&eacute;nario de bout en bout</h2>
+<table>
+  <tr><th width="5%" class="c">#</th><th width="34%">Action</th><th width="36%">R&eacute;sultat observ&eacute;</th><th>Preuve</th></tr>
+  <tr><td class="c">1</td><td>Ouvrir <code>/</code> sans session</td><td>&Eacute;cran de connexion, aucun bandeau d'erreur</td><td>capture 01</td></tr>
+  <tr><td class="c">2</td><td>Connexion <code>rachid.kpanou@campus.test</code></td><td>2 demandes (1 soumise, 1 refus&eacute;e), formulaire de d&eacute;p&ocirc;t visible</td><td>capture 02</td></tr>
+  <tr><td class="c">3</td><td>Choisir &laquo; Sahara Data Services &raquo;</td><td>S&eacute;lection prise en compte</td><td>capture 03</td></tr>
+  <tr><td class="c">4</td><td>Cr&eacute;er la demande (d&eacute;p&ocirc;t imm&eacute;diat)</td><td>Bandeau &laquo; Demande d&eacute;pos&eacute;e. &raquo;, 3 d&eacute;mandes, ligne <em>Soumise</em></td><td>capture 04</td></tr>
+  <tr><td class="c">5</td><td>Recharger (F5)</td><td>M&ecirc;mes 3 demandes, m&ecirc;mes statuts : persistance en base</td><td>capture 04 + <code>SELECT</code></td></tr>
+  <tr><td class="c">6</td><td>Connexion responsable</td><td>5 demandes, boutons de d&eacute;cision sur les soumises</td><td>capture 05</td></tr>
+  <tr><td class="c">7</td><td>Cliquer <em>Refuser</em> et saisir un motif</td><td>Dialogue accessible, focus dans le champ motif</td><td>capture 06</td></tr>
+  <tr><td class="c">8</td><td>Confirmer le refus</td><td>Statut <em>Refus&eacute;e</em>, motif affich&eacute; sous le badge</td><td>capture 07</td></tr>
+  <tr><td class="c">9</td><td>Valider une autre demande</td><td>Statut <em>Valid&eacute;e</em>, bandeau de confirmation</td><td>capture 08</td></tr>
+  <tr><td class="c">10</td><td>Secr&eacute;tariat : affecter A. DJEGBA</td><td>Encadreur affich&eacute; dans la ligne</td><td>capture 09</td></tr>
+  <tr><td class="c">11</td><td>Programmer 11/12/2026 10:00, C3, 40 min</td><td>Bandeau &laquo; Soutenance programm&eacute;e. &raquo;, ligne au planning</td><td><code>planning.txt</code></td></tr>
+  <tr><td class="c">12</td><td>Recharger apr&egrave;s programmation</td><td>Planning et statuts conserv&eacute;s</td><td><code>planning.txt</code></td></tr>
+</table>
+
+<h2>4. Gestion des erreurs HTTP</h2>
+<table>
+  <tr><th width="8%" class="c">Code</th><th width="34%">D&eacute;clencheur</th><th>Comportement de l'interface</th></tr>
+  <tr><td class="c">400</td><td>Champ manquant, statut inconnu, date invalide</td><td>Message renvoy&eacute; dans <code>details</code> plac&eacute; sous le champ concern&eacute; ; aucun rechargement.</td></tr>
+  <tr><td class="c">401</td><td>Session absente ou expir&eacute;e</td><td>Retour &agrave; l'&eacute;cran de connexion, jeton CSRF rafra&icirc;chi.</td></tr>
+  <tr><td class="c">403</td><td>Action interdite au r&ocirc;le, jeton CSRF absent</td><td>Bandeau rouge &laquo; Acc&egrave;s interdit &agrave; ce dossier. &raquo; ; boutons masqu&eacute;s en amont.</td></tr>
+  <tr><td class="c">404</td><td>Demande inexistante</td><td>&laquo; Dossier introuvable. &raquo; et retour &agrave; la liste.</td></tr>
+  <tr><td class="c">409</td><td>Transition interdite, cr&eacute;neau occup&eacute;, doublon</td><td>Bandeau explicite reprenant le message du serveur ; la ligne garde son statut.</td></tr>
+  <tr><td class="c">500</td><td>Erreur interne</td><td>Bandeau neutre &laquo; Erreur interne du serveur. &raquo; ; d&eacute;tail dans <code>logs/app.log</code>.</td></tr>
+</table>
+<p>Les boutons ne sont pas seulement masqu&eacute;s : chaque appel est revalid&eacute;
+c&ocirc;t&eacute; serveur (r&ocirc;le, propri&eacute;t&eacute; du dossier, transition). Masquer un
+bouton est un confort, jamais une mesure de s&eacute;curit&eacute;.</p>
+
+<h2>5. Rendu s&eacute;curis&eacute; des donn&eacute;es</h2>
+<p>Le test consiste &agrave; remplacer en base la raison sociale d'une entreprise par
+<code>&lt;b&gt;Delta&lt;/b&gt; Logistique &lt;script&gt;alert(1)&lt;/script&gt;</code>,
+puis &agrave; recharger la liste. Mesures relev&eacute;es dans le DOM :</p>
+<div class="deux-colonnes">
+<div>
+<pre>balises &lt;b&gt; créées dans le tableau   : 0
+balises &lt;script&gt; créées             : 0
+texte affiché littéralement         : oui
+boîte d'alerte déclenchée           : aucune
+scripts de la page                  : 1 (app.js)</pre>
+<p class="preuve">Sortie compl&egrave;te : <code>tp7/preuves/xss.txt</code>.</p>
+</div>
+<div>
+<p>Le code construit les lignes avec <code>createElement</code> et affecte les
+valeurs par <code>textContent</code>. Aucune concat&eacute;nation de cha&icirc;ne dans
+<code>innerHTML</code> : c'est la seule r&egrave;gle qui garantit l'absence de XSS
+stock&eacute;e, y compris quand la donn&eacute;e vient de la base. La valeur a ensuite
+&eacute;t&eacute; restaur&eacute;e (<em>Sahara Data Services</em>).</p>
+</div>
+</div>
+
+<h2>6. Accessibilit&eacute; et ergonomie</h2>
+<table>
+  <tr><th width="26%">Point</th><th>Mise en &oelig;uvre</th></tr>
+  <tr><td class="id">Structure</td><td><code>header</code>, <code>main</code>, <code>section</code>, <code>table</code> avec <code>caption</code> et <code>th scope</code> ; hi&eacute;rarchie de titres continue.</td></tr>
+  <tr><td class="id">Formulaires</td><td>Chaque champ a un <code>label for</code> ; erreurs reli&eacute;es par <code>aria-describedby</code> ; <code>aria-invalid</code> pos&eacute; sur le champ fautif.</td></tr>
+  <tr><td class="id">Dialogues</td><td><code>&lt;dialog&gt;</code> natif : focus pi&eacute;g&eacute;, fermeture par &Eacute;chap, retour du focus sur le bouton d'origine.</td></tr>
+  <tr><td class="id">Messages</td><td>Bandeau <code>role="status"</code> (succ&egrave;s) ou <code>role="alert"</code> (erreur), annonc&eacute; par le lecteur d'&eacute;cran.</td></tr>
+  <tr><td class="id">Contrastes</td><td>Texte <code>#1a1a1a</code> sur fond clair, badges de statut doubl&eacute;s d'un libell&eacute; (jamais la couleur seule).</td></tr>
+  <tr><td class="id">Clavier</td><td>Tous les boutons sont des <code>&lt;button&gt;</code> natifs ; aucune action r&eacute;serv&eacute;e &agrave; la souris.</td></tr>
+</table>
+
+<h2>7. Limites connues</h2>
+<ul>
+  <li>Pas encore de tri ni de pagination c&ocirc;t&eacute; serveur : le jeu d'essai reste petit.</li>
+  <li>Le d&eacute;p&ocirc;t de pi&egrave;ce jointe (PDF de convention) est hors p&eacute;rim&egrave;tre de cette version.</li>
+  <li>Les captures sont prises sur un viewport &eacute;troit ; le rendu bureau large n'est pas fig&eacute; dans les preuves.</li>
+</ul>
+
+<footer>
+  TP7 &mdash; Interface web &middot; sources : <code>public/index.html</code>,
+  <code>public/app.js</code>, <code>public/style.css</code> &middot; preuves :
+  <code>tp7/preuves/</code> et <code>tp7/scenario.md</code>.
+</footer>
+
+</body>
+</html>

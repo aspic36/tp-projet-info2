@@ -1,0 +1,20 @@
+Test XSS — rendu avec textContent
+Date : 18/11/2026
+Scénario : la raison sociale de l'entreprise #1 est remplacée en base par la chaîne
+  <b>Delta</b> Logistique <script>alert(1)</script>
+puis la liste des demandes est rechargée dans le navigateur (compte secrétariat).
+
+Mesures relevées dans le DOM après rechargement :
+  balises <b> créées dans le tableau      : 0
+  balises <script> créées dans le tableau  : 0
+  texte affiché littéralement              : oui
+  extrait de cellule                       : <b>Delta</b> Logistique <script>alert(1)</script>Cotonou
+  boîte d'alerte déclenchée                : aucune
+  nombre total de scripts de la page       : 1 (app.js uniquement)
+
+Conclusion : la donnée est insérée avec textContent ; les balises sont affichées
+comme du texte et aucun code n'est exécuté. La valeur a ensuite été restaurée
+en base ('Sahara Data Services').
+
+Contre-épreuve (rappel du cours) : avec innerHTML, le navigateur interpréterait
+<b> et créerait un élément script, d'où l'exécution de alert(1).

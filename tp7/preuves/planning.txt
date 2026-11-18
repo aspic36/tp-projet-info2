@@ -1,0 +1,18 @@
+﻿TP7 - Preuve du planning des soutenances
+Scenario : apres affectation d'un encadreur, le secretariat programme
+une soutenance pour la demande #1 (Rachid KPANOU) le 11/12/2026 a 10:00,
+salle C3, 40 minutes. L'interface a affiche le bandeau "Soutenance programmee."
+et la ligne est apparue dans le tableau du planning (capture 09-affectation.jpeg
+prise juste avant, l'etat ci-dessous est celui d'apres l'enregistrement).
+
+Requete executee sur la base 'stages' :
+
++----+---------------------+----------+-----------+------------+-------------------+----------------------+
+| id | date_heure          | salle    | duree_min | demande_id | etudiant          | raison_sociale       |
++----+---------------------+----------+-----------+------------+-------------------+----------------------+
+|  1 | 2026-12-10 09:00:00 | B12      |        40 |          2 | Clarisse SODJINOU | Delta Logistique     |
+|  2 | 2026-12-11 10:00:00 | Salle C3 |        40 |          1 | Rachid KPANOU     | Sahara Data Services |
++----+---------------------+----------+-----------+------------+-------------------+----------------------+
+
+Conclusion : la ligne (2026-12-11 10:00, Salle C3, 40 min, demande 1) est bien
+persistee en base ; un rafraichissement du navigateur la relit sans perte.

@@ -46,12 +46,12 @@
 (17 contr&ocirc;les ex&eacute;cut&eacute;s par <code>tests/securite.php</code> contre le serveur r&eacute;el)
 et une <strong>revue de code</strong> manuelle des points que le test ne peut pas voir.
 L'audit a trouv&eacute; un d&eacute;faut r&eacute;el dans la recherche : il est document&eacute;
-en section 4 avec sa correction et les deux sorties avant / apr&egrave;s.</p>
+en section 3 avec sa correction et les deux sorties avant / apr&egrave;s.</p>
 
 <h2>1. Matrice des contr&ocirc;les de s&eacute;curit&eacute;</h2>
 <table>
   <tr><th width="7%" class="c">ID</th><th width="45%">Contr&ocirc;le</th><th width="14%" class="c">Attendu</th><th width="12%" class="c">Obtenu</th><th class="c">Statut</th></tr>
-  <tr><td class="c id">S-01</td><td>Connexion des deux &eacute;tudiants</td><td class="c">200</td><td class="c">200</td><td class="c ok">OK</td></tr>
+  <tr><td class="c id">S-01</td><td>Connexion des deux &eacute;tudiants</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
   <tr><td class="c id">S-02</td><td>&Eacute;tudiant B lit le dossier de l'&eacute;tudiant A</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
   <tr><td class="c id">S-03</td><td>La r&eacute;ponse 403 ne contient aucune donn&eacute;e du dossier</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
   <tr><td class="c id">S-04</td><td>&Eacute;tudiant affecte un encadreur</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
@@ -84,18 +84,18 @@ Résultat : 0 échec(s).</pre>
   <tr><th width="22%">Risque</th><th width="40%">Mesure en place</th><th>Contr&ocirc;le</th></tr>
   <tr><td class="id">A01 Contr&ocirc;le d'acc&egrave;s</td><td>P&eacute;rim&egrave;tre calcul&eacute; c&ocirc;t&eacute; serveur &agrave; partir du r&ocirc;le ; le propri&eacute;taire d'un dossier est v&eacute;rifi&eacute; avant toute lecture ou &eacute;criture.</td><td>S-02 &agrave; S-05</td></tr>
   <tr><td class="id">A02 D&eacute;faillances cryptographiques</td><td>bcrypt co&ucirc;t 12 via <code>password_hash</code> ; aucun mot de passe en clair ; aucun secret versionn&eacute; (<code>.env</code> ignor&eacute;).</td><td>S-10 &agrave; S-12</td></tr>
-  <tr><td class="id">A03 Injection</td><td>100 % de requ&ecirc;tes pr&eacute;par&eacute;es, <code>ATTR_EMULATE_PREPARES = false</code> ; les identifiants sont convertis en entier avant requ&ecirc;te.</td><td>S-06 &agrave; S-09, S-17</td></tr>
+  <tr><td class="id">A03 Injection</td><td>Toute requ&ecirc;te utilisant une donn&eacute;e utilisateur est pr&eacute;par&eacute;e, <code>ATTR_EMULATE_PREPARES = false</code> ; les identifiants sont convertis en entier avant requ&ecirc;te.</td><td>S-06 &agrave; S-09, S-17</td></tr>
   <tr><td class="id">A04 Conception non s&eacute;curis&eacute;e</td><td>Machine &agrave; &eacute;tats explicite : seules quatre transitions existent, chacune avec son r&ocirc;le autoris&eacute;.</td><td>T-09, S-16</td></tr>
   <tr><td class="id">A05 Mauvaise configuration</td><td><code>display_errors = 0</code>, ent&ecirc;tes <code>nosniff</code>, <code>X-Frame-Options: DENY</code>, CSP restrictive ; compte MySQL d&eacute;di&eacute; sans droits DDL.</td><td>revue de code</td></tr>
-  <tr><td class="id">A07 Authentification</td><td><code>session_regenerate_id(true)</code> &agrave; la connexion ; message d'erreur identique pour compte inconnu et mot de passe faux.</td><td>S-09</td></tr>
-  <tr><td class="id">A08 Int&eacute;grit&eacute; des donn&eacute;es</td><td>CSRF : jeton de 32 octets compar&eacute; par <code>hash_equals</code>, exig&eacute; sur toute m&eacute;thode d'&eacute;criture.</td><td>S-13 &agrave; S-15</td></tr>
+  <tr><td class="id">A07 Authentification</td><td><code>session_regenerate_id(true)</code> &agrave; la connexion ; message d'erreur identique pour compte inconnu et mot de passe faux.</td><td>revue de code, S-09</td></tr>
+  <tr><td class="id">A08 Int&eacute;grit&eacute; des donn&eacute;es</td><td>CSRF : jeton de 32 octets (64 caract&egrave;res hexad&eacute;cimaux) compar&eacute; par <code>hash_equals</code>, exig&eacute; sur toute m&eacute;thode d'&eacute;criture.</td><td>S-13 &agrave; S-15</td></tr>
   <tr><td class="id">A09 Journalisation</td><td>&Eacute;v&eacute;nements et erreurs dans <code>logs/app.log</code> (fichier ignor&eacute; par Git) ; la r&eacute;ponse HTTP reste g&eacute;n&eacute;rique.</td><td>S-17</td></tr>
   <tr><td class="id">A10 SSRF</td><td>Aucun appel sortant : l'application ne fait que servir du JSON et du statique.</td><td>&mdash;</td></tr>
 </table>
 
 <h2 class="pagebreak">3. Revue de code &mdash; quatre remarques class&eacute;es</h2>
 
-<h3><span class="grav g1">Critique</span> &mdash; param&egrave;tre nomm&eacute; r&eacute;p&eacute;t&eacute; dans la recherche (corrig&eacute;)</h3>
+<h3><span class="grav g3">Mineure fonctionnelle</span> &mdash; param&egrave;tre nomm&eacute; r&eacute;p&eacute;t&eacute; dans la recherche (corrig&eacute;)</h3>
 <p>Dans <code>DemandeRepository::search()</code>, la recherche multi-colonnes r&eacute;utilisait
 le m&ecirc;me marqueur <code>:q</code> quatre fois :</p>
 <div class="deux-colonnes">
@@ -117,8 +117,8 @@ $params[':q_nom'] = $motif; /* … */</pre>
 </div>
 <p>Avec les requ&ecirc;tes r&eacute;ellement pr&eacute;par&eacute;es (<code>EMULATE_PREPARES = false</code>),
 MySQL refuse un marqueur r&eacute;p&eacute;t&eacute; : la recherche renvoyait 500. D&eacute;tect&eacute;
-par S-07 et S-08. La correction ne change pas la s&eacute;mantique et supprime la faille
-(la valeur reste li&eacute;e, jamais concat&eacute;n&eacute;e).</p>
+par S-07 et S-08. La correction donne un marqueur distinct par occurrence ; la valeur
+reste li&eacute;e, jamais concat&eacute;n&eacute;e.</p>
 <div class="deux-colonnes">
 <div><pre>Avant correctif
 S-07  recherche « ' OR 1=1 -- »   attendu 200 | obtenu 500 | ECHEC
@@ -137,8 +137,8 @@ et <code>tp8/preuves/securite.txt</code>.</p>
 n&eacute;anmoins l'ancien jeton en m&eacute;moire : la premi&egrave;re &eacute;criture apr&egrave;s une
 reconnexion &eacute;tait refus&eacute;e en 403. Correctif : <code>rafraichirJeton()</code> rappelle
 <code>GET /api/session</code> apr&egrave;s chaque connexion et chaque d&eacute;connexion.
-Le contr&ocirc;le S-15 (cr&eacute;ation avec jeton valide) passe d&eacute;sormais dans un parcours
-qui inclut une d&eacute;connexion pr&eacute;alable.</p>
+Le contr&ocirc;le S-15 v&eacute;rifie l'&eacute;criture avec le jeton en m&eacute;moire apr&egrave;s connexion ;
+il ne rejoue pas de d&eacute;connexion pr&eacute;alable.</p>
 
 <h3><span class="grav g2">Majeure</span> &mdash; &eacute;crans masqu&eacute;s visibles &agrave; cause de <code>display:flex</code> (corrig&eacute;)</h3>
 <p>L'attribut <code>hidden</code> a une priorit&eacute; plus faible qu'une r&egrave;gle de classe :
@@ -154,7 +154,7 @@ n'est qu'une mesure de coh&eacute;rence d'affichage.</p>
 La mesure est identifi&eacute;e mais report&eacute;e : elle demande un stockage partag&eacute;
 (compteur par IP et par compte) et un temps de r&eacute;ponse constant, hors du p&eacute;rim&egrave;tre
 de cette version. Elle est consign&eacute;e dans la dette technique du <code>README.md</code>
-et reprise au TP9 (exploitation).</p>
+et report&eacute;e &agrave; la version 2.</p>
 
 <h2>4. Tests fonctionnels associ&eacute;s</h2>
 <p>La s&eacute;curit&eacute; ne remplace pas les tests m&eacute;tier : <code>tests/api.php</code> couvre
@@ -168,16 +168,16 @@ trois scripts donne <strong>34 v&eacute;rifications, 0 &eacute;chec</strong>.</p
   <tr><td class="id">tests/securite.php</td><td class="c">17</td><td class="c ok">0</td><td><code>tp8/preuves/securite.txt</code></td></tr>
   <tr><td class="id"><strong>Total</strong></td><td class="c"><strong>34</strong></td><td class="c ok"><strong>0</strong></td><td>&mdash;</td></tr>
 </table>
-<p class="note">Certains contr&ocirc;les de s&eacute;curit&eacute; (S-03, S-08, S-10, S-11, S-17)
-ne mesurent pas un code HTTP mais l'absence de fuite : ils sont compt&eacute;s comme des
-assertions &agrave; part enti&egrave;re.</p>
+<p class="note">Certains contr&ocirc;les de s&eacute;curit&eacute; (S-01, S-03, S-08, S-10, S-11, S-12, S-17)
+ne mesurent pas un code HTTP mais une connexion, l'absence de fuite ou le hachage :
+ils sont compt&eacute;s comme des assertions &agrave; part enti&egrave;re.</p>
 
 <h2>5. Ce qui reste ouvert</h2>
 <ul>
   <li>Limitation des tentatives de connexion (voir 3, remarque mineure).</li>
-  <li>Cookies <code>Secure</code> : la valeur est <code>false</code> en local, &agrave; basculer &agrave; <code>true</code> d&eacute;ri&egrave;re HTTPS (TP9).</li>
+  <li>Cookies <code>Secure</code> : la valeur est <code>false</code> en local, &agrave; basculer &agrave; <code>true</code> derri&egrave;re HTTPS (TP9).</li>
   <li>Pas de tests de charge ni d'analyse statique outill&eacute;e (PHPStan absent des postes).</li>
-  <li>Les tests s'ex&eacute;cutent sur la base de d&eacute;veloppement ; une base <code>stages_test</code> isol&eacute;e est pr&eacute;vue en TP9.</li>
+  <li>Les tests s'ex&eacute;cutent sur la base de d&eacute;veloppement ; le TP9 montre la restauration de contr&ocirc;le dans <code>stages_test</code>.</li>
 </ul>
 
 <footer>

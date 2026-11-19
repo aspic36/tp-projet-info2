@@ -193,8 +193,8 @@ tp1/ … tp10/            livrables du cours et preuves
 - Mots de passe hachés avec `password_hash()` (bcrypt, coût 12) et vérifiés par
   `password_verify()`.
 - `session_regenerate_id(true)` après connexion ; cookie `HttpOnly`, `SameSite=Lax`.
-- Jeton CSRF aléatoire de 32 octets (256 bits), comparé avec `hash_equals()` sur toute
-  écriture, y compris les `DELETE`.
+- Jeton CSRF aléatoire de 32 octets (64 caractères hexadécimaux), comparé avec
+  `hash_equals()` sur toute écriture, y compris les `DELETE`.
 - Requêtes préparées PDO : aucune concaténation de valeur dans le SQL.
 - Autorisations vérifiées côté serveur à chaque lecture et écriture, jamais seulement
   dans l'interface.
@@ -211,7 +211,7 @@ tp1/ … tp10/            livrables du cours et preuves
 | TP3 | UML et modèle de données | `tp3/modele_donnees.pdf`, scripts SQL, diagrammes |
 | TP4 | Squelette et contrat d'API | ce README, `docs/contrat-api.md`, `docs/ADR-001.md` |
 | TP5 | Git et organisation d'équipe | `tp5/` (Kanban, historique, conflit résolu) |
-| TP6 | API des demandes | `src/`, `tp6/` (six cas testés) |
+| TP6 | API des demandes | `src/`, `tp6/` (seize cas testés) |
 | TP7 | Interface et intégration | `public/`, `tp7/` (captures, test XSS, scénario complet) |
 | TP8 | Tests et sécurité | `tp8/` (matrice, audit, revue de code) |
 | TP9 | Déploiement et sauvegarde | `tp9/` (installation, sauvegarde/restauration) |
@@ -226,3 +226,5 @@ tp1/ … tp10/            livrables du cours et preuves
   si l'interface grossit.
 - Pas d'envoi de mot de passe de réinitialisation : les comptes sont créés par
   l'administrateur.
+- Pas de limitation des tentatives de connexion : compteur par IP et par compte
+  reporté à la version 2.

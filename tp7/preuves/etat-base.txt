@@ -1,40 +1,40 @@
-﻿+----------+
+TP7 - Etat de base (jeu d'essai TP3, avant scenario)
+Base : stages - 4 demandes, 1 soutenance, 5 evenements d'historique.
+
++----------+
 | section  |
 +----------+
 | DEMANDES |
 +----------+
-+----+-----------+---------------------------------------------------+--------+---------+----------------------+----------------+
-| id | statut    | motif_refus                                       | prenom | nom     | raison_sociale       | encadreur      |
-+----+-----------+---------------------------------------------------+--------+---------+----------------------+----------------+
-|  1 | VALIDEE   | NULL                                              | Hubert | KIKI    | Sahara Data Services | Ars├¿ne DJEGBA  |
-|  2 | VALIDEE   | NULL                                              | Rosine | ATCHADE | Delta Logistique     | Ars├¿ne DJEGBA  |
-|  3 | BROUILLON | NULL                                              | Firmin | OGOUNA  | Sahara Data Services |                |
-|  4 | REFUSEE   | Stage sans rapport avec le cursus SIL             | Hubert | KIKI    | Delta Logistique     |                |
-|  5 | REFUSEE   | Convention de stage non sign├®e par l'entreprise.  | Hubert | KIKI    | Sahara Data Services |                |
-|  6 | VALIDEE   | NULL                                              | Hubert | KIKI    | Sahara Data Services |                |
-|  7 | VALIDEE   | NULL                                              | Hubert | KIKI    | Sahara Data Services |                |
-+----+-----------+---------------------------------------------------+--------+---------+----------------------+----------------+
++----+-----------+---------------------------------------+-------------------+----------------------+----------------+
+| id | statut    | motif_refus                           | etudiant          | raison_sociale       | encadreur      |
++----+-----------+---------------------------------------+-------------------+----------------------+----------------+
+|  1 | SOUMISE   |                                       | Rachid KPANOU     | Sahara Data Services |                |
+|  2 | VALIDEE   |                                       | Clarisse SODJINOU | Delta Logistique     | Arsène DJEGBA  |
+|  3 | BROUILLON |                                       | Samuel VODOUNOU   | Sahara Data Services |                |
+|  4 | REFUSEE   | Stage sans rapport avec le cursus SIL | Rachid KPANOU     | Delta Logistique     |                |
++----+-----------+---------------------------------------+-------------------+----------------------+----------------+
 +-------------+
 | section     |
 +-------------+
 | SOUTENANCES |
 +-------------+
-+----+---------------------+----------+-----------+---------+
-| id | date_heure          | salle    | duree_min | demande |
-+----+---------------------+----------+-----------+---------+
-|  1 | 2026-12-10 09:00:00 | B12      |        40 |       2 |
-|  2 | 2026-12-11 10:00:00 | Salle C3 |        40 |       1 |
-|  3 | 2027-01-15 09:00:00 | B12      |        40 |       7 |
-mysql.exe : ERROR 1054 (42S22) at line 9: Unknown column 'h.ancien_statut' in 'field list'
-Au caractère Ligne:14 : 6
-+ $q | & $mysql -u root --default-character-set=utf8mb4 --table stages  ...
-+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (ERROR 1054 (42S...in 'field list':String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-+----+---------------------+----------+-----------+---------+
++----+---------------------+-------+-----------+------------+
+| id | date_heure          | salle | duree_min | demande_id |
++----+---------------------+-------+-----------+------------+
+|  1 | 2026-12-10 09:00:00 | B12   |        40 |          2 |
++----+---------------------+-------+-----------+------------+
 +------------+
 | section    |
 +------------+
 | HISTORIQUE |
 +------------+
++------------+--------------+--------------+-------------------+---------------------------------------+---------------------+
+| demande_id | statut_avant | statut_apres | auteur            | motif                                 | horodatage          |
++------------+--------------+--------------+-------------------+---------------------------------------+---------------------+
+|          4 | BROUILLON    | SOUMISE      | Rachid KPANOU     |                                       | 2026-08-25 16:10:00 |
+|          4 | SOUMISE      | REFUSEE      | Firmin OGOUNA     | Stage sans rapport avec le cursus SIL | 2026-08-30 10:00:00 |
+|          2 | BROUILLON    | SOUMISE      | Clarisse SODJINOU |                                       | 2026-09-02 09:15:00 |
+|          2 | SOUMISE      | VALIDEE      | Firmin OGOUNA     |                                       | 2026-09-09 11:30:00 |
+|          1 | BROUILLON    | SOUMISE      | Rachid KPANOU     |                                       | 2026-09-14 08:45:00 |
++------------+--------------+--------------+-------------------+---------------------------------------+---------------------+

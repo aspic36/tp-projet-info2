@@ -1,4 +1,4 @@
-﻿TP5 - Verification apres la fusion du conflit (branche main)
+TP5 - Verification apres la fusion du conflit (branche main)
 Date : 18/11/2026 15:50
 HEAD : cef035e
 
@@ -8,47 +8,47 @@ Base courante : stages
 Tables         : 7
 Demandes       : 4
 
-Sc├®nario API ÔÇö base http://127.0.0.1:8000
+Scénario API — base http://127.0.0.1:8000
 ================================================================================================
 T-00 GET /api/sante                            attendu 200 | obtenu 200 | OK
 T-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
-T-02 POST /api/session (├®tudiant)             attendu 200 | obtenu 200 | OK
+T-02 POST /api/session (étudiant)             attendu 200 | obtenu 200 | OK
 T-03 POST /api/demandes                        attendu 201 | obtenu 201 | OK
 T-04 GET /api/demandes                         attendu 200 | obtenu 200 | OK
-T-05 PATCH statut par lÔÇÖ├®tudiant            attendu 403 | obtenu 403 | OK
+T-05 PATCH statut par l’étudiant            attendu 403 | obtenu 403 | OK
 T-06 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
 T-07 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
-T-08 SOUMISEÔåÆVALIDEE par le responsable      attendu 200 | obtenu 200 | OK
-T-09 VALIDEEÔåÆREFUSEE interdite               attendu 409 | obtenu 409 | OK
+T-08 SOUMISE→VALIDEE par le responsable      attendu 200 | obtenu 200 | OK
+T-09 VALIDEE→REFUSEE interdite               attendu 409 | obtenu 409 | OK
 T-10 PATCH sans jeton CSRF                     attendu 403 | obtenu 403 | OK
 T-11 GET historique                            attendu 200 | obtenu 200 | OK
 T-12 soutenance le 2026-02-30                  attendu 400 | obtenu 400 | OK
-T-13 soutenance dans le pass├®                 attendu 400 | obtenu 400 | OK
+T-13 soutenance dans le passé                 attendu 400 | obtenu 400 | OK
 T-14 POST /api/soutenances                     attendu 201 | obtenu 201 | OK
-T-15 deuxi├¿me soutenance (doublon)            attendu 409 | obtenu 409 | OK
+T-15 deuxième soutenance (doublon)            attendu 409 | obtenu 409 | OK
 ================================================================================================
-Demande cr├®├®e pour le test : #5
-├ëv├®nements d'historique : ÔÇöÔåÆSOUMISE, SOUMISEÔåÆVALIDEE
-R├®sultat : 0 ├®chec(s) sur 16 cas.
+Demande créée pour le test : #5
+Événements d'historique : —→SOUMISE, SOUMISE→VALIDEE
+Résultat : 0 échec(s) sur 16 cas.
 
-Audit de s├®curit├® ÔÇö base http://127.0.0.1:8000
+Audit de sécurité — base http://127.0.0.1:8000
 ================================================================================================
-S-01  connexion des deux ├®tudiants                        OK
-S-02  ├®tudiant B lit le dossier #1 de l'├®tudiant A       attendu 403 | obtenu 403 | OK
-S-03  la r├®ponse 403 ne contient aucune donn├®e du dossier OK
-S-04  ├®tudiant affecte un encadreur                       attendu 403 | obtenu 403 | OK
-S-05  ├®tudiant lit la liste des comptes                   attendu 403 | obtenu 403 | OK
-S-06  identifiant ┬½ 1 OR 1=1 ┬╗                           attendu 404 | obtenu 404 | OK
-S-07  recherche ┬½ ' OR 1=1 -- ┬╗                          attendu 200 | obtenu 200 | OK
-S-08  aucune ligne retourn├®e par la cha├«ne inject├®e     OK
-S-09  connexion avec ┬½ admin' OR 1=1 -- ┬╗                attendu 401 | obtenu 401 | OK
-S-10  tous les mots de passe sont hach├®s en bcrypt        OK
-S-11  aucun mot de passe stock├® en clair                  OK
-S-12  password_verify accepte le mot de passe de d├®monstration OK
-S-13  ├®criture sans jeton CSRF                            attendu 403 | obtenu 403 | OK
-S-14  ├®criture avec un faux jeton CSRF                    attendu 403 | obtenu 403 | OK
-S-15  ├®criture avec le jeton valide (cr├®ation brouillon) attendu 201 | obtenu 201 | OK
+S-01  connexion des deux étudiants                        OK
+S-02  étudiant B lit le dossier #1 de l'étudiant A       attendu 403 | obtenu 403 | OK
+S-03  la réponse 403 ne contient aucune donnée du dossier OK
+S-04  étudiant affecte un encadreur                       attendu 403 | obtenu 403 | OK
+S-05  étudiant lit la liste des comptes                   attendu 403 | obtenu 403 | OK
+S-06  identifiant « 1 OR 1=1 »                           attendu 404 | obtenu 404 | OK
+S-07  recherche « ' OR 1=1 -- »                          attendu 200 | obtenu 200 | OK
+S-08  aucune ligne retournée par la chaîne injectée     OK
+S-09  connexion avec « admin' OR 1=1 -- »                attendu 401 | obtenu 401 | OK
+S-10  tous les mots de passe sont hachés en bcrypt        OK
+S-11  aucun mot de passe stocké en clair                  OK
+S-12  password_verify accepte le mot de passe de démonstration OK
+S-13  écriture sans jeton CSRF                            attendu 403 | obtenu 403 | OK
+S-14  écriture avec un faux jeton CSRF                    attendu 403 | obtenu 403 | OK
+S-15  écriture avec le jeton valide (création brouillon) attendu 201 | obtenu 201 | OK
 S-16  statut inconnu                                       attendu 400 | obtenu 400 | OK
-S-17  aucun d├®tail SQL/PDO dans la r├®ponse               OK
+S-17  aucun détail SQL/PDO dans la réponse               OK
 ================================================================================================
-R├®sultat : 0 ├®chec(s).
+Résultat : 0 échec(s).

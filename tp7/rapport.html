@@ -63,7 +63,7 @@ front / back, ce qui rend l'API r&eacute;utilisable par un futur client mobile.<
 </table>
 </div>
 <div>
-<h3>Responsable / secr&eacute;tariat (3 &eacute;crans)</h3>
+<h3>Responsable / secr&eacute;tariat (4 &eacute;crans)</h3>
 <table>
   <tr><th width="34%">&Eacute;cran</th><th>Contenu</th></tr>
   <tr><td class="id">Connexion</td><td>Identique, redirection selon le r&ocirc;le.</td></tr>
@@ -74,7 +74,7 @@ front / back, ce qui rend l'API r&eacute;utilisable par un futur client mobile.<
 </div>
 </div>
 <p class="note">L'administrateur partage l'&eacute;cran du responsable avec un p&eacute;rim&egrave;tre
-total et l'acc&egrave;s aux comptes ; l'encadreur ne voit que les dossiers qui lui sont affect&eacute;s.</p>
+total ; l'encadreur ne voit que les dossiers qui lui sont affect&eacute;s.</p>
 
 <h2>2. Captures d'&eacute;cran</h2>
 <div class="galerie">
@@ -102,10 +102,10 @@ total et l'acc&egrave;s aux comptes ; l'encadreur ne voit que les dossiers qui l
     10/12/2026 09:00 &middot; B12 &middot; Clarisse SODJINOU &middot; Delta Logistique &middot; 40 min<br>
     11/12/2026 10:00 &middot; Salle C3 &middot; Rachid KPANOU &middot; Sahara Data Services &middot; 40 min<br><br>
     Preuve SQL&nbsp;: <code>preuves/planning.txt</code>.</div>
-    <figcaption>10 &mdash; Planning apr&egrave;s programmation (preuve SQL)</figcaption></figure>
+    <figcaption>10 &mdash; Planning apr&egrave;s programmation (preuve SQL, pas une capture)</figcaption></figure>
 </div>
-<p class="preuve">Les fichiers complets (pleine hauteur) sont dans <code>tp7/preuves/</code> ;
-les cadres ci-dessus n'en montrent que le haut. Sc&eacute;nario d&eacute;taill&eacute;
+<p class="preuve">Neuf captures d'&eacute;cran et une preuve SQL (planning) sont dans
+<code>tp7/preuves/</code> ; les cadres ci-dessus n'en montrent que le haut. Sc&eacute;nario d&eacute;taill&eacute;
 et commandes de v&eacute;rification : <code>tp7/scenario.md</code>.</p>
 
 <h2 class="pagebreak">3. Sc&eacute;nario de bout en bout</h2>
@@ -113,7 +113,7 @@ et commandes de v&eacute;rification : <code>tp7/scenario.md</code>.</p>
   <tr><th width="5%" class="c">#</th><th width="34%">Action</th><th width="36%">R&eacute;sultat observ&eacute;</th><th>Preuve</th></tr>
   <tr><td class="c">1</td><td>Ouvrir <code>/</code> sans session</td><td>&Eacute;cran de connexion, aucun bandeau d'erreur</td><td>capture 01</td></tr>
   <tr><td class="c">2</td><td>Connexion <code>rachid.kpanou@campus.test</code></td><td>2 demandes (1 soumise, 1 refus&eacute;e), formulaire de d&eacute;p&ocirc;t visible</td><td>capture 02</td></tr>
-  <tr><td class="c">3</td><td>Choisir &laquo; Sahara Data Services &raquo;</td><td>S&eacute;lection prise en compte</td><td>capture 03</td></tr>
+  <tr><td class="c">3</td><td>Choisir une entreprise dans la liste</td><td>S&eacute;lection prise en compte</td><td>capture 03</td></tr>
   <tr><td class="c">4</td><td>Cr&eacute;er la demande (d&eacute;p&ocirc;t imm&eacute;diat)</td><td>Bandeau &laquo; Demande d&eacute;pos&eacute;e. &raquo;, 3 d&eacute;mandes, ligne <em>Soumise</em></td><td>capture 04</td></tr>
   <tr><td class="c">5</td><td>Recharger (F5)</td><td>M&ecirc;mes 3 demandes, m&ecirc;mes statuts : persistance en base</td><td>capture 04 + <code>SELECT</code></td></tr>
   <tr><td class="c">6</td><td>Connexion responsable</td><td>5 demandes, boutons de d&eacute;cision sur les soumises</td><td>capture 05</td></tr>
@@ -128,10 +128,10 @@ et commandes de v&eacute;rification : <code>tp7/scenario.md</code>.</p>
 <h2>4. Gestion des erreurs HTTP</h2>
 <table>
   <tr><th width="8%" class="c">Code</th><th width="34%">D&eacute;clencheur</th><th>Comportement de l'interface</th></tr>
-  <tr><td class="c">400</td><td>Champ manquant, statut inconnu, date invalide</td><td>Message renvoy&eacute; dans <code>details</code> plac&eacute; sous le champ concern&eacute; ; aucun rechargement.</td></tr>
+  <tr><td class="c">400</td><td>Champ manquant, statut inconnu, date invalide</td><td>D&eacute;tail plac&eacute; sous le champ quand il existe (motif, date, salle, dur&eacute;e, entreprise), sinon bandeau ; aucun rechargement.</td></tr>
   <tr><td class="c">401</td><td>Session absente ou expir&eacute;e</td><td>Retour &agrave; l'&eacute;cran de connexion, jeton CSRF rafra&icirc;chi.</td></tr>
-  <tr><td class="c">403</td><td>Action interdite au r&ocirc;le, jeton CSRF absent</td><td>Bandeau rouge &laquo; Acc&egrave;s interdit &agrave; ce dossier. &raquo; ; boutons masqu&eacute;s en amont.</td></tr>
-  <tr><td class="c">404</td><td>Demande inexistante</td><td>&laquo; Dossier introuvable. &raquo; et retour &agrave; la liste.</td></tr>
+  <tr><td class="c">403</td><td>Action interdite au r&ocirc;le, jeton CSRF absent</td><td>Bandeau rouge reprenant le message du serveur (r&ocirc;le, propri&eacute;t&eacute; du dossier ou CSRF) ; boutons masqu&eacute;s en amont.</td></tr>
+  <tr><td class="c">404</td><td>Demande inexistante</td><td>Bandeau &laquo; Demande introuvable. &raquo; ; aucun changement d'&eacute;cran automatique.</td></tr>
   <tr><td class="c">409</td><td>Transition interdite, cr&eacute;neau occup&eacute;, doublon</td><td>Bandeau explicite reprenant le message du serveur ; la ligne garde son statut.</td></tr>
   <tr><td class="c">500</td><td>Erreur interne</td><td>Bandeau neutre &laquo; Erreur interne du serveur. &raquo; ; d&eacute;tail dans <code>logs/app.log</code>.</td></tr>
 </table>
@@ -164,11 +164,11 @@ stock&eacute;e, y compris quand la donn&eacute;e vient de la base. La valeur a e
 <h2>6. Accessibilit&eacute; et ergonomie</h2>
 <table>
   <tr><th width="26%">Point</th><th>Mise en &oelig;uvre</th></tr>
-  <tr><td class="id">Structure</td><td><code>header</code>, <code>main</code>, <code>section</code>, <code>table</code> avec <code>caption</code> et <code>th scope</code> ; hi&eacute;rarchie de titres continue.</td></tr>
+  <tr><td class="id">Structure</td><td><code>header</code>, <code>main</code>, <code>section</code> ; table des demandes avec <code>caption</code>, colonnes avec <code>th scope</code> ; hi&eacute;rarchie de titres continue.</td></tr>
   <tr><td class="id">Formulaires</td><td>Chaque champ a un <code>label for</code> ; erreurs reli&eacute;es par <code>aria-describedby</code> ; <code>aria-invalid</code> pos&eacute; sur le champ fautif.</td></tr>
   <tr><td class="id">Dialogues</td><td><code>&lt;dialog&gt;</code> natif : focus pi&eacute;g&eacute;, fermeture par &Eacute;chap, retour du focus sur le bouton d'origine.</td></tr>
-  <tr><td class="id">Messages</td><td>Bandeau <code>role="status"</code> (succ&egrave;s) ou <code>role="alert"</code> (erreur), annonc&eacute; par le lecteur d'&eacute;cran.</td></tr>
-  <tr><td class="id">Contrastes</td><td>Texte <code>#1a1a1a</code> sur fond clair, badges de statut doubl&eacute;s d'un libell&eacute; (jamais la couleur seule).</td></tr>
+  <tr><td class="id">Messages</td><td>Bandeau unique <code>role="alert"</code> et <code>aria-live="assertive"</code>, color&eacute; selon le type, annonc&eacute; par le lecteur d'&eacute;cran.</td></tr>
+  <tr><td class="id">Contrastes</td><td>Texte <code>#16202c</code> sur fond clair, badges de statut doubl&eacute;s d'un libell&eacute; (jamais la couleur seule).</td></tr>
   <tr><td class="id">Clavier</td><td>Tous les boutons sont des <code>&lt;button&gt;</code> natifs ; aucune action r&eacute;serv&eacute;e &agrave; la souris.</td></tr>
 </table>
 

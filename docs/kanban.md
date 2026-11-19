@@ -8,7 +8,7 @@ commit signé la référence.
 
 | À faire | En cours | En revue | Terminé |
 | --- | --- | --- | --- |
-| K-07 | K-08 | — | K-01, K-02, K-03, K-04, K-05, K-06 |
+| — | — | — | K-01 à K-08 |
 
 ## Cartes
 
@@ -51,7 +51,7 @@ commit signé la référence.
 
 | Membre | Branches | Commits |
 | --- | --- | --- |
-| M1 | `feature/tp3-modele`, `feature/tp4-socle`, `feature/tp9-exploitation` | 3 |
+| M1 | `feature/tp4-socle`, `feature/tp9-exploitation` | 2 |
 | M2 | `feature/tp6-api`, `feature/tp10-livraison` | 2 |
 | M3 | `feature/tp7-interface`, `feature/tp8-tests` | 2 |
 

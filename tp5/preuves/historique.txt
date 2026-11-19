@@ -1,10 +1,9 @@
-﻿TP5 - Historique Git du depot (git log --oneline --graph)
+TP5 - Historique Git du depot (git log --oneline --graph)
 Date : 18/11/2026 15:51 - Auteur local : Luc <lucgbemeondji@gmail.com>
 Depot : https://github.com/aspic36/tp-projet-info2
 
-Note : cette capture est prise juste avant le commit qui ajoute ce fichier ;
-les commits de preuves apparaissent donc au-dessus d'elle dans 'git log' sur le
-depot. Le graphe des fusions, lui, est complet.
+Note : cette capture est prise après le commit qui ajoute ce fichier ;
+le commit de preuves apparaît donc dans le graphe ci-dessous.
 
 $ git log --oneline --graph --all --decorate
 *   19286b0 (HEAD -> main) merge: tp5 preuves (revue: graphe et conflit)

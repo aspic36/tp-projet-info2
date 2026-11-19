@@ -125,7 +125,7 @@ d'historique sont écrits dans une seule transaction, sous verrou
 | --- | --- | --- | --- | --- |
 | `GET` | `/api/sante` | — | 200 `{"status":"ok","database":"ok"}` | 503 base injoignable |
 | `GET` | `/api/session` | — | 200 `{authenticated, user, csrfToken}` | — |
-| `POST` | `/api/session` | `{email, motDePasse}` | 200 `{user, csrfToken}` | 400, 401 |
+| `POST` | `/api/session` | `{email, motDePasse}` | 200 `{user, csrfToken}` | 400, 401, 403 CSRF |
 | `DELETE` | `/api/session` | — | 204 | 401, 403 CSRF |
 | `GET` | `/api/demandes/{id}` | — | 200 `{data}` | 401, 403, 404 |
 | `PATCH` | `/api/demandes/{id}/encadreur` | `{encadreurId}` | 200 `{data}` | 400, 403, 404, 409 |

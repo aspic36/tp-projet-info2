@@ -27,7 +27,7 @@
 | --- | --- | --- | --- |
 | 1 | Ouvrir `/` sans session | Écran de connexion, aucun bandeau d'erreur | `preuves/01-connexion.jpeg` |
 | 2 | Connexion `rachid.kpanou@campus.test` | 2 demandes (1 soumise, 1 refusée) ; dépôt visible | `preuves/02-etudiant-liste.jpeg` |
-| 3 | Choisir « Delta Logistique » | Formulaire rempli, entreprise sélectionnée | `preuves/03-etudiant-formulaire.jpeg` |
+| 3 | Choisir une entreprise dans la liste | Formulaire rempli, entreprise sélectionnée | `preuves/03-etudiant-formulaire.jpeg` |
 | 4 | Créer la demande (dépôt immédiat) | Bandeau « Demande déposée. », 3 demandes, nouvelle ligne **Soumise** | `preuves/04-etudiant-depot.jpeg` |
 | 5 | Recharger la page (F5) | 3 demandes, statuts identiques : persistance en base | `preuves/04-etudiant-depot.jpeg` + requête SQL |
 | 6 | Connexion responsable | 5 demandes visibles, boutons *Valider* / *Refuser* sur les soumises | `preuves/05-responsable-liste.jpeg` |
@@ -53,7 +53,8 @@ La demande créée figure en base avec `statut = 'SOUMISE'` et une
 | --- | --- |
 | `400` | message renvoyé par l'API placé sous le champ concerné (`details`) |
 | `401` | retour à l'écran de connexion, jeton CSRF rafraîchi |
-| `403` | bandeau rouge « Accès interdit à ce dossier. » |
+| `403` | bandeau rouge reprenant le message du serveur (rôle, propriété ou CSRF) |
+| `404` | bandeau « Demande introuvable. », aucun changement d'écran automatique |
 | `409` | bandeau explicite (transition interdite, créneau occupé) |
 | `500` | bandeau neutre « Erreur interne du serveur. », détail dans `logs/app.log` |
 

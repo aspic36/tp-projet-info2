@@ -113,7 +113,7 @@ try {
 <p>Si l'insertion d'historique &eacute;choue, le <code>rollBack()</code> annule aussi la mise &agrave;
 jour du statut : la base reste dans son &eacute;tat ant&eacute;rieur.</p>
 
-<h2 class="pagebreak">5. Six cas test&eacute;s avec sorties</h2>
+<h2 class="pagebreak">5. Seize cas test&eacute;s avec sorties</h2>
 <p>Script reproductible : <code>php tests/api.php</code> (serveur d&eacute;marr&eacute;). Sortie r&eacute;elle
 du 18/11/2026 :</p>
 <pre>Scénario API — base http://127.0.0.1:8000
@@ -145,9 +145,9 @@ Résultat : 0 échec(s) sur 16 cas.</pre>
 <table>
   <tr><th width="8%">Code</th><th width="34%">Cas d&eacute;clencheur</th><th>Message renvoy&eacute;</th></tr>
   <tr><td class="c">201</td><td>Cr&eacute;ation d'une demande valide</td><td><code>{"data": {…}}</code> avec statut et dates</td></tr>
-  <tr><td class="c">400</td><td>Refus sans motif, statut inconnu, entreprise absente</td><td><code>{"message":"Données invalides.","details":{…}}</code></td></tr>
+  <tr><td class="c">400</td><td>Refus sans motif, statut inconnu, entreprise absente</td><td><code>{"message":"Données invalides.","details":{"champ":"..."}}</code></td></tr>
   <tr><td class="c">401</td><td>Session absente ou expir&eacute;e, identifiants faux</td><td><code>{"message":"Authentification requise."}</code></td></tr>
-  <tr><td class="c">403</td><td>&Eacute;tudiant qui valide, dossier d'un autre &eacute;tudiant, CSRF absent</td><td><code>{"message":"Rôle insuffisant pour cette action."}</code></td></tr>
+  <tr><td class="c">403</td><td>&Eacute;tudiant qui valide, dossier d'un autre &eacute;tudiant, CSRF absent</td><td><code>Jeton CSRF invalide ou absent.</code>, <code>Rôle insuffisant pour cette action.</code>, <code>Accès interdit à ce dossier.</code> ou <code>Seul le responsable pédagogique peut valider ou refuser.</code></td></tr>
   <tr><td class="c">404</td><td>Demande 999999</td><td><code>{"message":"Demande introuvable."}</code></td></tr>
   <tr><td class="c">409</td><td><code>VALIDEE → REFUSEE</code>, cr&eacute;neau de soutenance occup&eacute;</td><td><code>{"message":"Transition interdite : VALIDEE vers REFUSEE."}</code></td></tr>
   <tr><td class="c">500</td><td>Base injoignable, erreur non pr&eacute;vue</td><td><code>{"message":"Erreur interne du serveur."}</code></td></tr>

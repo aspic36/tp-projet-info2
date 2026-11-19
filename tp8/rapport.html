@@ -49,35 +49,35 @@ L'audit a trouv&eacute; un d&eacute;faut r&eacute;el dans la recherche : il est 
 en section 3 avec sa correction et les deux sorties avant / apr&egrave;s.</p>
 
 <h2>1. Matrice des contr&ocirc;les de s&eacute;curit&eacute;</h2>
+<p>Les exigences sont identifi&eacute;es ainsi : <strong>ENF-01</strong> confidentialit&eacute; des dossiers,
+<strong>ENF-02</strong> transitions et validation des donn&eacute;es, <strong>ENF-03</strong> mots de passe hach&eacute;s,
+<strong>ENF-04</strong> protection CSRF. L'attendu est fix&eacute; avant l'ex&eacute;cution ; l'observ&eacute;
+est la sortie r&eacute;elle enregistr&eacute;e dans la preuve.</p>
 <table>
-  <tr><th width="7%" class="c">ID</th><th width="45%">Contr&ocirc;le</th><th width="14%" class="c">Attendu</th><th width="12%" class="c">Obtenu</th><th class="c">Statut</th></tr>
-  <tr><td class="c id">S-01</td><td>Connexion des deux &eacute;tudiants</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-02</td><td>&Eacute;tudiant B lit le dossier de l'&eacute;tudiant A</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-03</td><td>La r&eacute;ponse 403 ne contient aucune donn&eacute;e du dossier</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-04</td><td>&Eacute;tudiant affecte un encadreur</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-05</td><td>&Eacute;tudiant lit la liste des comptes</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-06</td><td>Identifiant <code>1 OR 1=1</code></td><td class="c">404</td><td class="c">404</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-07</td><td>Recherche <code>' OR 1=1 --</code> (pas d'erreur 500)</td><td class="c">200</td><td class="c">200</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-08</td><td>Aucune ligne retourn&eacute;e par la cha&icirc;ne inject&eacute;e</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-09</td><td>Connexion avec <code>admin' OR 1=1 --</code></td><td class="c">401</td><td class="c">401</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-10</td><td>Tous les mots de passe sont hach&eacute;s en bcrypt</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-11</td><td>Aucun mot de passe stock&eacute; en clair</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-12</td><td><code>password_verify</code> accepte le mot de passe de d&eacute;monstration</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-13</td><td>&Eacute;criture sans jeton CSRF</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-14</td><td>&Eacute;criture avec un faux jeton CSRF</td><td class="c">403</td><td class="c">403</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-15</td><td>&Eacute;criture avec le jeton valide (cr&eacute;ation brouillon)</td><td class="c">201</td><td class="c">201</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-16</td><td>Statut inconnu envoy&eacute; &agrave; l'API</td><td class="c">400</td><td class="c">400</td><td class="c ok">OK</td></tr>
-  <tr><td class="c id">S-17</td><td>Aucun d&eacute;tail SQL / PDO dans la r&eacute;ponse</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c ok">OK</td></tr>
+  <tr><th width="7%">Test</th><th width="12%">Exigence</th><th width="29%">Donn&eacute;es</th><th width="11%" class="c">Attendu</th><th width="11%" class="c">Observ&eacute;</th><th>Preuve</th></tr>
+  <tr><td class="c id">T-01</td><td>ENF-02</td><td>Demande inexistante <code>999999</code>, r&ocirc;le responsable</td><td class="c">404</td><td class="c ok">404</td><td><code>tp8/preuves/cas-limites.txt</code> C-01</td></tr>
+  <tr><td class="c id">T-02</td><td>ENF-02</td><td>Passage en <code>REFUSEE</code> sans motif</td><td class="c">400</td><td class="c ok">400</td><td><code>tp8/preuves/cas-limites.txt</code> C-02</td></tr>
+  <tr><td class="c id">T-03</td><td>ENF-02</td><td><code>VALIDEE</code> &rarr; <code>VALIDEE</code>, d&eacute;j&agrave; valid&eacute;e</td><td class="c">409</td><td class="c ok">409</td><td><code>tp8/preuves/cas-limites.txt</code> C-03</td></tr>
+  <tr><td class="c id">T-04</td><td>ENF-02</td><td>Soutenance le <code>2026-02-30 10:00</code></td><td class="c">400</td><td class="c ok">400</td><td><code>tp8/preuves/cas-limites.txt</code> C-04</td></tr>
+  <tr><td class="c id">T-05</td><td>ENF-01</td><td>&Eacute;tudiant B lit le dossier #1 de l'&eacute;tudiant A</td><td class="c">403</td><td class="c ok">403</td><td><code>tp8/preuves/securite.txt</code> S-02</td></tr>
+  <tr><td class="c id">T-06</td><td>ENF-01</td><td>La r&eacute;ponse 403 ne contient aucune donn&eacute;e du dossier</td><td class="c">aucune</td><td class="c ok">aucune</td><td><code>tp8/preuves/securite.txt</code> S-03</td></tr>
+  <tr><td class="c id">T-07</td><td>ENF-01</td><td>&Eacute;tudiant affecte un encadreur sur le dossier d'autrui</td><td class="c">403</td><td class="c ok">403</td><td><code>tp8/preuves/securite.txt</code> S-04</td></tr>
+  <tr><td class="c id">T-08</td><td>ENF-02</td><td>Identifiant <code>1 OR 1=1</code></td><td class="c">404</td><td class="c ok">404</td><td><code>tp8/preuves/securite.txt</code> S-06</td></tr>
+  <tr><td class="c id">T-09</td><td>ENF-02</td><td>Recherche <code>' OR 1=1 --</code></td><td class="c">200, 0 ligne</td><td class="c ok">200, 0 ligne</td><td><code>tp8/preuves/securite.txt</code> S-07/S-08</td></tr>
+  <tr><td class="c id">T-10</td><td>ENF-03</td><td>7 mots de passe stock&eacute;s en base</td><td class="c">bcrypt <code>$2y$</code></td><td class="c ok">bcrypt <code>$2y$</code></td><td><code>tp8/preuves/securite.txt</code> S-10/S-11</td></tr>
+  <tr><td class="c id">T-11</td><td>ENF-04</td><td>&Eacute;criture sans jeton CSRF</td><td class="c">403</td><td class="c ok">403</td><td><code>tp8/preuves/securite.txt</code> S-13</td></tr>
+  <tr><td class="c id">T-12</td><td>ENF-02</td><td>Statut inconnu envoy&eacute; &agrave; l'API</td><td class="c">400</td><td class="c ok">400</td><td><code>tp8/preuves/securite.txt</code> S-16</td></tr>
 </table>
-<pre>Audit de sécurité — base http://127.0.0.1:8000
-================================================================================================
-S-01  connexion des deux étudiants                        OK
-S-02  étudiant B lit le dossier #1 de l'étudiant A       attendu 403 | obtenu 403 | OK
-...
-S-17  aucun détail SQL/PDO dans la réponse               OK
-================================================================================================
-Résultat : 0 échec(s).</pre>
-<p class="preuve">Sortie int&eacute;grale : <code>tp8/preuves/securite.txt</code> (code retour 0).</p>
+<pre>Quatre cas limites TP8 — base http://127.0.0.1:8011
+============================================================================================
+C-01 valider la demande 999999             attendu 404 | obtenu 404 | OK
+C-02 refuser sans motif                    attendu 400 | obtenu 400 | OK
+C-03 valider une demande déjà validée   attendu 409 | obtenu 409 | OK | statut=VALIDEE
+C-04 soutenance le 2026-02-30              attendu 400 | obtenu 400 | OK
+============================================================================================
+Résultat : 0 échec(s) sur 4 cas.</pre>
+<p class="preuve">Sorties int&eacute;grales : <code>tp8/preuves/cas-limites.txt</code> et
+<code>tp8/preuves/securite.txt</code> (code retour 0).</p>
 
 <h2>2. Couverture OWASP Top 10 (2021)</h2>
 <table>
@@ -94,8 +94,10 @@ Résultat : 0 échec(s).</pre>
 </table>
 
 <h2 class="pagebreak">3. Revue de code &mdash; quatre remarques class&eacute;es</h2>
+<p>Classification : <strong>accept&eacute;e</strong> = correction int&eacute;gr&eacute;e,
+<strong>report&eacute;e</strong> = inscrite en dette technique, <strong>rejet&eacute;e</strong> = non retenue.</p>
 
-<h3><span class="grav g3">Mineure fonctionnelle</span> &mdash; param&egrave;tre nomm&eacute; r&eacute;p&eacute;t&eacute; dans la recherche (corrig&eacute;)</h3>
+<h3><strong>Accept&eacute;e</strong> &mdash; <span class="grav g3">Mineure fonctionnelle</span> &mdash; param&egrave;tre nomm&eacute; r&eacute;p&eacute;t&eacute; dans la recherche</h3>
 <p>Dans <code>DemandeRepository::search()</code>, la recherche multi-colonnes r&eacute;utilisait
 le m&ecirc;me marqueur <code>:q</code> quatre fois :</p>
 <div class="deux-colonnes">
@@ -132,7 +134,7 @@ Résultat : 0 échec(s).</pre></div>
 <p class="preuve">Sorties compl&egrave;tes : <code>tp8/preuves/securite-avant-correctif.txt</code>
 et <code>tp8/preuves/securite.txt</code>.</p>
 
-<h3><span class="grav g2">Majeure</span> &mdash; jeton CSRF p&eacute;rim&eacute; apr&egrave;s d&eacute;connexion (corrig&eacute;)</h3>
+<h3><strong>Accept&eacute;e</strong> &mdash; <span class="grav g2">Majeure</span> &mdash; jeton CSRF p&eacute;rim&eacute; apr&egrave;s d&eacute;connexion</h3>
 <p>La d&eacute;connexion d&eacute;truit la session, donc le jeton CSRF. Le frontend conservait
 n&eacute;anmoins l'ancien jeton en m&eacute;moire : la premi&egrave;re &eacute;criture apr&egrave;s une
 reconnexion &eacute;tait refus&eacute;e en 403. Correctif : <code>rafraichirJeton()</code> rappelle
@@ -140,7 +142,7 @@ reconnexion &eacute;tait refus&eacute;e en 403. Correctif : <code>rafraichirJeto
 Le contr&ocirc;le S-15 v&eacute;rifie l'&eacute;criture avec le jeton en m&eacute;moire apr&egrave;s connexion ;
 il ne rejoue pas de d&eacute;connexion pr&eacute;alable.</p>
 
-<h3><span class="grav g2">Majeure</span> &mdash; &eacute;crans masqu&eacute;s visibles &agrave; cause de <code>display:flex</code> (corrig&eacute;)</h3>
+<h3><strong>Accept&eacute;e</strong> &mdash; <span class="grav g2">Majeure</span> &mdash; &eacute;crans masqu&eacute;s visibles &agrave; cause de <code>display:flex</code></h3>
 <p>L'attribut <code>hidden</code> a une priorit&eacute; plus faible qu'une r&egrave;gle de classe :
 les blocs en <code>display: flex</code> restaient affich&eacute;s alors qu'ils portaient
 <code>hidden</code> (r&eacute;v&eacute;lation d'actions r&eacute;serv&eacute;es &agrave; d'autres r&ocirc;les,
@@ -149,7 +151,7 @@ donc d&eacute;faut de confidentialit&eacute; au minimum visuel). Correctif globa
 <p>Le contr&ocirc;le serveur reste la vraie barri&egrave;re (S-02 &agrave; S-05) : le correctif CSS
 n'est qu'une mesure de coh&eacute;rence d'affichage.</p>
 
-<h3><span class="grav g3">Mineure</span> &mdash; pas de limitation des tentatives de connexion (accept&eacute;e, v2)</h3>
+<h3><strong>Report&eacute;e</strong> &mdash; <span class="grav g3">Mineure</span> &mdash; pas de limitation des tentatives de connexion</h3>
 <p>Rien ne freine une attaque par force brute sur <code>POST /api/session</code>.
 La mesure est identifi&eacute;e mais report&eacute;e : elle demande un stockage partag&eacute;
 (compteur par IP et par compte) et un temps de r&eacute;ponse constant, hors du p&eacute;rim&egrave;tre
@@ -157,16 +159,18 @@ de cette version. Elle est consign&eacute;e dans la dette technique du <code>REA
 et report&eacute;e &agrave; la version 2.</p>
 
 <h2>4. Tests fonctionnels associ&eacute;s</h2>
-<p>La s&eacute;curit&eacute; ne remplace pas les tests m&eacute;tier : <code>tests/api.php</code> couvre
-16 cas (cr&eacute;ation, lecture, transitions, refus motiv&eacute;, soutenance, doublon) et
-<code>tests/connexion.php</code> v&eacute;rifie la base et ses 7 tables. Le cumul des
-trois scripts donne <strong>34 v&eacute;rifications, 0 &eacute;chec</strong>.</p>
+<p>La s&eacute;curit&eacute; ne remplace pas les tests m&eacute;tier : <code>tests/api-six-cas.php</code>
+couvre les six cas du TP6, <code>tests/cas-limites.php</code> joue les quatre cas
+limit&eacute;s du TP8 et <code>tests/connexion.php</code> v&eacute;rifie la base et ses 7 tables.
+Le cumul des quatre scripts donne <strong>28 v&eacute;rifications, 0 &eacute;chec</strong> ; deux cas
+limites sont volontairement repris dans les deux scripts de test API.</p>
 <table>
   <tr><th width="30%">Script</th><th width="14%" class="c">Contr&ocirc;les</th><th width="16%" class="c">&Eacute;checs</th><th>Preuve</th></tr>
   <tr><td class="id">tests/connexion.php</td><td class="c">1</td><td class="c ok">0</td><td><code>tp4/preuves/connexion.txt</code></td></tr>
-  <tr><td class="id">tests/api.php</td><td class="c">16</td><td class="c ok">0</td><td><code>tp6/preuves/api.txt</code></td></tr>
+  <tr><td class="id">tests/api-six-cas.php</td><td class="c">6</td><td class="c ok">0</td><td><code>tp6/preuves/api.txt</code></td></tr>
+  <tr><td class="id">tests/cas-limites.php</td><td class="c">4</td><td class="c ok">0</td><td><code>tp8/preuves/cas-limites.txt</code></td></tr>
   <tr><td class="id">tests/securite.php</td><td class="c">17</td><td class="c ok">0</td><td><code>tp8/preuves/securite.txt</code></td></tr>
-  <tr><td class="id"><strong>Total</strong></td><td class="c"><strong>34</strong></td><td class="c ok"><strong>0</strong></td><td>&mdash;</td></tr>
+  <tr><td class="id"><strong>Total</strong></td><td class="c"><strong>28</strong></td><td class="c ok"><strong>0</strong></td><td>&mdash;</td></tr>
 </table>
 <p class="note">Certains contr&ocirc;les de s&eacute;curit&eacute; (S-01, S-03, S-08, S-10, S-11, S-12, S-17)
 ne mesurent pas un code HTTP mais une connexion, l'absence de fuite ou le hachage :

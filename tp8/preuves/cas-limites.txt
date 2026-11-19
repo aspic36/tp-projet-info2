@@ -1,0 +1,9 @@
+Quatre cas limites TP8 — base http://127.0.0.1:8011
+============================================================================================
+C-01 valider la demande 999999             attendu 404 | obtenu 404 | OK
+C-02 refuser sans motif                    attendu 400 | obtenu 400 | OK
+C-03 valider une demande déjà validée   attendu 409 | obtenu 409 | OK | statut=VALIDEE
+C-04 soutenance le 2026-02-30              attendu 400 | obtenu 400 | OK
+============================================================================================
+Demande créée pour le test : #6
+Résultat : 0 échec(s) sur 4 cas.

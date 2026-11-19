@@ -365,6 +365,7 @@ function construireActions(conteneur, demande) {
     }
   }
 
+  conteneur.append(boutonAction('Détail', 'detail', demande.id, 'btn btn-petit btn-discret'));
   conteneur.append(boutonAction('Historique', 'historique', demande.id, 'btn btn-petit btn-discret'));
 }
 
@@ -443,6 +444,10 @@ async function agir(action, demandeId) {
 
     if (action === 'programmer') {
       ouvrirSoutenance(demandeId);
+    }
+
+    if (action === 'detail') {
+      await ouvrirDetail(demandeId);
     }
 
     if (action === 'historique') {
@@ -536,6 +541,31 @@ async function confirmerSoutenance(evenement) {
     else if (details.dureeMin) afficherErreurChamp('erreur-duree', details.dureeMin, $('duree-soutenance'));
     else afficherBandeau(erreur.message, 'erreur');
   }
+}
+
+/* ------------------------------------------------------------------ *
+ * Dialogue de détail
+ * ------------------------------------------------------------------ */
+async function ouvrirDetail(demandeId) {
+  const reponse = await api('GET', `/api/demandes/${demandeId}`);
+  const demande = reponse.data;
+  const liste = $('detail-demande');
+  liste.replaceChildren();
+  const champs = [
+    ['Statut', libelleStatut(demande.statut)],
+    ['Étudiant', `${demande.etudiant_prenom} ${demande.etudiant_nom}`],
+    ['Entreprise', demande.entreprise],
+    ['Matricule', demande.matricule || '—'],
+    ['Soumission', formaterDate(demande.date_soumission)],
+    ['Décision', formaterDate(demande.date_decision)],
+    ['Motif de refus', demande.motif_refus || '—'],
+    ['Encadreur', demande.encadreur_id ? `${demande.encadreur_prenom} ${demande.encadreur_nom}` : '—'],
+  ];
+  for (const [libelle, valeur] of champs) {
+    liste.append(creer('dt', { texte: libelle }));
+    liste.append(creer('dd', { texte: String(valeur ?? '—') }));
+  }
+  $('dialogue-detail').showModal();
 }
 
 /* ------------------------------------------------------------------ *

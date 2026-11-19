@@ -157,7 +157,8 @@ Codes d'erreur : `400` données invalides, `401` non authentifié, `403` accès 
 
 ```sh
 php tests/connexion.php      # TP4 : PDO et base joignable
-php tests/api.php            # TP6/TP8 : scénario HTTP complet (serveur démarré)
+php tests/api-six-cas.php    # TP6 : six cas réglementaires (serveur démarré)
+php tests/cas-limites.php    # TP8 : quatre cas limites (serveur démarré)
 php tests/securite.php       # TP8 : autorisations, injection, hachage, CSRF
 ```
 
@@ -211,9 +212,9 @@ tp1/ … tp10/            livrables du cours et preuves
 | TP3 | UML et modèle de données | `tp3/modele_donnees.html/.pdf/.docx`, scripts SQL, diagrammes |
 | TP4 | Squelette et contrat d'API | `tp4/squelette/` : `config/`, `docs/`, `public/`, `src/`, `tests/`, `.env.example`, `.gitignore`, `README.md` et `squelette_contrat_adr.html/.pdf/.docx` |
 | TP5 | Git et organisation d'équipe | `tp5/` (Kanban, historique, conflit résolu) |
-| TP6 | API des demandes | `src/`, `tp6/` (seize cas testés) |
+| TP6 | API des demandes | `src/`, `tp6/` (six cas réglementaires testés) |
 | TP7 | Interface et intégration | `public/`, `tp7/` (captures, test XSS, scénario complet) |
-| TP8 | Tests et sécurité | `tp8/` (matrice, audit, revue de code) |
+| TP8 | Tests et sécurité | `tp8/` (matrice 12 contrôles, 4 cas limites, audit, revue classée) |
 | TP9 | Déploiement et sauvegarde | `tp9/` (installation, sauvegarde/restauration) |
 | TP10 | Dossier et soutenance | `tp10/` (dossier, scénario, rétrospective) |
 

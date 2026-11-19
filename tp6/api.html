@@ -43,11 +43,9 @@ n'&eacute;crit de SQL. Toutes les valeurs passent par des param&egrave;tres li&e
 <table>
   <tr><th width="30%">M&eacute;thode</th><th>R&ocirc;le</th></tr>
   <tr><td class="id">findById(int $id)</td><td>Lit une demande avec les jointures &eacute;tudiant, entreprise et encadreur.</td></tr>
-  <tr><td class="id">findByIdForUpdate(int $id)</td><td>M&ecirc;me lecture avec <code>FOR UPDATE</code> : verrou pessimiste pendant la transaction.</td></tr>
-  <tr><td class="id">search(array $scope, ?string $statut, ?string $q)</td><td>Filtre par p&eacute;rim&egrave;tre de r&ocirc;le, statut et recherche textuelle.</td></tr>
+  <tr><td class="id">findByStudent(int $etudiantId)</td><td>Les demandes d'un &eacute;tudiant, par filtre de p&eacute;rim&egrave;tre.</td></tr>
   <tr><td class="id">create(...)</td><td>Ins&egrave;re une demande au statut <code>BROUILLON</code> ou <code>SOUMISE</code>.</td></tr>
-  <tr><td class="id">updateStatut(...)</td><td>Met &agrave; jour statut, motif et dates de soumission/d&eacute;cision.</td></tr>
-  <tr><td class="id">affecterEncadreur(int $id, int $encadreurId)</td><td>Renseigne l'encadreur d'une demande valid&eacute;e.</td></tr>
+  <tr><td class="id">updateStatus(...)</td><td>Met &agrave; jour statut, motif et dates de soumission/d&eacute;cision.</td></tr>
 </table>
 
 <pre>public function findById(int $id): ?array
@@ -103,7 +101,7 @@ try {
     if (!peutPasser($courante['statut'], $cible)) {        // 2. contr&ocirc;le de transition
         throw new ApiException(409, 'Transition interdite…');
     }
-    $demandes-&gt;updateStatut(...);                          // 3. UPDATE demande_stage
+    $demandes-&gt;updateStatus(...);                          // 3. UPDATE demande_stage
     $historique-&gt;add($id, $courante['statut'], $cible, $user['id'], $motif); // 4. INSERT
     $pdo-&gt;commit();
 } catch (Throwable $e) {
@@ -113,33 +111,25 @@ try {
 <p>Si l'insertion d'historique &eacute;choue, le <code>rollBack()</code> annule aussi la mise &agrave;
 jour du statut : la base reste dans son &eacute;tat ant&eacute;rieur.</p>
 
-<h2 class="pagebreak">5. Seize cas test&eacute;s avec sorties</h2>
-<p>Script reproductible : <code>php tests/api.php</code> (serveur d&eacute;marr&eacute;). Sortie r&eacute;elle
-du 18/11/2026 :</p>
-<pre>Scénario API — base http://127.0.0.1:8000
-================================================================================================
-T-00 GET /api/sante                            attendu 200 | obtenu 200 | OK
-T-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
-T-02 POST /api/session (étudiant)              attendu 200 | obtenu 200 | OK
-T-03 POST /api/demandes                        attendu 201 | obtenu 201 | OK
-T-04 GET /api/demandes                         attendu 200 | obtenu 200 | OK
-T-05 PATCH statut par l’étudiant               attendu 403 | obtenu 403 | OK
-T-06 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
-T-07 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
-T-08 SOUMISE→VALIDEE par le responsable        attendu 200 | obtenu 200 | OK
-T-09 VALIDEE→REFUSEE interdite                 attendu 409 | obtenu 409 | OK
-T-10 PATCH sans jeton CSRF                     attendu 403 | obtenu 403 | OK
-T-11 GET historique                            attendu 200 | obtenu 200 | OK
-T-12 soutenance le 2026-02-30                  attendu 400 | obtenu 400 | OK
-T-13 soutenance dans le passé                  attendu 400 | obtenu 400 | OK
-T-14 POST /api/soutenances                     attendu 201 | obtenu 201 | OK
-T-15 deuxième soutenance (doublon)            attendu 409 | obtenu 409 | OK
-================================================================================================
-Demande créée pour le test : #7
-Événements d'historique : —→SOUMISE, SOUMISE→VALIDEE
-Résultat : 0 échec(s) sur 16 cas.</pre>
-<p class="note">Sortie compl&egrave;te : <code>tp6/preuves/api.txt</code>. Les cas 400, 401, 403,
-404 et 409 sont tous couverts ; le cas 201 est le succ&egrave;s de cr&eacute;ation.</p>
+<h2 class="pagebreak">5. Six cas test&eacute;s avec sorties</h2>
+<p>Script reproductible : <code>php tests/api-six-cas.php</code> (serveur d&eacute;marr&eacute;). Sortie
+r&eacute;elle du 19/11/2026 :</p>
+<pre>Six cas TP6 — base http://127.0.0.1:8011
+========================================================================================
+C-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
+C-02 POST /api/demandes (succès)              attendu 201 | obtenu 201 | OK
+C-03 PATCH par un étudiant                    attendu 403 | obtenu 403 | OK
+C-04 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
+C-05 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
+C-06 validation répétée VALIDEE→VALIDEE   attendu 409 | obtenu 409 | OK
+========================================================================================
+Demande créée pour le test : #5
+Statut après répétition : VALIDEE
+Résultat : 0 échec(s) sur 6 cas.</pre>
+<p class="note">Sortie compl&egrave;te : <code>tp6/preuves/api.txt</code>. Les six cas couvrent
+succ&egrave;s, 400, 401, 403, 404 et 409 ; la validation r&eacute;p&eacute;t&eacute;e laisse le statut
+<code>VALIDEE</code>. Le sc&eacute;nario &eacute;tendu (16 cas, soutenance comprise) reste disponible
+dans <code>tp6/preuves/api-complet.txt</code>.</p>
 
 <h2>6. Codes HTTP et messages</h2>
 <table>

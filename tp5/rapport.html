@@ -47,7 +47,7 @@ reste visible dans le graphe.</p>
 <table>
   <tr><th width="24%">Branche</th><th width="38%">Contenu</th><th>Fusion</th></tr>
   <tr><td class="id">feature/tp4-socle</td><td>Socle, configuration, contrat d'API, ADR-001</td><td><code>3ac760c</code></td></tr>
-  <tr><td class="id">feature/tp6-api</td><td>D&eacute;p&ocirc;ts, services, contr&ocirc;leurs, 16 cas de test</td><td><code>3ad26a2</code></td></tr>
+  <tr><td class="id">feature/tp6-api</td><td>D&eacute;p&ocirc;ts, services, contr&ocirc;leurs, six cas de test</td><td><code>3ad26a2</code></td></tr>
   <tr><td class="id">feature/tp7-interface</td><td>Page unique, feuille de style, sc&eacute;nario et captures</td><td><code>6b467b7</code></td></tr>
   <tr><td class="id">feature/tp8-tests</td><td>Audit de s&eacute;curit&eacute;, revue de code</td><td><code>cca22bf</code></td></tr>
   <tr><td class="id">feature/tp9-exploitation</td><td>Scripts de sauvegarde, proc&eacute;dure, incident</td><td><code>513bb0d</code></td></tr>
@@ -70,21 +70,22 @@ fusionn&eacute;e repasse en revue avant la fusion suivante.</p>
   <tr><td class="id">En revue</td><td>&mdash;</td></tr>
   <tr><td class="id">Termin&eacute;</td><td>K-01 &agrave; K-08</td></tr>
 </table>
-<p class="note">Le tableau complet (propri&eacute;taire, estimation, d&eacute;finition de
-&laquo; fini &raquo;, commit associ&eacute;, suivi des sept s&eacute;ances) est dans
-<code>docs/kanban.md</code>.</p>
+<p class="note">La s&eacute;ance TP5 dure 1 h : les huit estimations sont inf&eacute;rieures &agrave; 1 h.
+Le tableau complet (propri&eacute;taire, d&eacute;finition de &laquo; fini &raquo;, commit associ&eacute;,
+suivi des sept s&eacute;ances) est dans <code>docs/kanban.md</code>.</p>
+<p class="preuve">Capture du tableau : <code>tp5/preuves/kanban.png</code>.</p>
 </div>
 <div>
 <table>
   <tr><th width="10%">ID</th><th>Carte</th><th width="22%">Dur&eacute;e</th></tr>
-  <tr><td class="c">K-01</td><td>Mod&egrave;le relationnel et jeu d'essai</td><td>1 h 30</td></tr>
-  <tr><td class="c">K-02</td><td>Squelette, configuration, PDO</td><td>1 h</td></tr>
+  <tr><td class="c">K-01</td><td>Mod&egrave;le relationnel et jeu d'essai</td><td>45 min</td></tr>
+  <tr><td class="c">K-02</td><td>Squelette, configuration, PDO</td><td>45 min</td></tr>
   <tr><td class="c">K-03</td><td>Contrat d'API et ADR-001</td><td>45 min</td></tr>
-  <tr><td class="c">K-04</td><td>API des demandes et transitions</td><td>2 h</td></tr>
-  <tr><td class="c">K-05</td><td>Interface web des deux r&ocirc;les</td><td>2 h</td></tr>
-  <tr><td class="c">K-06</td><td>Tests de s&eacute;curit&eacute; et revue</td><td>1 h 30</td></tr>
-  <tr><td class="c">K-07</td><td>Installation, sauvegarde, restauration</td><td>1 h 30</td></tr>
-  <tr><td class="c">K-08</td><td>Dossier et soutenance</td><td>1 h 30</td></tr>
+  <tr><td class="c">K-04</td><td>API des demandes et transitions</td><td>50 min</td></tr>
+  <tr><td class="c">K-05</td><td>Interface web des deux r&ocirc;les</td><td>50 min</td></tr>
+  <tr><td class="c">K-06</td><td>Tests de s&eacute;curit&eacute; et revue</td><td>45 min</td></tr>
+  <tr><td class="c">K-07</td><td>Installation, sauvegarde, restauration</td><td>45 min</td></tr>
+  <tr><td class="c">K-08</td><td>Dossier et soutenance</td><td>40 min</td></tr>
 </table>
 </div>
 </div>
@@ -122,10 +123,10 @@ $ git log --oneline -1
 cef035e merge: doc taille du jeton</pre>
 </div>
 </div>
-<p>V&eacute;rification apr&egrave;s la fusion : les trois scripts de test sont relanc&eacute;s
+<p>V&eacute;rification apr&egrave;s la fusion : les scripts de test alors en place sont relanc&eacute;s
 et passent (0 &eacute;chec), et aucun marqueur ne subsiste dans le fichier.</p>
 <pre>Connexion PDO : OK          (tests/connexion.php)
-Résultat : 0 échec(s) sur 16 cas.   (tests/api.php)
+Résultat : 0 échec(s) sur 16 cas.   (tests/api.php, scénario complet archivé)
 Résultat : 0 échec(s).               (tests/securite.php)</pre>
 <p class="preuve">D&eacute;tail, y compris <code>git status</code> pendant le conflit :
 <code>tp5/preuves/conflit.txt</code> et <code>tp5/preuves/tests-apres-fusion.txt</code>.</p>
@@ -198,9 +199,9 @@ branches sont dans <code>tp5/preuves/historique.txt</code>. Les commits de preuv
     <td><strong>tp7: interface web</strong> &mdash; le choix de <code>textContent</code> plut&ocirc;t que <code>innerHTML</code>, et la mani&egrave;re dont le test XSS stock&eacute; le prouve (z&eacute;ro balise cr&eacute;&eacute;e).</td>
   </tr>
 </table>
-<p class="note">Les libell&eacute;s M1 &agrave; M3 sont remplac&eacute;s par les pr&eacute;noms de
-l'&eacute;quipe dans la version remise. L'historique Git fait foi : chaque branche porte un
-seul commit, attribu&eacute; &agrave; son auteur.</p>
+<p class="note">Les libell&eacute;s M1 &agrave; M3 sont conserv&eacute;s dans la version remise,
+comme demand&eacute;. L'historique Git fait foi : chaque branche porte un seul commit,
+attribu&eacute; &agrave; son auteur.</p>
 
 <h2>6. Ce que l'&eacute;quipe retient</h2>
 <ul>

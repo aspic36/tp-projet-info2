@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanban — huit cartes</title>
+<style>
+  :root { color-scheme: light; font-family: ui-sans-serif, system-ui, sans-serif; }
+  body { margin: 0; padding: 32px; background: #f4f6f8; color: #16212b; }
+  header { margin-bottom: 24px; }
+  h1 { margin: 0 0 6px; font-size: 28px; }
+  p { margin: 0; color: #53636f; }
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  section { background: #fff; border: 1px solid #d8e0e6; border-radius: 10px; min-height: 420px; padding: 12px; }
+  h2 { margin: 0 0 12px; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: #34495e; }
+  article { border: 1px solid #cdd8e0; border-left: 4px solid #2b7a78; border-radius: 6px; padding: 10px; margin-bottom: 10px; background: #fbfcfd; }
+  .id { font-weight: 700; color: #2b7a78; }
+  .titre { margin: 3px 0 7px; font-size: 14px; }
+  .meta { font-size: 12px; color: #62737f; }
+  .vide { color: #8a99a4; font-style: italic; font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Kanban du projet — huit cartes</h1>
+  <p>Séance TP5 : 1 h. Chaque carte tient en moins d'une séance.</p>
+</header>
+<div class="board">
+  <section><h2>À faire</h2><p class="vide">Aucune carte</p></section>
+  <section><h2>En cours</h2><p class="vide">Aucune carte</p></section>
+  <section><h2>En revue</h2><p class="vide">Aucune carte</p></section>
+  <section>
+    <h2>Terminé</h2>
+    <article><span class="id">K-01</span><div class="titre">Modèle relationnel et jeu d'essai</div><div class="meta">M1 · 45 min</div></article>
+    <article><span class="id">K-02</span><div class="titre">Squelette, configuration et PDO</div><div class="meta">M1 · 45 min</div></article>
+    <article><span class="id">K-03</span><div class="titre">Contrat d'API et ADR-001</div><div class="meta">M2 · 45 min</div></article>
+    <article><span class="id">K-04</span><div class="titre">API des demandes et transitions</div><div class="meta">M2 · 50 min</div></article>
+    <article><span class="id">K-05</span><div class="titre">Interface web des deux rôles</div><div class="meta">M3 · 50 min</div></article>
+    <article><span class="id">K-06</span><div class="titre">Tests de sécurité et revue</div><div class="meta">M3 · 45 min</div></article>
+    <article><span class="id">K-07</span><div class="titre">Installation, sauvegarde, restauration</div><div class="meta">M1 · 45 min</div></article>
+    <article><span class="id">K-08</span><div class="titre">Dossier et soutenance</div><div class="meta">M2 + M3 · 40 min</div></article>
+  </section>
+</div>
+</body>
+</html>

@@ -187,7 +187,7 @@ r&eacute;ponses sont en JSON ; les &eacute;critures exigent le jeton <code>X-CSR
     <td class="id">GET</td><td><code>/api/demandes</code></td>
     <td>Aucun. Filtres facultatifs <code>?statut=</code> et <code>?q=</code>.</td>
     <td class="c">200</td>
-    <td>400 statut inconnu ; 401 non connect&eacute;</td>
+    <td>401 non connect&eacute; ; 403 r&ocirc;le sans droit sur la liste</td>
   </tr>
   <tr>
     <td class="id">POST</td><td><code>/api/demandes</code></td>
@@ -260,15 +260,11 @@ de d&eacute;veloppement.</p>
 
 <h2>6. ADR-001 &mdash; Monolithe modulaire PHP sans framework</h2>
 <table>
-  <tr><th width="16%">D&eacute;cision</th><td>Monolithe modulaire PHP 8, front controller unique, PDO, couches
-  <code>Controllers → Services → Repositories</code>, sans framework ni Composer.</td></tr>
-  <tr><th>Contexte</th><td>Projet universitaire de 2 h par s&eacute;ance, postes Windows sans Composer
-  garanti, installation exig&eacute;e sur un second poste &agrave; partir du seul d&eacute;p&ocirc;t.</td></tr>
-  <tr><th>Cons&eacute;quences</th><td>Installation r&eacute;duite &agrave; PHP et MySQL ; autoload, routeur et
-  validation &eacute;crits &agrave; la main (environ 400 lignes testables) ; SQL explicite en requ&ecirc;tes
-  pr&eacute;par&eacute;es ; couches rempla&ccedil;ables ind&eacute;pendamment.</td></tr>
-  <tr><th>Alternatives</th><td>Laravel (&eacute;cart&eacute; : installation lourde, hors du temps disponible) ;
-  SQLite (&eacute;cart&eacute; : le cours impose MySQL) ; micro-services (surdimensionn&eacute;).</td></tr>
+  <tr><th width="22%">Contexte</th><td>&Eacute;quipe de trois ou quatre &eacute;tudiants, 25 h, postes Windows sans Composer garanti ; installation exig&eacute;e sur un second poste.</td></tr>
+  <tr><th>D&eacute;cision</th><td>Monolithe modulaire PHP 8, front controller, PDO, couches <code>Controllers → Services → Repositories</code> ; SQL uniquement dans les d&eacute;p&ocirc;ts.</td></tr>
+  <tr><th>Cons&eacute;quences positives</th><td>D&eacute;marrage rapide, peu de d&eacute;pendances, couches rempla&ccedil;ables par des doubles de test.</td></tr>
+  <tr><th>Cons&eacute;quences n&eacute;gatives</th><td>Routeur et validation &eacute;crits &agrave; la main, couplage plus fort entre modules.</td></tr>
+  <tr><th>Alternatives &eacute;cart&eacute;es</th><td>Laravel trop lourd pour 25 h, SQLite &eacute;cart&eacute; par le cours, micro-services surdimensionn&eacute;s.</td></tr>
 </table>
 
 <footer>

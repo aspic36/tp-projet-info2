@@ -1,22 +1,12 @@
-Scénario API — base http://127.0.0.1:8000
-================================================================================================
-T-00 GET /api/sante                            attendu 200 | obtenu 200 | OK
-T-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
-T-02 POST /api/session (étudiant)             attendu 200 | obtenu 200 | OK
-T-03 POST /api/demandes                        attendu 201 | obtenu 201 | OK
-T-04 GET /api/demandes                         attendu 200 | obtenu 200 | OK
-T-05 PATCH statut par l’étudiant            attendu 403 | obtenu 403 | OK
-T-06 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
-T-07 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
-T-08 SOUMISE→VALIDEE par le responsable      attendu 200 | obtenu 200 | OK
-T-09 VALIDEE→REFUSEE interdite               attendu 409 | obtenu 409 | OK
-T-10 PATCH sans jeton CSRF                     attendu 403 | obtenu 403 | OK
-T-11 GET historique                            attendu 200 | obtenu 200 | OK
-T-12 soutenance le 2026-02-30                  attendu 400 | obtenu 400 | OK
-T-13 soutenance dans le passé                 attendu 400 | obtenu 400 | OK
-T-14 POST /api/soutenances                     attendu 201 | obtenu 201 | OK
-T-15 deuxième soutenance (doublon)            attendu 409 | obtenu 409 | OK
-================================================================================================
-Demande créée pour le test : #7
-Événements d'historique : —→SOUMISE, SOUMISE→VALIDEE
-Résultat : 0 échec(s) sur 16 cas.
+Six cas TP6 — base http://127.0.0.1:8011
+========================================================================================
+C-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
+C-02 POST /api/demandes (succès)              attendu 201 | obtenu 201 | OK
+C-03 PATCH par un étudiant                    attendu 403 | obtenu 403 | OK
+C-04 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
+C-05 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
+C-06 validation répétée VALIDEE→VALIDEE   attendu 409 | obtenu 409 | OK
+========================================================================================
+Demande créée pour le test : #5
+Statut après répétition : VALIDEE
+Résultat : 0 échec(s) sur 6 cas.

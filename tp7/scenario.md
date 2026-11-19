@@ -11,15 +11,16 @@
 2. **Mes demandes** — tableau filtré par le serveur sur `etudiant_id` ;
    boutons *Soumettre* (brouillon), *Corriger* (refusée), *Historique*.
 3. **Dépôt** — choix de l'entreprise, case « Déposer immédiatement ».
-4. **Historique** — fenêtre modale listant chaque transition, son auteur et son motif.
+4. **Détail d'une demande** — fenêtre modale alimentée par `GET /api/demandes/{id}` (statut, étudiant, entreprise, dates, motif, encadreur) ; l'historique reste accessible depuis la liste.
 
 ### Responsable / secrétariat (3 écrans)
 
 1. **Connexion**.
 2. **Demandes à traiter** — recherche par nom, matricule ou entreprise ; filtre
    par statut.
-3. **Décision ou planification** — validation directe, refus avec motif
-   obligatoire, affectation d'un encadreur, programmation de la soutenance.
+3. **Décision** — validation directe, refus avec motif obligatoire,
+   affectation d'un encadreur et programmation de la soutenance ; le planning est
+   affiché dans le même écran.
 
 ## Scénario joué
 

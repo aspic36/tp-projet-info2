@@ -53,6 +53,11 @@ final class DemandeRepository
      * @param array{etudiant_id?:int,encadreur_id?:int} $scope
      * @return array<int,array<string,mixed>>
      */
+    public function findByStudent(int $etudiantId): array
+    {
+        return $this->search(['etudiant_id' => $etudiantId]);
+    }
+
     public function search(array $scope, ?string $statut = null, ?string $q = null): array
     {
         $where = [];
@@ -109,7 +114,7 @@ final class DemandeRepository
         return (int) $this->pdo->lastInsertId();
     }
 
-    public function updateStatut(
+    public function updateStatus(
         int $id,
         string $statut,
         ?string $motif,

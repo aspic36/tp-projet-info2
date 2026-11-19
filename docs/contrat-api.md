@@ -48,8 +48,8 @@ Liste les demandes visibles par le compte connecté.
 
 | Code | Cas |
 | --- | --- |
-| 400 | `statut` hors de la liste autorisée |
 | 401 | session absente ou expirée |
+| 403 | rôle sans droit sur la liste demandée |
 
 ## 2. `POST /api/demandes`
 

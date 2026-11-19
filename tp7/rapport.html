@@ -59,17 +59,16 @@ front / back, ce qui rend l'API r&eacute;utilisable par un futur client mobile.<
   <tr><td class="id">Connexion</td><td>E-mail, mot de passe, erreurs sous chaque champ.</td></tr>
   <tr><td class="id">Mes demandes</td><td>Tableau filtr&eacute; c&ocirc;t&eacute; serveur sur <code>etudiant_id</code> ; boutons <em>Soumettre</em>, <em>Corriger</em>, <em>Historique</em>.</td></tr>
   <tr><td class="id">D&eacute;p&ocirc;t</td><td>Choix de l'entreprise, case &laquo; D&eacute;poser imm&eacute;diatement &raquo;.</td></tr>
-  <tr><td class="id">Historique</td><td>Fen&ecirc;tre modale : chaque transition, son auteur, son motif, son horodatage.</td></tr>
+  <tr><td class="id">D&eacute;tail d'une demande</td><td>Fen&ecirc;tre modale aliment&eacute;e par <code>GET /api/demandes/{id}</code> : statut, &eacute;tudiant, entreprise, dates, motif, encadreur.</td></tr>
 </table>
 </div>
 <div>
-<h3>Responsable / secr&eacute;tariat (4 &eacute;crans)</h3>
+<h3>Responsable / secr&eacute;tariat (3 &eacute;crans)</h3>
 <table>
   <tr><th width="34%">&Eacute;cran</th><th>Contenu</th></tr>
   <tr><td class="id">Connexion</td><td>Identique, redirection selon le r&ocirc;le.</td></tr>
   <tr><td class="id">Demandes &agrave; traiter</td><td>Recherche par nom, matricule ou entreprise ; filtre par statut ; compteur du p&eacute;rim&egrave;tre.</td></tr>
-  <tr><td class="id">D&eacute;cision</td><td><em>Valider</em>, <em>Refuser</em> (motif obligatoire), <em>Affecter</em> un encadreur, <em>Programmer</em> une soutenance.</td></tr>
-  <tr><td class="id">Planning</td><td>Tableau des soutenances tri&eacute;es par date.</td></tr>
+  <tr><td class="id">D&eacute;cision</td><td><em>Valider</em>, <em>Refuser</em> (motif obligatoire), <em>Affecter</em> un encadreur, <em>Programmer</em> une soutenance ; le planning est affich&eacute; dans le m&ecirc;me &eacute;cran.</td></tr>
 </table>
 </div>
 </div>

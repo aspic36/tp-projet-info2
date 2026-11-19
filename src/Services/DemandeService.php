@@ -161,7 +161,7 @@ final class DemandeService
                 $dateDecision = $now;
             }
 
-            $this->demandes->updateStatut($id, $cible, $motif, $dateSoumission, $dateDecision);
+            $this->demandes->updateStatus($id, $cible, $motif, $dateSoumission, $dateDecision);
             $this->historique->add($id, (string) $courante['statut'], $cible, (int) $user['id'], $motif);
             $this->pdo->commit();
         } catch (\Throwable $e) {

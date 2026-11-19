@@ -74,7 +74,7 @@ verifier('C-01 GET /api/demandes sans session', 401, $anonyme);
 $etudiant = session($base, $jar, 'rachid.kpanou@campus.test');
 $csrfEtudiant = $etudiant['json']['csrfToken'] ?? '';
 $creation = http($base, $jar, 'POST', '/api/demandes', [
-    'entrepriseId' => 1,
+    'entrepriseId' => 3,
     'soumettre'    => true,
 ], $csrfEtudiant);
 verifier('C-02 POST /api/demandes (succès)', 201, $creation);

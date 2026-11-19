@@ -144,13 +144,13 @@ $hashDemo = (string) $pdo->query(
 controlerVrai('S-12', 'password_verify accepte le mot de passe de démonstration', password_verify('Stage2026!', $hashDemo));
 
 // --- CSRF -----------------------------------------------------------------
-$sansJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 1]);
+$sansJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 7]);
 controler('S-13', 'écriture sans jeton CSRF', 403, $sansJeton['status']);
 
-$mauvaisJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 1], str_repeat('a', 64));
+$mauvaisJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 7], str_repeat('a', 64));
 controler('S-14', 'écriture avec un faux jeton CSRF', 403, $mauvaisJeton['status']);
 
-$bonJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 1, 'soumettre' => false], $csrfA);
+$bonJeton = appel($base, $jarEtudiant, 'POST', '/api/demandes', ['entrepriseId' => 7, 'soumettre' => false], $csrfA);
 controler('S-15', 'écriture avec le jeton valide (création brouillon)', 201, $bonJeton['status']);
 
 // --- Fuite d'information --------------------------------------------------

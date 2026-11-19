@@ -12,7 +12,14 @@ SET NAMES utf8mb4;
 
 DROP VIEW IF EXISTS v_planning_soutenances;
 DROP VIEW IF EXISTS v_demandes_a_traiter;
+DROP TABLE IF EXISTS soutenance_jury;
+DROP TABLE IF EXISTS notification;
+DROP TABLE IF EXISTS piece_jointe;
+DROP TABLE IF EXISTS commentaire_demande;
+DROP TABLE IF EXISTS reinitialisation_mot_de_passe;
+DROP TABLE IF EXISTS journal_audit;
 DROP TABLE IF EXISTS soutenance;
+DROP TABLE IF EXISTS salle;
 DROP TABLE IF EXISTS historique;
 DROP TABLE IF EXISTS demande_stage;
 DROP TABLE IF EXISTS encadreur;

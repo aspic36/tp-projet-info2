@@ -59,6 +59,13 @@ final class Request
         return is_string($value) ? $value : $default;
     }
 
+    /** @return mixed */
+    public function post(string $key, mixed $default = null): mixed
+    {
+        $value = $_POST[$key] ?? $default;
+        return is_scalar($value) || is_array($value) ? $value : $default;
+    }
+
     public function header(string $name): ?string
     {
         $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
@@ -83,5 +90,40 @@ final class Request
             throw new ApiException(400, 'Identifiant invalide.');
         }
         return (int) $value;
+    }
+
+    public function queryInt(string $key, int $default, int $min = 1, ?int $max = null): int
+    {
+        $value = $this->query($key);
+        if ($value === null || !preg_match('/^\d+$/', $value)) {
+            return $default;
+        }
+        $nombre = (int) $value;
+        if ($nombre < $min) {
+            return $min;
+        }
+        if ($max !== null && $nombre > $max) {
+            return $max;
+        }
+        return $nombre;
+    }
+
+    /** @return array<string,mixed>|null */
+    public function file(string $key): ?array
+    {
+        $file = $_FILES[$key] ?? null;
+        return is_array($file) ? $file : null;
+    }
+
+    public function ip(): ?string
+    {
+        $value = $_SERVER['REMOTE_ADDR'] ?? null;
+        return is_string($value) ? $value : null;
+    }
+
+    public function userAgent(): ?string
+    {
+        $value = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        return is_string($value) ? mb_substr($value, 0, 255) : null;
     }
 }

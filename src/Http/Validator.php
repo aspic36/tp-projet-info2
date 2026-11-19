@@ -77,6 +77,98 @@ final class Validator
         return $value;
     }
 
+    public static function optionalPositiveInt(array $data, string $key, string $label): ?int
+    {
+        $value = $data[$key] ?? null;
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_string($value) && ctype_digit($value)) {
+            $value = (int) $value;
+        }
+        if (!is_int($value) || $value < 1) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label doit être un entier positif."]);
+        }
+        return $value;
+    }
+
+    public static function email(array $data, string $key, string $label): string
+    {
+        $value = self::requiredString($data, $key, $label, 100);
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label n’est pas valide."]);
+        }
+        return mb_strtolower($value);
+    }
+
+    public static function optionalEmail(array $data, string $key, string $label): ?string
+    {
+        $value = self::optionalString($data, $key, 100);
+        if ($value === null) {
+            return null;
+        }
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label n’est pas valide."]);
+        }
+        return mb_strtolower($value);
+    }
+
+    public static function date(array $data, string $key, string $label, bool $obligatoire = true): ?string
+    {
+        $value = $data[$key] ?? null;
+        if ($value === null || $value === '') {
+            if ($obligatoire) {
+                throw new ApiException(400, 'Données invalides.', [$key => "$label est obligatoire."]);
+            }
+            return null;
+        }
+        if (!is_string($value) || preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) !== 1) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label doit être au format AAAA-MM-JJ."]);
+        }
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
+        $errors = \DateTimeImmutable::getLastErrors();
+        if ($date === false || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label est une date inexistante."]);
+        }
+        return $date->format('Y-m-d');
+    }
+
+    /** @return array<int,int> */
+    public static function positiveIntList(array $data, string $key, string $label): array
+    {
+        $value = $data[$key] ?? null;
+        if (!is_array($value) || $value === []) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label doit être une liste non vide."]);
+        }
+        $ids = [];
+        foreach ($value as $item) {
+            if (is_string($item) && ctype_digit($item)) {
+                $item = (int) $item;
+            }
+            if (!is_int($item) || $item < 1) {
+                throw new ApiException(400, 'Données invalides.', [$key => "$label contient un identifiant invalide."]);
+            }
+            $ids[] = $item;
+        }
+        return array_values(array_unique($ids));
+    }
+
+    public static function decimal(array $data, string $key, string $label, float $min, float $max): float
+    {
+        $value = $data[$key] ?? null;
+        if (is_string($value) && is_numeric($value)) {
+            $value = (float) $value;
+        }
+        if (!is_int($value) && !is_float($value)) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label est obligatoire."]);
+        }
+        $value = (float) $value;
+        if ($value < $min || $value > $max) {
+            throw new ApiException(400, 'Données invalides.', [$key => "$label doit être comprise entre $min et $max."]);
+        }
+        return $value;
+    }
+
     /** Date/heure au format « Y-m-d H:i » ou ISO « Y-m-d\TH:i », convertie en SQL. */
     public static function dateTime(array $data, string $key, string $label): string
     {

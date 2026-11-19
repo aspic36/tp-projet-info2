@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Http\ApiException;
 use App\Repositories\UtilisateurRepository;
+use App\Support\Audit;
 
 /**
  * Authentification par session : mot de passe vérifié, identifiant de session
@@ -13,8 +14,10 @@ use App\Repositories\UtilisateurRepository;
  */
 final class AuthService
 {
-    public function __construct(private readonly UtilisateurRepository $users)
-    {
+    public function __construct(
+        private readonly UtilisateurRepository $users,
+        private readonly ?Audit $audit = null
+    ) {
     }
 
     /** @return array<string,mixed>|null */
@@ -39,10 +42,15 @@ final class AuthService
             $etudiant = $this->users->findEtudiant($user['id']);
             $user['etudiant_id'] = $etudiant['id'] ?? null;
             $user['matricule'] = $etudiant['matricule'] ?? null;
+            $user['filiere'] = $etudiant['filiere'] ?? null;
+            $user['promotion'] = $etudiant['promotion'] ?? null;
         }
         if ($user['role'] === 'ENCADREUR') {
             $encadreur = $this->users->findEncadreur($user['id']);
             $user['encadreur_id'] = $encadreur['id'] ?? null;
+            $user['grade'] = $encadreur['grade'] ?? null;
+            $user['departement'] = $encadreur['departement'] ?? null;
+            $user['charge_max'] = $encadreur['charge_max'] ?? null;
         }
 
         return $user;
@@ -56,9 +64,11 @@ final class AuthService
 
         // Message identique pour un compte inconnu et un mot de passe faux.
         if ($row === null || (int) $row['actif'] !== 1) {
+            $this->audit?->log(null, 'CONNEXION_ECHEC', 'session', null, ['email' => $email]);
             throw new ApiException(401, 'Identifiants incorrects.');
         }
         if (!password_verify($password, (string) $row['mot_de_passe'])) {
+            $this->audit?->log((int) $row['id'], 'CONNEXION_ECHEC', 'session', null, ['email' => $email]);
             throw new ApiException(401, 'Identifiants incorrects.');
         }
 
@@ -69,11 +79,16 @@ final class AuthService
         if ($user === null) {
             throw new ApiException(500, 'Session impossible à établir.');
         }
+        $this->audit?->log((int) $row['id'], 'CONNEXION', 'session');
         return $user;
     }
 
     public function logout(): void
     {
+        $id = $_SESSION['user_id'] ?? null;
+        if (is_int($id) || (is_string($id) && ctype_digit($id))) {
+            $this->audit?->log((int) $id, 'DECONNEXION', 'session');
+        }
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();

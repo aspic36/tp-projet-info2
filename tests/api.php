@@ -101,7 +101,7 @@ verifier('T-01 GET /api/demandes sans session', 401, $anonyme);
 $etudiant = session($base, $jar, 'rachid.kpanou@campus.test');
 verifier('T-02 POST /api/session (étudiant)', 200, $etudiant);
 $csrfEtudiant = $etudiant['json']['csrfToken'] ?? '';
-$entrepriseId = 1;
+$entrepriseId = 4;
 
 // 3. Création d'une demande soumise
 $creation = http($base, $jar, 'POST', '/api/demandes', [
@@ -157,6 +157,13 @@ $historique = http($base, $jar, 'GET', "/api/demandes/$demandeId/historique");
 verifier('T-11 GET historique', 200, $historique);
 
 // 12. Secrétariat : date de soutenance inexistante
+$responsableAffectation = session($base, $jar, 'responsable.stages@campus.test');
+$csrfRespAffectation = $responsableAffectation['json']['csrfToken'] ?? '';
+$affectation = http($base, $jar, 'PATCH', "/api/demandes/$demandeId/encadreur", [
+    'encadreurId' => 1,
+], $csrfRespAffectation);
+verifier('T-11b affectation encadreur', 200, $affectation);
+
 $secretariat = session($base, $jar, 'accueil@campus.test');
 $csrfSec = $secretariat['json']['csrfToken'] ?? '';
 $dateInvalide = http($base, $jar, 'POST', '/api/soutenances', [

@@ -20,19 +20,24 @@ Données **fictives** uniquement. Dépôt partagé du groupe :
 
 ## Périmètre
 
-Un étudiant dépose une demande de stage ; le responsable pédagogique la valide ou la
-refuse avec un motif ; le secrétariat affecte un encadreur puis programme la
-soutenance. Chaque décision est horodatée et conservée dans un historique.
+Un étudiant dépose une demande de stage, propose une entreprise et suit ses
+notifications ; le responsable pédagogique valide, refuse ou traite les demandes en
+lot ; le secrétariat gère les comptes, affecte un encadreur, programme la soutenance
+et envoie les convocations ; l'encadreur rend un rapport et attribue une note.
+Chaque décision est horodatée, journalisée dans l'audit et conservée dans un
+historique. Tableaux de bord, exports et documents sont disponibles selon le rôle.
 
 Cycle de vie d'une demande :
 
 ```
-BROUILLON ──► SOUMISE ──► VALIDEE
-                 │
-                 └─────► REFUSEE ──► BROUILLON
+BROUILLON → SOUMISE → VALIDEE
+BROUILLON → ANNULEE
+SOUMISE   → ANNULEE
+SOUMISE   → REFUSEE → BROUILLON
 ```
 
-Toute autre transition est refusée avec le code **409**.
+Une seule demande active (`BROUILLON`, `SOUMISE`, `VALIDEE`) est autorisée par
+étudiant et par entreprise. Toute autre transition est refusée avec le code **409**.
 
 ## Prérequis
 
@@ -72,8 +77,13 @@ Ces étapes sont la procédure d'installation retenue pour le projet.
    ```sh
    mysql -u root -p stages < tp3/001_schema.sql
    mysql -u root -p stages < tp3/002_seed.sql
-   mysql -u root -p stages < tp3/003_verification.sql
+   mysql -u root -p stages < tp3/005_extensions.sql
+   mysql -u root -p stages < tp3/003_verification.sql   # contrôle facultatif
    ```
+
+   L'ordre `001` → `002` → `005` est obligatoire : la migration `005` ajoute les
+   tables et colonnes utilisées par les espaces Étudiant, Encadreur, Secrétariat et
+   Responsable.
 
 4. **Configurer l'environnement local**
 
@@ -82,7 +92,9 @@ Ces étapes sont la procédure d'installation retenue pour le projet.
    cp .env.example .env        # Linux / macOS
    ```
 
-   Renseigner `DB_USER`, `DB_PASS` et `APP_URL`. Le fichier `.env` est ignoré par Git.
+   Renseigner `DB_USER`, `DB_PASS`, `DB_PORT` et `APP_URL`. `MAIL_MODE=log` écrit
+   les messages dans `storage/mails/` ; `UPLOAD_MAX_MB` borne les pièces jointes.
+   Le fichier `.env` est ignoré par Git.
 
 5. **Vérifier la connexion à la base**
 
@@ -127,6 +139,13 @@ Mot de passe commun : `Stage2026!` (haché en bcrypt dans `tp3/002_seed.sql`).
 - API : préfixe `/api`, réponses JSON, cookie de session `STAGESESSID`.
 - Les écritures (`POST`, `PATCH`, `DELETE`) exigent l'en-tête `X-CSRF-Token`, fourni par
   `GET /api/session`.
+- Les pièces jointes sont stockées hors racine web dans `storage/pieces/`, les courriels
+  de test dans `storage/mails/` et les exports dans `storage/exports/`. Ces dossiers
+  sont créés automatiquement et ignorés par Git.
+- La navigation s'adapte au rôle : Étudiant (demandes, entreprises, soutenances),
+  Encadreur (dossiers affectés, rapport, note), Secrétariat (comptes, salles, relances,
+  convocations), Responsable (validation en lot, audit, exports), Administrateur
+  (tous les espaces).
 
 ## Routes de l'API
 
@@ -135,20 +154,38 @@ Contrat détaillé : [`docs/contrat-api.md`](docs/contrat-api.md).
 | Méthode | Chemin | Rôles | Succès |
 | --- | --- | --- | --- |
 | `GET` | `/api/sante` | public | 200 / 503 |
-| `GET` | `/api/session` | public | 200 |
-| `POST` | `/api/session` | public | 200 |
+| `GET`, `POST` | `/api/session` | public | 200 |
 | `DELETE` | `/api/session` | connecté | 204 |
-| `GET` | `/api/demandes` | connecté (périmètre selon rôle) | 200 |
-| `POST` | `/api/demandes` | étudiant | 201 |
-| `GET` | `/api/demandes/{id}` | propriétaire, encadreur affecté, responsable, secrétariat, admin | 200 |
-| `PATCH` | `/api/demandes/{id}/statut` | étudiant propriétaire (`SOUMISE`, `BROUILLON`) ou responsable (`VALIDEE`, `REFUSEE`) | 200 |
-| `PATCH` | `/api/demandes/{id}/encadreur` | secrétariat, admin | 200 |
-| `GET` | `/api/demandes/{id}/historique` | mêmes droits que la lecture | 200 |
-| `GET` | `/api/soutenances` | connecté (périmètre selon rôle) | 200 |
-| `POST` | `/api/soutenances` | secrétariat, admin | 201 |
+| `POST` | `/api/mot-de-passe-oublie`, `/api/mot-de-passe-reset` | public | 200 |
+| `GET`, `PATCH` | `/api/profil` | connecté | 200 |
+| `PATCH` | `/api/profil/mot-de-passe` | connecté | 200 |
+| `GET` | `/api/notifications` | connecté | 200 |
+| `PATCH` | `/api/notifications/{id}`, `/api/notifications-tout-lire` | connecté | 200 |
+| `GET` | `/api/tableau-de-bord` | connecté | 200 |
 | `GET` | `/api/entreprises` | connecté | 200 |
-| `GET` | `/api/encadreurs` | secrétariat, responsable, admin | 200 |
-| `GET` | `/api/comptes` | admin | 200 |
+| `POST` | `/api/entreprises/proposer` | étudiant | 201 |
+| `POST` | `/api/entreprises` | responsable, secrétariat, admin | 201 |
+| `PATCH` | `/api/entreprises/{id}/statut` | responsable, admin | 200 |
+| `GET` | `/api/encadreurs`, `/api/comptes`, `/api/salles` | selon rôle | 200 |
+| `GET`, `POST` | `/api/utilisateurs`, `/api/salles` | secrétariat, admin | 200 / 201 |
+| `POST` | `/api/utilisateurs/import` | secrétariat, admin | 200 |
+| `PATCH` | `/api/utilisateurs/{id}/actif`, `/api/salles/{id}` | secrétariat, admin | 200 |
+| `GET` | `/api/relances`, `/api/audit` | selon rôle | 200 |
+| `GET`, `POST` | `/api/demandes` | connecté / étudiant | 200 / 201 |
+| `GET`, `PATCH` | `/api/demandes/{id}` | selon périmètre | 200 |
+| `POST` | `/api/demandes/lot` | responsable | 200 |
+| `PATCH` | `/api/demandes/{id}/statut` | étudiant, responsable | 200 |
+| `PATCH` | `/api/demandes/{id}/encadreur`, `/encadreur/confirmer` | secrétariat, responsable, admin | 200 |
+| `PATCH` | `/api/demandes/{id}/rapport`, `/note` | encadreur, responsable, admin | 200 |
+| `POST`, `GET` | `/api/demandes/{id}/commentaires`, `/historique` | selon périmètre | 200 / 201 |
+| `GET`, `POST` | `/api/demandes/{id}/pieces` | selon périmètre | 200 / 201 |
+| `GET`, `PATCH`, `DELETE` | `/api/pieces/{id}…` | selon périmètre | 200 / 204 |
+| `GET`, `POST` | `/api/soutenances` | connecté / secrétariat, admin | 200 / 201 |
+| `GET` | `/api/soutenances/planning` | connecté | 200 |
+| `PATCH` | `/api/soutenances/{id}`, `/convoquer` | secrétariat, admin | 200 |
+| `GET` | `/api/soutenances/{id}/convocation` | connecté | 200 |
+| `GET` | `/api/documents/{id}?type=…&format=html/pdf` | selon périmètre | 200 |
+| `GET` | `/api/exports/demandes.csv`, `statistiques.csv`, `demandes.pdf`, `global.zip` | responsable, secrétariat, admin | 200 |
 
 Codes d'erreur : `400` données invalides, `401` non authentifié, `403` accès interdit,
 `404` ressource absente, `409` conflit d'état, `500` erreur serveur.
@@ -158,6 +195,7 @@ Codes d'erreur : `400` données invalides, `401` non authentifié, `403` accès 
 ```sh
 php tests/connexion.php      # TP4 : PDO et base joignable
 php tests/api-six-cas.php    # TP6 : six cas réglementaires (serveur démarré)
+php tests/api.php            # TP7 : scénario complet, 17 cas (serveur démarré)
 php tests/cas-limites.php    # TP8 : quatre cas limites (serveur démarré)
 php tests/securite.php       # TP8 : autorisations, injection, hachage, CSRF
 ```
@@ -184,6 +222,10 @@ src/
 config/
   config.php            configuration sans secret
   routes.php            table de routage
+storage/                données générées, ignorées par Git
+  pieces/               pièces jointes PDF
+  mails/                courriels journalisés
+  exports/              archives CSV, PDF et ZIP
 tests/                  scripts de test en ligne de commande
 docs/                   contrat d'API, ADR, Kanban, dossier technique
 tp1/ … tp8/             livrables du cours et preuves
@@ -202,6 +244,8 @@ tp1/ … tp8/             livrables du cours et preuves
 - Rendu avec `textContent` dans le navigateur : aucune donnée saisie n'est interprétée
   comme du HTML.
 - Erreurs techniques journalisées dans `logs/app.log`, jamais renvoyées au client.
+- Pièces jointes limitées au PDF, à `UPLOAD_MAX_MB`, stockées hors racine web avec nom
+  de fichier régénéré ; le nom d'origine n'est révélé qu'au téléchargement autorisé.
 
 ## Travaux pratiques livrés
 
@@ -221,12 +265,13 @@ Chaque rapport est livré en trois formats : source HTML, PDF A4 et document Wor
 
 ## Dette technique connue
 
-- Pièces jointes (convention PDF) reportées à la version 2 : le dépôt de fichiers
-  demande un stockage et une analyse antivirus.
-- Notifications par e-mail et portail entreprise hors périmètre.
+- Aucune analyse antivirus des pièces jointes : seule la validation MIME/taille est
+  effectuée.
+- Les courriels sont journalisés dans `storage/mails/` avec `MAIL_MODE=log` ; brancher
+  un SMTP réel reste à faire en production.
 - Le frontend est un fichier JavaScript unique ; un découpage en modules sera fait
   si l'interface grossit.
-- Pas d'envoi de mot de passe de réinitialisation : les comptes sont créés par
-  l'administrateur.
+- La réinitialisation de mot de passe génère un lien journalisé, sans transport mail
+  réel par défaut.
 - Pas de limitation des tentatives de connexion : compteur par IP et par compte
   reporté à la version 2.

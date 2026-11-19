@@ -77,7 +77,7 @@ echo str_repeat('=', 92), "\n";
 $etudiant = session($base, $jar, 'rachid.kpanou@campus.test');
 $csrfEtudiant = $etudiant['json']['csrfToken'] ?? '';
 $creation = http($base, $jar, 'POST', '/api/demandes', [
-    'entrepriseId' => 1,
+    'entrepriseId' => 6,
     'soumettre'    => true,
 ], $csrfEtudiant);
 $demandeId = (int) ($creation['json']['data']['id'] ?? 0);

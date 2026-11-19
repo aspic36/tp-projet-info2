@@ -276,3 +276,139 @@ dialog::backdrop { background: rgba(9, 24, 38, .45); }
     flex: 0 0 6.5rem;
   }
 }
+
+.btn-lien {
+  background: transparent;
+  border-color: transparent;
+  color: var(--primaire);
+  padding-inline: .3rem;
+  text-decoration: underline;
+}
+
+.compteur {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  margin-left: .25rem;
+  padding: 0 .25rem;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.navigation {
+  display: flex;
+  gap: .25rem;
+  overflow-x: auto;
+  padding: .35rem;
+  background: var(--surface);
+  border: 1px solid var(--bord);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  scrollbar-width: thin;
+}
+
+.navigation button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: .55rem .85rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--encre-douce);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.navigation button:hover { background: #eef3f8; color: var(--encre); }
+.navigation button[aria-current="page"] { background: var(--primaire); color: #fff; }
+
+.grille-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .75rem;
+  margin-top: 1rem;
+}
+
+.statistique {
+  display: grid;
+  gap: .15rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+}
+
+.statistique-valeur { font-size: 1.65rem; font-weight: 700; line-height: 1.1; }
+.statistique-libelle { color: var(--encre-douce); font-size: .82rem; }
+
+.liste-alertes { display: grid; gap: .5rem; margin-top: 1rem; }
+.alerte {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .65rem .8rem;
+  border: 1px solid #e4cd9a;
+  border-radius: 8px;
+  background: var(--attention-fond);
+  color: #5c4406;
+}
+
+.grille-formulaire {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 1rem;
+}
+
+.actions-formulaire { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .75rem; }
+.carte-lot { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.carte-lot label { font-weight: 600; }
+.carte-lot select { width: auto; min-width: 220px; }
+.select-petit { width: auto; max-width: 190px; padding: .3rem .45rem; font-size: .82rem; }
+
+.pagination { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: 1rem; }
+
+.liste-notifications, .liste-simple { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.liste-notifications li, .liste-simple li {
+  padding: .75rem;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: #fbfcfe;
+}
+.notification-non-lue { border-left: 4px solid var(--primaire); background: #f0f7fb; }
+.notification .meta, .piece-ligne .meta, .chronologie .meta { color: var(--encre-douce); font-size: .82rem; }
+.piece-ligne { display: grid; gap: .4rem; }
+
+.dialogue-large { max-width: 760px; }
+.detail-liste { display: grid; grid-template-columns: minmax(130px, 1fr) 2fr; gap: .4rem .8rem; margin: .75rem 0 1rem; }
+.detail-liste dt { font-weight: 700; color: var(--encre-douce); }
+.detail-liste dd { margin: 0; overflow-wrap: anywhere; }
+.dialogue-contenu h3 { margin: 1rem 0 .5rem; font-size: 1rem; }
+.actions-multiples { justify-content: space-between; flex-wrap: wrap; }
+.bloc-texte {
+  margin: .75rem 0;
+  padding: .85rem;
+  border: 1px solid var(--bord);
+  border-radius: 8px;
+  background: #f8fafc;
+  font: .85rem/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dialogue-contenu hr { margin: 1.25rem 0; border: 0; border-top: 1px solid var(--bord); }
+select[multiple] { min-height: 110px; }
+
+@media (max-width: 720px) {
+  .entete { align-items: flex-start; }
+  .zone-utilisateur { width: 100%; }
+  .navigation { width: 100%; }
+  .alerte { align-items: flex-start; flex-direction: column; }
+  .detail-liste { grid-template-columns: 1fr; gap: .1rem; }
+  .detail-liste dd { margin-bottom: .5rem; }
+  .carte-lot select { width: 100%; }
+}

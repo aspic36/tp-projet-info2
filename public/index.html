@@ -19,12 +19,16 @@
     </div>
     <div id="zone-utilisateur" class="zone-utilisateur" hidden>
       <span id="nom-utilisateur" class="nom-utilisateur"></span>
-      <span id="role-utilisateur" class="badge"></span>
+      <span id="role-utilisateur" class="badge badge-role"></span>
+      <button id="btn-notifications" type="button" class="btn btn-discret" aria-label="Ouvrir les notifications">
+        Notifications <span id="compteur-notifications" class="compteur" hidden>0</span>
+      </button>
+      <button id="btn-profil" type="button" class="btn btn-discret">Mon profil</button>
       <button id="btn-deconnexion" type="button" class="btn btn-discret">Se déconnecter</button>
     </div>
   </header>
 
-  <div id="bandeau" class="bandeau" role="alert" aria-live="assertive" hidden></div>
+  <div id="bandeau" class="bandeau" role="status" aria-live="polite" hidden></div>
 
   <main id="contenu">
     <section id="vue-connexion" class="carte carte-connexion" aria-labelledby="titre-connexion">
@@ -34,8 +38,7 @@
       <form id="form-connexion" novalidate>
         <div class="champ">
           <label for="email">Adresse e-mail</label>
-          <input id="email" name="email" type="email" autocomplete="username" required
-                 aria-describedby="erreur-email">
+          <input id="email" name="email" type="email" autocomplete="username" required aria-describedby="erreur-email">
           <p class="erreur" id="erreur-email" role="alert"></p>
         </div>
         <div class="champ">
@@ -45,6 +48,7 @@
           <p class="erreur" id="erreur-mot-de-passe" role="alert"></p>
         </div>
         <button class="btn btn-principal" type="submit">Se connecter</button>
+        <button id="btn-mot-de-passe-oublie" class="btn btn-lien" type="button">Mot de passe oublié ?</button>
       </form>
 
       <details class="comptes-demo">
@@ -59,85 +63,459 @@
       </details>
     </section>
 
-    <section id="vue-application" hidden aria-labelledby="titre-demandes">
-      <div class="barre-titre">
-        <div>
-          <h2 id="titre-demandes">Demandes de stage</h2>
-          <p id="resume-demandes" class="aide"></p>
+    <section id="vue-application" hidden aria-label="Application de gestion des stages">
+      <nav id="navigation" class="navigation" aria-label="Navigation principale">
+        <button type="button" data-vue="tableau" aria-current="page">Tableau de bord</button>
+        <button type="button" data-vue="demandes">Demandes</button>
+        <button type="button" data-vue="entreprises">Entreprises</button>
+        <button type="button" data-vue="soutenances">Soutenances</button>
+        <button type="button" data-vue="utilisateurs">Comptes</button>
+        <button type="button" data-vue="notifications">Notifications</button>
+        <button type="button" data-vue="audit">Audit</button>
+        <button type="button" data-vue="exports">Exports</button>
+      </nav>
+
+      <section id="vue-tableau" data-section-vue="tableau" class="carte" aria-labelledby="titre-tableau">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-tableau">Vue d’ensemble</h2>
+            <p id="resume-tableau" class="aide"></p>
+          </div>
+          <button type="button" class="btn btn-discret" data-aller="demandes">Voir les demandes</button>
         </div>
-        <div id="filtres" class="filtres" hidden>
-          <div class="champ-champ">
-            <label for="filtre-q">Rechercher</label>
-            <input id="filtre-q" type="search" placeholder="Nom, matricule, entreprise">
+        <div id="statistiques" class="grille-stats"></div>
+        <div id="alertes-tableau" class="liste-alertes"></div>
+      </section>
+
+      <section id="vue-demandes" data-section-vue="demandes" hidden aria-labelledby="titre-demandes">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-demandes">Demandes de stage</h2>
+            <p id="resume-demandes" class="aide"></p>
+          </div>
+          <div id="filtres" class="filtres">
+            <div class="champ-champ">
+              <label for="filtre-q">Rechercher</label>
+              <input id="filtre-q" type="search" placeholder="Nom, matricule, entreprise, sujet">
+            </div>
+            <div class="champ-champ">
+              <label for="filtre-statut">Statut</label>
+              <select id="filtre-statut">
+                <option value="">Tous</option>
+                <option value="BROUILLON">Brouillon</option>
+                <option value="SOUMISE">Soumise</option>
+                <option value="VALIDEE">Validée</option>
+                <option value="REFUSEE">Refusée</option>
+                <option value="ANNULEE">Annulée</option>
+              </select>
+            </div>
+            <div class="champ-champ">
+              <label for="filtre-entreprise">Entreprise</label>
+              <select id="filtre-entreprise"><option value="">Toutes</option></select>
+            </div>
+            <div class="champ-champ">
+              <label for="filtre-filiere">Filière</label>
+              <select id="filtre-filiere"><option value="">Toutes</option></select>
+            </div>
+            <div class="champ-champ champ-annee">
+              <label for="filtre-annee">Année</label>
+              <input id="filtre-annee" type="number" min="2000" max="2100" placeholder="2026">
+            </div>
+            <button id="btn-reset-filtres" type="button" class="btn btn-discret btn-filtre">Réinitialiser</button>
+          </div>
+        </div>
+
+        <section id="bloc-etudiant" class="carte carte-formulaire" hidden aria-labelledby="titre-depot">
+          <h2 id="titre-depot">Déposer une demande</h2>
+          <form id="form-demande" novalidate>
+            <input id="demande-id" type="hidden">
+            <div class="grille-formulaire">
+              <div class="champ">
+                <label for="entreprise">Entreprise d’accueil</label>
+                <select id="entreprise" name="entrepriseId" required aria-describedby="erreur-entreprise">
+                  <option value="">Choisir une entreprise…</option>
+                </select>
+                <p class="erreur" id="erreur-entreprise" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="sujet">Sujet du stage</label>
+                <input id="sujet" name="sujet" type="text" maxlength="255" aria-describedby="erreur-sujet">
+                <p class="erreur" id="erreur-sujet" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="date-debut">Date de début</label>
+                <input id="date-debut" name="dateDebut" type="date" aria-describedby="erreur-date-debut">
+                <p class="erreur" id="erreur-date-debut" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="date-fin">Date de fin</label>
+                <input id="date-fin" name="dateFin" type="date" aria-describedby="erreur-date-fin">
+                <p class="erreur" id="erreur-date-fin" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="tuteur-entreprise">Tuteur en entreprise</label>
+                <input id="tuteur-entreprise" name="tuteurEntreprise" type="text" maxlength="100">
+              </div>
+              <div class="champ">
+                <label for="tuteur-email">E-mail du tuteur</label>
+                <input id="tuteur-email" name="tuteurEmail" type="email" maxlength="120" aria-describedby="erreur-tuteur-email">
+                <p class="erreur" id="erreur-tuteur-email" role="alert"></p>
+              </div>
+            </div>
+            <div class="champ">
+              <label for="missions">Missions pressenties</label>
+              <textarea id="missions" name="missions" rows="3" maxlength="5000"></textarea>
+            </div>
+            <div class="champ champ-inline">
+              <input id="soumettre" name="soumettre" type="checkbox" checked>
+              <label for="soumettre">Déposer immédiatement (sinon brouillon)</label>
+            </div>
+            <div class="actions-formulaire">
+              <button class="btn btn-principal" type="submit" id="btn-enregistrer-demande">Envoyer la demande</button>
+              <button class="btn btn-discret" type="button" id="btn-annuler-edit-demande" hidden>Annuler la modification</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="controle-lot" class="carte carte-lot" hidden aria-label="Actions groupées">
+          <label for="action-lot">Action groupée</label>
+          <select id="action-lot">
+            <option value="">Choisir une action…</option>
+            <option value="VALIDEE">Valider les demandes</option>
+            <option value="REFUSEE">Refuser les demandes</option>
+          </select>
+          <button id="btn-appliquer-lot" type="button" class="btn btn-principal">Appliquer</button>
+          <span id="resume-lot" class="aide"></span>
+        </section>
+
+        <section class="carte" aria-label="Liste des demandes">
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <caption class="sr-only">Liste des demandes de stage accessibles à votre rôle</caption>
+              <thead>
+                <tr>
+                  <th scope="col" id="col-selection" hidden><span class="sr-only">Sélection</span></th>
+                  <th scope="col">Demandeur</th>
+                  <th scope="col">Entreprise</th>
+                  <th scope="col">Statut</th>
+                  <th scope="col">Encadreur</th>
+                  <th scope="col">Déposée le</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="corps-demandes"></tbody>
+            </table>
+          </div>
+          <p id="etat-vide" class="vide" hidden>Aucune demande ne correspond à ce filtre. Modifiez les critères ou créez une demande.</p>
+          <div id="pagination-demandes" class="pagination" aria-label="Pagination des demandes"></div>
+        </section>
+      </section>
+
+      <section id="vue-entreprises" data-section-vue="entreprises" hidden aria-labelledby="titre-entreprises">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-entreprises">Entreprises</h2>
+            <p class="aide">Référentiel des entreprises partenaires, interdites ou en attente de validation.</p>
           </div>
           <div class="champ-champ">
-            <label for="filtre-statut">Statut</label>
-            <select id="filtre-statut">
-              <option value="">Tous</option>
-              <option value="BROUILLON">Brouillon</option>
-              <option value="SOUMISE">Soumise</option>
-              <option value="VALIDEE">Validée</option>
-              <option value="REFUSEE">Refusée</option>
+            <label for="filtre-statut-entreprise">Statut</label>
+            <select id="filtre-statut-entreprise">
+              <option value="">Toutes</option>
+              <option value="PARTENAIRE">Partenaire</option>
+              <option value="A_VALIDER">À valider</option>
+              <option value="INTERDITE">Interdite</option>
             </select>
           </div>
         </div>
-      </div>
 
-      <section id="bloc-etudiant" class="carte carte-formulaire" hidden aria-labelledby="titre-depot">
-        <h2 id="titre-depot">Déposer une demande</h2>
-        <form id="form-demande" novalidate>
-          <div class="champ">
-            <label for="entreprise">Entreprise d'accueil</label>
-            <select id="entreprise" name="entrepriseId" required aria-describedby="erreur-entreprise">
-              <option value="">Choisir une entreprise…</option>
-            </select>
-            <p class="erreur" id="erreur-entreprise" role="alert"></p>
+        <section id="bloc-proposition-entreprise" class="carte carte-formulaire" hidden aria-labelledby="titre-proposition">
+          <h2 id="titre-proposition">Proposer une entreprise</h2>
+          <form id="form-proposition-entreprise" novalidate>
+            <div class="grille-formulaire">
+              <div class="champ">
+                <label for="prop-raison">Raison sociale</label>
+                <input id="prop-raison" type="text" maxlength="120" required aria-describedby="erreur-prop-raison">
+                <p class="erreur" id="erreur-prop-raison" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="prop-ville">Ville</label>
+                <input id="prop-ville" type="text" maxlength="80" required aria-describedby="erreur-prop-ville">
+                <p class="erreur" id="erreur-prop-ville" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="prop-secteur">Secteur</label>
+                <input id="prop-secteur" type="text" maxlength="80">
+              </div>
+              <div class="champ">
+                <label for="prop-email">E-mail de contact</label>
+                <input id="prop-email" type="email" maxlength="120" aria-describedby="erreur-prop-email">
+                <p class="erreur" id="erreur-prop-email" role="alert"></p>
+              </div>
+            </div>
+            <button class="btn btn-principal" type="submit">Proposer l’entreprise</button>
+          </form>
+        </section>
+
+        <section id="bloc-creation-entreprise" class="carte carte-formulaire" hidden aria-labelledby="titre-creation-entreprise">
+          <h2 id="titre-creation-entreprise">Ajouter une entreprise</h2>
+          <form id="form-creation-entreprise" novalidate>
+            <div class="grille-formulaire">
+              <div class="champ">
+                <label for="cre-raison">Raison sociale</label>
+                <input id="cre-raison" type="text" maxlength="120" required aria-describedby="erreur-cre-raison">
+                <p class="erreur" id="erreur-cre-raison" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="cre-ville">Ville</label>
+                <input id="cre-ville" type="text" maxlength="80" required aria-describedby="erreur-cre-ville">
+                <p class="erreur" id="erreur-cre-ville" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="cre-statut">Statut</label>
+                <select id="cre-statut">
+                  <option value="PARTENAIRE">Partenaire</option>
+                  <option value="A_VALIDER">À valider</option>
+                  <option value="INTERDITE">Interdite</option>
+                </select>
+              </div>
+              <div class="champ">
+                <label for="cre-secteur">Secteur</label>
+                <input id="cre-secteur" type="text" maxlength="80">
+              </div>
+              <div class="champ">
+                <label for="cre-contact">Nom du contact</label>
+                <input id="cre-contact" type="text" maxlength="100">
+              </div>
+              <div class="champ">
+                <label for="cre-telephone">Téléphone</label>
+                <input id="cre-telephone" type="tel" inputmode="tel" maxlength="30">
+              </div>
+            </div>
+            <button class="btn btn-principal" type="submit">Ajouter l’entreprise</button>
+          </form>
+        </section>
+
+        <section class="carte" aria-label="Liste des entreprises">
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <thead>
+                <tr>
+                  <th scope="col">Entreprise</th>
+                  <th scope="col">Ville</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Statut</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="corps-entreprises"></tbody>
+            </table>
           </div>
-          <div class="champ champ-inline">
-            <input id="soumettre" name="soumettre" type="checkbox" checked>
-            <label for="soumettre">Déposer immédiatement (sinon brouillon)</label>
-          </div>
-          <button class="btn btn-principal" type="submit">Créer la demande</button>
-        </form>
+          <p id="entreprises-vide" class="vide" hidden>Aucune entreprise ne correspond à ce filtre.</p>
+        </section>
       </section>
 
-      <section class="carte" aria-label="Liste des demandes">
-        <div class="tableau-enveloppe">
-          <table class="tableau">
-            <caption class="sr-only">Liste des demandes de stage accessibles à votre rôle</caption>
-            <thead>
-              <tr>
-                <th scope="col">Demandeur</th>
-                <th scope="col">Entreprise</th>
-                <th scope="col">Statut</th>
-                <th scope="col">Encadreur</th>
-                <th scope="col">Déposée le</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="corps-demandes"></tbody>
-          </table>
+      <section id="vue-soutenances" data-section-vue="soutenances" hidden aria-labelledby="titre-soutenances">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-soutenances">Soutenances</h2>
+            <p class="aide">Planning des soutenances et convocations.</p>
+          </div>
+          <div class="filtres">
+            <div class="champ-champ">
+              <label for="planning-annee">Année</label>
+              <input id="planning-annee" type="number" min="2000" max="2100">
+            </div>
+            <div class="champ-champ">
+              <label for="planning-mois">Mois</label>
+              <select id="planning-mois">
+                <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+                <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+                <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+                <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <p id="etat-vide" class="vide" hidden>Aucune demande ne correspond à ce périmètre.</p>
+        <section class="carte">
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <caption class="sr-only">Planning des soutenances</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Salle</th>
+                  <th scope="col">Étudiant</th>
+                  <th scope="col">Entreprise</th>
+                  <th scope="col">Encadreur</th>
+                  <th scope="col">Durée</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="corps-planning"></tbody>
+            </table>
+          </div>
+          <p id="planning-vide" class="vide" hidden>Aucune soutenance programmée sur cette période.</p>
+        </section>
       </section>
 
-      <section id="bloc-planning" class="carte" hidden aria-labelledby="titre-planning">
-        <h2 id="titre-planning">Planning des soutenances</h2>
-        <div class="tableau-enveloppe">
-          <table class="tableau">
-            <thead>
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Salle</th>
-                <th scope="col">Étudiant</th>
-                <th scope="col">Entreprise</th>
-                <th scope="col">Durée</th>
-              </tr>
-            </thead>
-            <tbody id="corps-planning"></tbody>
-          </table>
+      <section id="vue-utilisateurs" data-section-vue="utilisateurs" hidden aria-labelledby="titre-utilisateurs">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-utilisateurs">Comptes et suivi</h2>
+            <p class="aide">Créer des comptes, importer des étudiants et relancer ceux qui n’ont pas de demande.</p>
+          </div>
         </div>
-        <p id="planning-vide" class="vide" hidden>Aucune soutenance programmée.</p>
+
+        <section class="carte carte-formulaire">
+          <h3>Créer un compte</h3>
+          <form id="form-compte" novalidate>
+            <div class="grille-formulaire">
+              <div class="champ">
+                <label for="cmp-role">Rôle</label>
+                <select id="cmp-role">
+                  <option value="ETUDIANT">Étudiant</option>
+                  <option value="ENCADREUR">Encadreur</option>
+                  <option value="SECRETARIAT">Secrétariat</option>
+                  <option value="RESPONSABLE">Responsable</option>
+                  <option value="ADMIN">Administrateur</option>
+                </select>
+              </div>
+              <div class="champ"><label for="cmp-email">E-mail</label><input id="cmp-email" type="email" required aria-describedby="erreur-cmp-email"><p class="erreur" id="erreur-cmp-email" role="alert"></p></div>
+              <div class="champ"><label for="cmp-prenom">Prénom</label><input id="cmp-prenom" type="text" maxlength="80" required></div>
+              <div class="champ"><label for="cmp-nom">Nom</label><input id="cmp-nom" type="text" maxlength="80" required></div>
+              <div class="champ"><label for="cmp-telephone">Téléphone</label><input id="cmp-telephone" type="tel" inputmode="tel" maxlength="30"></div>
+              <div class="champ"><label for="cmp-mot-de-passe">Mot de passe provisoire</label><input id="cmp-mot-de-passe" type="text" value="Stage2026!" maxlength="200"></div>
+              <div class="champ champs-etudiant"><label for="cmp-matricule">Matricule</label><input id="cmp-matricule" type="text" maxlength="40"></div>
+              <div class="champ champs-etudiant"><label for="cmp-filiere">Filière</label><input id="cmp-filiere" type="text" maxlength="80"></div>
+              <div class="champ champs-etudiant"><label for="cmp-promotion">Promotion</label><input id="cmp-promotion" type="text" maxlength="20"></div>
+              <div class="champ champs-encadreur"><label for="cmp-grade">Grade</label><input id="cmp-grade" type="text" maxlength="80"></div>
+              <div class="champ champs-encadreur"><label for="cmp-departement">Département</label><input id="cmp-departement" type="text" maxlength="80"></div>
+              <div class="champ champs-encadreur"><label for="cmp-charge">Charge maximale</label><input id="cmp-charge" type="number" min="1" max="50" value="5"></div>
+            </div>
+            <button class="btn btn-principal" type="submit">Créer le compte</button>
+          </form>
+        </section>
+
+        <section class="carte carte-formulaire">
+          <h3>Importer des étudiants</h3>
+          <p class="aide">Fichier CSV avec en-têtes : email, prenom, nom, matricule, filiere, promotion.</p>
+          <form id="form-import" novalidate>
+            <div class="champ">
+              <label for="import-fichier">Fichier CSV</label>
+              <input id="import-fichier" type="file" accept=".csv,text/csv" required aria-describedby="erreur-import">
+              <p class="erreur" id="erreur-import" role="alert"></p>
+            </div>
+            <button class="btn btn-principal" type="submit">Importer</button>
+          </form>
+        </section>
+
+        <section class="carte">
+          <h3>Liste des comptes</h3>
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <thead><tr><th scope="col">Nom</th><th scope="col">E-mail</th><th scope="col">Rôle</th><th scope="col">État</th><th scope="col">Action</th></tr></thead>
+              <tbody id="corps-utilisateurs"></tbody>
+            </table>
+          </div>
+          <p id="utilisateurs-vide" class="vide" hidden>Aucun compte disponible.</p>
+        </section>
+
+        <section class="carte">
+          <h3>Relances étudiants</h3>
+          <p class="aide">Étudiants actifs sans demande soumise.</p>
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <thead><tr><th scope="col">Étudiant</th><th scope="col">E-mail</th><th scope="col">Promotion</th></tr></thead>
+              <tbody id="corps-relances"></tbody>
+            </table>
+          </div>
+          <p id="relances-vide" class="vide" hidden>Aucune relance nécessaire.</p>
+        </section>
+      </section>
+
+      <section id="vue-notifications" data-section-vue="notifications" hidden aria-labelledby="titre-notifications">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-notifications">Notifications</h2>
+            <p class="aide">Messages envoyés à votre compte par la plateforme.</p>
+          </div>
+          <button id="btn-tout-lire" type="button" class="btn btn-discret">Tout marquer comme lu</button>
+        </div>
+        <section class="carte">
+          <ul id="liste-notifications" class="liste-notifications"></ul>
+          <p id="notifications-vide" class="vide" hidden>Aucune notification pour le moment.</p>
+        </section>
+      </section>
+
+      <section id="vue-audit" data-section-vue="audit" hidden aria-labelledby="titre-audit">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-audit">Journal d’audit</h2>
+            <p class="aide">Traçabilité des actions sensibles.</p>
+          </div>
+          <div class="filtres">
+            <div class="champ-champ">
+              <label for="audit-action">Action</label>
+              <input id="audit-action" type="search" placeholder="Ex. DEMANDE_CREEE">
+            </div>
+            <div class="champ-champ"><label for="audit-debut">Depuis</label><input id="audit-debut" type="date"></div>
+            <div class="champ-champ"><label for="audit-fin">Jusqu’au</label><input id="audit-fin" type="date"></div>
+          </div>
+        </div>
+        <section class="carte">
+          <div class="tableau-enveloppe">
+            <table class="tableau">
+              <thead><tr><th scope="col">Date</th><th scope="col">Action</th><th scope="col">Auteur</th><th scope="col">Entité</th><th scope="col">Détails</th></tr></thead>
+              <tbody id="corps-audit"></tbody>
+            </table>
+          </div>
+          <p id="audit-vide" class="vide" hidden>Aucune entrée dans le journal.</p>
+          <div id="pagination-audit" class="pagination" aria-label="Pagination du journal"></div>
+        </section>
+      </section>
+
+      <section id="vue-exports" data-section-vue="exports" hidden aria-labelledby="titre-exports">
+        <div class="barre-titre">
+          <div>
+            <h2 id="titre-exports">Exports et documents</h2>
+            <p class="aide">Générer des états et des documents administratifs.</p>
+          </div>
+        </div>
+        <section class="carte">
+          <h3>Exports</h3>
+          <div class="actions-formulaire">
+            <a class="btn btn-principal" href="/api/exports/demandes.csv" download>Demandes CSV</a>
+            <a class="btn" href="/api/exports/statistiques.csv" download>Statistiques CSV</a>
+            <a class="btn" href="/api/exports/demandes.pdf" download>Demandes PDF</a>
+            <a class="btn" href="/api/exports/global.zip" download>Archive globale</a>
+          </div>
+        </section>
+        <section class="carte carte-formulaire">
+          <h3>Document administratif</h3>
+          <form id="form-document" novalidate>
+            <div class="grille-formulaire">
+              <div class="champ">
+                <label for="doc-demande">Demande</label>
+                <select id="doc-demande" required aria-describedby="erreur-doc-demande"><option value="">Choisir une demande…</option></select>
+                <p class="erreur" id="erreur-doc-demande" role="alert"></p>
+              </div>
+              <div class="champ">
+                <label for="doc-type">Document</label>
+                <select id="doc-type">
+                  <option value="convention">Convention</option>
+                  <option value="attestation">Attestation</option>
+                  <option value="pv">Procès-verbal</option>
+                  <option value="convocation">Convocation</option>
+                </select>
+              </div>
+              <div class="champ">
+                <label for="doc-format">Format</label>
+                <select id="doc-format"><option value="html">HTML</option><option value="pdf">PDF</option></select>
+              </div>
+            </div>
+            <button class="btn btn-principal" type="submit">Générer le document</button>
+          </form>
+        </section>
       </section>
     </section>
   </main>
@@ -145,7 +523,7 @@
   <dialog id="dialogue-refus" aria-labelledby="titre-refus">
     <form method="dialog" id="form-refus" class="dialogue-contenu" novalidate>
       <h2 id="titre-refus">Refuser la demande</h2>
-      <p class="aide">Le motif est obligatoire et sera conservé dans l'historique.</p>
+      <p class="aide">Le motif est obligatoire et conservé dans l’historique.</p>
       <div class="champ">
         <label for="motif-refus">Motif du refus</label>
         <textarea id="motif-refus" rows="4" maxlength="255" required aria-describedby="erreur-motif"></textarea>
@@ -168,14 +546,21 @@
       </div>
       <div class="champ">
         <label for="salle-soutenance">Salle</label>
-        <input id="salle-soutenance" type="text" maxlength="40" required aria-describedby="erreur-salle">
+        <select id="salle-soutenance" aria-describedby="erreur-salle"><option value="">Salle libre saisie ci-dessous</option></select>
         <p class="erreur" id="erreur-salle" role="alert"></p>
       </div>
       <div class="champ">
+        <label for="salle-libre">Autre salle</label>
+        <input id="salle-libre" type="text" maxlength="40" placeholder="Ex. Salle B12">
+      </div>
+      <div class="champ">
         <label for="duree-soutenance">Durée (minutes)</label>
-        <input id="duree-soutenance" type="number" min="20" max="90" step="5" value="30" required
-               aria-describedby="erreur-duree">
+        <input id="duree-soutenance" type="number" min="20" max="90" step="5" value="30" aria-describedby="erreur-duree">
         <p class="erreur" id="erreur-duree" role="alert"></p>
+      </div>
+      <div class="champ">
+        <label for="jury-soutenance">Jury (maintenir Ctrl pour plusieurs choix)</label>
+        <select id="jury-soutenance" multiple size="5"></select>
       </div>
       <div class="actions-dialogue">
         <button type="button" class="btn btn-discret" data-fermer="dialogue-soutenance">Annuler</button>
@@ -185,10 +570,17 @@
   </dialog>
 
   <dialog id="dialogue-detail" aria-labelledby="titre-detail">
-    <div class="dialogue-contenu">
+    <div class="dialogue-contenu dialogue-large">
       <h2 id="titre-detail">Détail de la demande</h2>
-      <dl id="detail-demande"></dl>
-      <div class="actions-dialogue">
+      <dl id="detail-demande" class="detail-liste"></dl>
+      <h3>Pièces jointes</h3>
+      <ul id="detail-pieces" class="liste-simple"></ul>
+      <h3>Commentaires</h3>
+      <ul id="detail-commentaires" class="liste-simple"></ul>
+      <div class="actions-dialogue actions-multiples">
+        <button type="button" class="btn btn-discret" id="btn-detail-pieces">Gérer les pièces</button>
+        <button type="button" class="btn btn-discret" id="btn-detail-commenter">Commenter</button>
+        <button type="button" class="btn btn-discret" id="btn-detail-historique">Historique</button>
         <button type="button" class="btn btn-discret" data-fermer="dialogue-detail">Fermer</button>
       </div>
     </div>
@@ -201,6 +593,122 @@
       <div class="actions-dialogue">
         <button type="button" class="btn btn-discret" data-fermer="dialogue-historique">Fermer</button>
       </div>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-pieces" aria-labelledby="titre-pieces">
+    <div class="dialogue-contenu dialogue-large">
+      <h2 id="titre-pieces">Pièces jointes</h2>
+      <ul id="liste-pieces" class="liste-simple"></ul>
+      <form id="form-piece" class="formulaire-piece" novalidate>
+        <div class="grille-formulaire">
+          <div class="champ">
+            <label for="piece-type">Type de pièce</label>
+            <select id="piece-type">
+              <option value="CV">CV</option><option value="LETTRE_MOTIVATION">Lettre de motivation</option>
+              <option value="CONVENTION">Convention</option><option value="RAPPORT">Rapport</option>
+              <option value="AUTRE">Autre</option>
+            </select>
+          </div>
+          <div class="champ">
+            <label for="piece-fichier">Fichier PDF</label>
+            <input id="piece-fichier" type="file" accept="application/pdf,.pdf" required aria-describedby="erreur-piece">
+            <p class="erreur" id="erreur-piece" role="alert"></p>
+          </div>
+        </div>
+        <div class="actions-dialogue">
+          <button type="button" class="btn btn-discret" data-fermer="dialogue-pieces">Fermer</button>
+          <button type="submit" class="btn btn-principal">Ajouter la pièce</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-commentaire" aria-labelledby="titre-commentaire">
+    <form method="dialog" id="form-commentaire" class="dialogue-contenu" novalidate>
+      <h2 id="titre-commentaire">Ajouter un commentaire</h2>
+      <div class="champ">
+        <label for="commentaire-contenu">Commentaire</label>
+        <textarea id="commentaire-contenu" rows="4" maxlength="2000" required aria-describedby="erreur-commentaire"></textarea>
+        <p class="erreur" id="erreur-commentaire" role="alert"></p>
+      </div>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-commentaire">Annuler</button>
+        <button type="submit" class="btn btn-principal">Ajouter</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialogue-note" aria-labelledby="titre-note">
+    <form method="dialog" id="form-note" class="dialogue-contenu" novalidate>
+      <h2 id="titre-note">Évaluer le stage</h2>
+      <div class="grille-formulaire">
+        <div class="champ"><label for="note-valeur">Note sur 20</label><input id="note-valeur" type="number" min="0" max="20" step="0.25" required aria-describedby="erreur-note"><p class="erreur" id="erreur-note" role="alert"></p></div>
+        <div class="champ"><label for="note-mention">Mention</label><input id="note-mention" type="text" maxlength="40" placeholder="Ex. Bien"></div>
+      </div>
+      <div class="champ"><label for="note-appreciation">Appréciation</label><textarea id="note-appreciation" rows="4" maxlength="2000"></textarea></div>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-note">Annuler</button>
+        <button type="submit" class="btn btn-principal">Enregistrer la note</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialogue-soutenance-detail" aria-labelledby="titre-soutenance-detail">
+    <div class="dialogue-contenu dialogue-large">
+      <h2 id="titre-soutenance-detail">Détail de la soutenance</h2>
+      <pre id="detail-soutenance" class="bloc-texte"></pre>
+      <div class="actions-dialogue">
+        <button type="button" class="btn btn-discret" id="btn-convocation">Voir la convocation</button>
+        <button type="button" class="btn btn-principal" id="btn-convoquer">Envoyer les convocations</button>
+        <button type="button" class="btn btn-discret" data-fermer="dialogue-soutenance-detail">Fermer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-profil" aria-labelledby="titre-profil">
+    <div class="dialogue-contenu dialogue-large">
+      <h2 id="titre-profil">Mon profil</h2>
+      <form id="form-profil" class="formulaire-profil" novalidate>
+        <div class="grille-formulaire">
+          <div class="champ"><label for="profil-prenom">Prénom</label><input id="profil-prenom" type="text" maxlength="80" required aria-describedby="erreur-profil-prenom"><p class="erreur" id="erreur-profil-prenom" role="alert"></p></div>
+          <div class="champ"><label for="profil-nom">Nom</label><input id="profil-nom" type="text" maxlength="80" required aria-describedby="erreur-profil-nom"><p class="erreur" id="erreur-profil-nom" role="alert"></p></div>
+          <div class="champ"><label for="profil-email">E-mail</label><input id="profil-email" type="email" required aria-describedby="erreur-profil-email"><p class="erreur" id="erreur-profil-email" role="alert"></p></div>
+          <div class="champ"><label for="profil-telephone">Téléphone</label><input id="profil-telephone" type="tel" inputmode="tel" maxlength="30"></div>
+        </div>
+        <p id="profil-complement" class="aide"></p>
+        <button class="btn btn-principal" type="submit">Enregistrer le profil</button>
+      </form>
+      <hr>
+      <h3>Changer le mot de passe</h3>
+      <form id="form-mot-de-passe" novalidate>
+        <div class="champ"><label for="mdp-actuel">Mot de passe actuel</label><input id="mdp-actuel" type="password" required aria-describedby="erreur-mdp-actuel"><p class="erreur" id="erreur-mdp-actuel" role="alert"></p></div>
+        <div class="champ"><label for="mdp-nouveau">Nouveau mot de passe</label><input id="mdp-nouveau" type="password" required aria-describedby="erreur-mdp-nouveau"><p class="aide">10 caractères minimum, avec majuscule, minuscule et chiffre.</p><p class="erreur" id="erreur-mdp-nouveau" role="alert"></p></div>
+        <div class="actions-dialogue">
+          <button type="button" class="btn btn-discret" data-fermer="dialogue-profil">Fermer</button>
+          <button class="btn btn-principal" type="submit">Modifier le mot de passe</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog id="dialogue-mot-de-passe-oublie" aria-labelledby="titre-mot-de-passe-oublie">
+    <div class="dialogue-contenu dialogue-large">
+      <h2 id="titre-mot-de-passe-oublie">Récupérer son compte</h2>
+      <form id="form-mot-de-passe-oublie" novalidate>
+        <div class="champ"><label for="oublie-email">Adresse e-mail</label><input id="oublie-email" type="email" required aria-describedby="erreur-oublie"><p class="erreur" id="erreur-oublie" role="alert"></p></div>
+        <button class="btn btn-principal" type="submit">Envoyer un lien</button>
+      </form>
+      <hr>
+      <h3>J’ai reçu un jeton</h3>
+      <form id="form-reset-mot-de-passe" novalidate>
+        <div class="champ"><label for="reset-token">Jeton reçu</label><input id="reset-token" type="text" required aria-describedby="erreur-reset-token"><p class="erreur" id="erreur-reset-token" role="alert"></p></div>
+        <div class="champ"><label for="reset-mot-de-passe">Nouveau mot de passe</label><input id="reset-mot-de-passe" type="password" required aria-describedby="erreur-reset-mot-de-passe"><p class="erreur" id="erreur-reset-mot-de-passe" role="alert"></p></div>
+        <div class="actions-dialogue">
+          <button type="button" class="btn btn-discret" data-fermer="dialogue-mot-de-passe-oublie">Fermer</button>
+          <button class="btn btn-principal" type="submit">Réinitialiser</button>
+        </div>
+      </form>
     </div>
   </dialog>
 

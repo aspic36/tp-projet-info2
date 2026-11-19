@@ -35,4 +35,41 @@ final class Response
         http_response_code(204);
         exit;
     }
+
+    public static function html(string $contenu, int $status = 200): never
+    {
+        http_response_code($status);
+        header('Content-Type: text/html; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: no-store');
+        echo $contenu;
+        exit;
+    }
+
+    public static function download(string $contenu, string $nom, string $mime): never
+    {
+        $nom = preg_replace('/[^A-Za-z0-9._-]+/', '-', $nom) ?: 'export';
+        http_response_code(200);
+        header('Content-Type: ' . $mime);
+        header('Content-Disposition: attachment; filename="' . $nom . '"');
+        header('Content-Length: ' . (string) strlen($contenu));
+        header('Cache-Control: no-store');
+        echo $contenu;
+        exit;
+    }
+
+    public static function fichier(string $chemin, string $nom, string $mime): never
+    {
+        if (!is_file($chemin)) {
+            self::error(404, 'Fichier introuvable.');
+        }
+        $nom = preg_replace('/[^A-Za-z0-9._-]+/', '-', $nom) ?: 'document';
+        header('Content-Type: ' . $mime);
+        header('Content-Disposition: inline; filename="' . $nom . '"');
+        header('Content-Length: ' . (string) filesize($chemin));
+        header('X-Content-Type-Options: nosniff');
+        header('Cache-Control: private, no-store');
+        readfile($chemin);
+        exit;
+    }
 }

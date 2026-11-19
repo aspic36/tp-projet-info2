@@ -1,0 +1,106 @@
+Répétition technique TP10 — 2026-11-19T22:58:33+01:00
+URL : http://127.0.0.1:8002 | base : stages_tp10_demo | commit : 5779d0d
+Chronomètre : temps écoulé depuis le début du scénario technique.
+
+Base remise à zéro : 001 + 002 + 005 importés.
+
+Phase 1 — démonstration
++0.03s   GET /api/sante                                       200 | {"status":"ok","database":"ok","php":"8.4.16","heure":"2026-11-19T22:58:36+01:00"}
++0.80s   POST /api/session étudiant                          200 | {"user":{"id":4,"email":"rachid.kpanou@campus.test","role":"ETUDIANT","prenom":"Rachid","nom":"KPANO
++1.13s   POST /api/demandes                                   201 | {"data":{"id":5,"etudiant_id":1,"entreprise_id":4,"encadreur_id":null,"encadreur_propose_id":null,"s
++1.31s   GET /api/demandes/5                                  200 | {"data":{"id":5,"etudiant_id":1,"entreprise_id":4,"encadreur_id":null,"encadreur_propose_id":null,"s
++1.50s   GET .../historique                                   200 | {"data":[{"id":6,"statut_avant":null,"statut_apres":"SOUMISE","motif":null,"horodatage":"2026-11-19
+ligne base: #5 SOUMISE
++2.39s   POST /api/session responsable                        200 | {"user":{"id":3,"email":"responsable.stages@campus.test","role":"RESPONSABLE","prenom":"Firmin","nom
++2.56s   PATCH REFUSEE sans motif                             400 | {"message":"Données invalides.","details":{"motif":"Le motif de refus est obligatoire."}}
++2.75s   PATCH SOUMISE→VALIDEE                              200 | {"data":{"id":5,"etudiant_id":1,"entreprise_id":4,"encadreur_id":null,"encadreur_propose_id":null,"s
++2.93s   PATCH VALIDEE→REFUSEE                              409 | {"message":"Transition interdite : VALIDEE vers REFUSEE."}
++3.66s   POST /api/session secrétariat                       200 | {"user":{"id":2,"email":"accueil@campus.test","role":"SECRETARIAT","prenom":"Rosine","nom":"ATCHADE"
++3.88s   PATCH proposition encadreur                          200 | {"data":{"id":5,"etudiant_id":1,"entreprise_id":4,"encadreur_id":null,"encadreur_propose_id":1,"stat
++4.10s   PATCH confirmation encadreur                         200 | {"data":{"id":5,"etudiant_id":1,"entreprise_id":4,"encadreur_id":1,"encadreur_propose_id":null,"stat
++4.42s   POST /api/soutenances                                201 | {"data":{"id":2,"demande_id":5,"date_heure":"2027-01-15 09:00:00","salle":"B12","salle_id":null,"dur
++4.59s   POST deuxième soutenance                            409 | {"message":"Cette demande a déjà une soutenance programmée."}
++4.73s   GET /api/soutenances/planning?annee=2027&mois=1      200 | {"data":{"2027-01-15":[{"id":2,"demande_id":5,"date_heure":"2027-01-15 09:00:00","salle":"B12","sall
++4.90s   GET convocation                                      200 | {"data":{"soutenance":{"id":2,"demande_id":5,"date_heure":"2027-01-15 09:00:00","salle":"B12","salle
++5.05s   GET dossier d’un autre étudiant                   403 | {"message":"Accès interdit à ce dossier."}
++5.21s   POST sans jeton CSRF                                 403 | {"message":"Jeton CSRF invalide ou absent."}
++5.39s   GET /api/tableau-de-bord                             200 | {"data":{"role":"ETUDIANT","demandes":{"BROUILLON":0,"SOUMISE":1,"VALIDEE":1,"REFUSEE":1,"ANNULEE":0
++5.59s   GET /api/exports/statistiques.csv                    200 | ﻿Catégorie;Libellé;Total Statut;BROUILLON;1 Statut;REFUSEE;1 Statut;SOUMISE;1 Statut;VALIDEE;2 Filiè
++5.79s   GET /api/documents convention                        200 | <!doctype html><html lang="fr"><head><meta charset="utf-8"><style>             @page{size:A4;margin:
+Fin scénario technique : +5.92s
+
+Phase 2 — campagne de tests sur base neuve
+Connexion PDO : OK
+Serveur MySQL : 8.0.46
+Base courante : stages_tp10_demo
+Tables         : 14
+Demandes       : 4
+Six cas TP6 — base http://127.0.0.1:8002
+========================================================================================
+C-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
+C-02 POST /api/demandes (succès)              attendu 201 | obtenu 201 | OK
+C-03 PATCH par un étudiant                    attendu 403 | obtenu 403 | OK
+C-04 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
+C-05 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
+C-06 validation répétée VALIDEE→VALIDEE   attendu 409 | obtenu 409 | OK
+========================================================================================
+Demande créée pour le test : #5
+Statut après répétition : VALIDEE
+Résultat : 0 échec(s) sur 6 cas.
+Scénario API — base http://127.0.0.1:8002
+================================================================================================
+T-00 GET /api/sante                            attendu 200 | obtenu 200 | OK
+T-01 GET /api/demandes sans session            attendu 401 | obtenu 401 | OK
+T-02 POST /api/session (étudiant)             attendu 200 | obtenu 200 | OK
+T-03 POST /api/demandes                        attendu 201 | obtenu 201 | OK
+T-04 GET /api/demandes                         attendu 200 | obtenu 200 | OK
+T-05 PATCH statut par l’étudiant            attendu 403 | obtenu 403 | OK
+T-06 GET /api/demandes/999999                  attendu 404 | obtenu 404 | OK
+T-07 REFUSEE sans motif                        attendu 400 | obtenu 400 | OK
+T-08 SOUMISE→VALIDEE par le responsable      attendu 200 | obtenu 200 | OK
+T-09 VALIDEE→REFUSEE interdite               attendu 409 | obtenu 409 | OK
+T-10 PATCH sans jeton CSRF                     attendu 403 | obtenu 403 | OK
+T-11 GET historique                            attendu 200 | obtenu 200 | OK
+T-11b affectation encadreur                    attendu 200 | obtenu 200 | OK
+T-12 soutenance le 2026-02-30                  attendu 400 | obtenu 400 | OK
+T-13 soutenance dans le passé                 attendu 400 | obtenu 400 | OK
+T-14 POST /api/soutenances                     attendu 201 | obtenu 201 | OK
+T-15 deuxième soutenance (doublon)            attendu 409 | obtenu 409 | OK
+================================================================================================
+Demande créée pour le test : #6
+Événements d'historique : —→SOUMISE, SOUMISE→VALIDEE
+Résultat : 0 échec(s) sur 17 cas.
+Quatre cas limites TP8 — base http://127.0.0.1:8002
+============================================================================================
+C-01 valider la demande 999999             attendu 404 | obtenu 404 | OK
+C-02 refuser sans motif                    attendu 400 | obtenu 400 | OK
+C-03 valider une demande déjà validée   attendu 409 | obtenu 409 | OK | statut=VALIDEE
+C-04 soutenance le 2026-02-30              attendu 400 | obtenu 400 | OK
+============================================================================================
+Demande créée pour le test : #7
+Résultat : 0 échec(s) sur 4 cas.
+Audit de sécurité — base http://127.0.0.1:8002
+================================================================================================
+S-01  connexion des deux étudiants                        OK
+S-02  étudiant B lit le dossier #1 de l'étudiant A       attendu 403 | obtenu 403 | OK
+S-03  la réponse 403 ne contient aucune donnée du dossier OK
+S-04  étudiant affecte un encadreur                       attendu 403 | obtenu 403 | OK
+S-05  étudiant lit la liste des comptes                   attendu 403 | obtenu 403 | OK
+S-06  identifiant « 1 OR 1=1 »                           attendu 404 | obtenu 404 | OK
+S-07  recherche « ' OR 1=1 -- »                          attendu 200 | obtenu 200 | OK
+S-08  aucune ligne retournée par la chaîne injectée     OK
+S-09  connexion avec « admin' OR 1=1 -- »                attendu 401 | obtenu 401 | OK
+S-10  tous les mots de passe sont hachés en bcrypt        OK
+S-11  aucun mot de passe stocké en clair                  OK
+S-12  password_verify accepte le mot de passe de démonstration OK
+S-13  écriture sans jeton CSRF                            attendu 403 | obtenu 403 | OK
+S-14  écriture avec un faux jeton CSRF                    attendu 403 | obtenu 403 | OK
+S-15  écriture avec le jeton valide (création brouillon) attendu 201 | obtenu 201 | OK
+S-16  statut inconnu                                       attendu 400 | obtenu 400 | OK
+S-17  aucun détail SQL/PDO dans la réponse               OK
+================================================================================================
+Résultat : 0 échec(s).
+Fin campagne : +14.83s
+
+ solution de repli : tp7/preuves/*.jpeg, tp8/preuves/*.txt, tp9/preuves/*.txt
+Fin du relevé : 2026-11-19T22:58:51+01:00

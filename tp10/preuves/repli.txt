@@ -1,0 +1,24 @@
+Solution de repli TP10 — 2026-11-19
+Commit de référence : 5779d0d
+
+Fichiers prêts à ouvrir si le serveur ou le réseau tombe :
+
+tp7/preuves/01-connexion.jpeg                36726 octets  sha256 5d4dd83b3beb74a609d1c4653a24784c121f18058624d2c41e0d67e816b12ae4
+tp7/preuves/02-etudiant-liste.jpeg          108576 octets  sha256 cfc599106c711e2cc31e85a9436a36b5d84802cc6e4613caa4424b7462d1a7e9
+tp7/preuves/03-etudiant-formulaire.jpeg     109725 octets  sha256 aaa6a49e567fdc5d440e2be7e96d1212489bf80b6173fd397f29251d0102a187
+tp7/preuves/04-etudiant-depot.jpeg          135592 octets  sha256 7e9be9513ea4e7c04e15fce1b55fbaf1edb5164cc126fa47f4a880f661e07e77
+tp7/preuves/05-responsable-liste.jpeg       181706 octets  sha256 d38877bc7225f07e5b8a7b5572e745b6975cf18548c9ac5e1fcb767027d13294
+tp7/preuves/06-refus-dialogue.jpeg          184694 octets  sha256 cf2556717518e2bfad35226a764e15138eba047b0d40e2729efe860dc57ff1c9
+tp7/preuves/07-refus-confirme.jpeg          186086 octets  sha256 224eba26915d99407a210c96d27fd081d0b2c9a5c114797e296a14f8e4840c11
+tp7/preuves/08-validation.jpeg              180877 octets  sha256 7df2235b4526a15f4ffe0fe33331174d9e3b718f834c8e46b3c1bb3c02f60974
+tp7/preuves/09-affectation.jpeg             195404 octets  sha256 92aec8f72f2d802b148bacb9cb23413585976f3ee92702bf37929770416ae8c6
+tp7/preuves/planning.txt                      1267 octets  sha256 6ff13818c852e55daac5dc2f454db3de6139a48ad6e7c0651d426ccefe0dcab5
+tp7/preuves/etat-base.txt                     2749 octets  sha256 d848c5eb48032dee1b7c69db02751676d92a18dad44c42d07ecac3705b7c605e
+tp7/preuves/xss.txt                           1058 octets  sha256 d5149cdda2f4a9a10506034e169d3e924d25fc216ed8d142759a4fd0288f4eab
+tp8/preuves/securite.txt                      1600 octets  sha256 0556273179cd12069ad666a0ac9cb3646fe8b8e78f8e51fe1bf65c2ea56b2be5
+tp8/preuves/cas-limites.txt                    618 octets  sha256 806977f19625d0114140041415368d6f287f777cfbb360155c45f04ca380772c
+tp9/preuves/installation.txt                   951 octets  sha256 3f0b07e1e53cc64931300d9f0260b5d4ab7db9680c26a04f28469153f37297d1
+tp9/preuves/restauration.txt                  1403 octets  sha256 5d5cfc23af35697d2ca8e76e2c5f337cdbf12a5b98c0264f530e3287d453a22f
+tp10/preuves/repetition.txt                   8663 octets  sha256 f1f8d5aa1e9e64fe2bbc6e2afad69b8b6058dd8488afe61175a1eeaa20525d9b
+
+Ordre de bascule : tp10/preuves/repetition.txt → tp7/preuves/*.jpeg → tp8/preuves/*.txt → tp9/preuves/restauration.txt.

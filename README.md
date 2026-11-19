@@ -206,16 +206,19 @@ tp1/ … tp10/            livrables du cours et preuves
 
 | TP | Sujet | Livrable |
 | --- | --- | --- |
-| TP1 | Fiche de cadrage | `tp1/fiche-cadrage.pdf` |
-| TP2 | Exigences et traçabilité | `tp2/exigences.pdf` |
-| TP3 | UML et modèle de données | `tp3/modele_donnees.pdf`, scripts SQL, diagrammes |
-| TP4 | Squelette et contrat d'API | ce README, `docs/contrat-api.md`, `docs/ADR-001.md` |
+| TP1 | Fiche de cadrage | `tp1/fiche-cadrage.html/.pdf/.docx` |
+| TP2 | Exigences et traçabilité | `tp2/exigences.html/.pdf/.docx` |
+| TP3 | UML et modèle de données | `tp3/modele_donnees.html/.pdf/.docx`, scripts SQL, diagrammes |
+| TP4 | Squelette et contrat d'API | `tp4/squelette/` : `config/`, `docs/`, `public/`, `src/`, `tests/`, `.env.example`, `.gitignore`, `README.md` et `squelette_contrat_adr.html/.pdf/.docx` |
 | TP5 | Git et organisation d'équipe | `tp5/` (Kanban, historique, conflit résolu) |
 | TP6 | API des demandes | `src/`, `tp6/` (six cas testés) |
 | TP7 | Interface et intégration | `public/`, `tp7/` (captures, test XSS, scénario complet) |
 | TP8 | Tests et sécurité | `tp8/` (matrice, audit, revue de code) |
 | TP9 | Déploiement et sauvegarde | `tp9/` (installation, sauvegarde/restauration) |
 | TP10 | Dossier et soutenance | `tp10/` (dossier, scénario, rétrospective) |
+
+Chaque rapport est livré en trois formats : source HTML, PDF A4 et document Word
+`.docx`, afin de pouvoir être relu et corrigé dans l'outil du cours.
 
 ## Dette technique connue
 

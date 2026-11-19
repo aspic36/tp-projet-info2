@@ -1,0 +1,24 @@
+# Secrets et configuration locale : jamais versionnés
+.env
+.env.*
+!.env.example
+
+# Journaux et sauvegardes locales
+logs/
+*.log
+sauvegardes/
+
+# Dépendances et outils
+vendor/
+node_modules/
+
+# Éditeurs et systèmes
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
+
+# Fichiers temporaires
+tmp/
+*.tmp

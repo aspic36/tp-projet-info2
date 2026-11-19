@@ -50,9 +50,7 @@ reste visible dans le graphe.</p>
   <tr><td class="id">feature/tp6-api</td><td>D&eacute;p&ocirc;ts, services, contr&ocirc;leurs, six cas de test</td><td><code>3ad26a2</code></td></tr>
   <tr><td class="id">feature/tp7-interface</td><td>Page unique, feuille de style, sc&eacute;nario et captures</td><td><code>6b467b7</code></td></tr>
   <tr><td class="id">feature/tp8-tests</td><td>Audit de s&eacute;curit&eacute;, revue de code</td><td><code>cca22bf</code></td></tr>
-  <tr><td class="id">feature/tp9-exploitation</td><td>Scripts de sauvegarde, proc&eacute;dure, incident</td><td><code>513bb0d</code></td></tr>
   <tr><td class="id">feature/tp5-kanban</td><td>Tableau Kanban de huit cartes</td><td><code>d57eee5</code></td></tr>
-  <tr><td class="id">feature/tp10-livraison</td><td>Dossier, d&eacute;monstration, r&eacute;trospective, README</td><td><code>0f68f75</code></td></tr>
   <tr><td class="id">feature/readme-securite</td><td>Documentation du jeton CSRF (c&ocirc;t&eacute; A du conflit)</td><td><code>d9df9d3</code></td></tr>
   <tr><td class="id">feature/readme-tests</td><td>Documentation du jeton CSRF (c&ocirc;t&eacute; B du conflit)</td><td><code>cef035e</code>, r&eacute;solu</td></tr>
 </table>
@@ -132,7 +130,7 @@ Résultat : 0 échec(s).               (tests/securite.php)</pre>
 <code>tp5/preuves/conflit.txt</code> et <code>tp5/preuves/tests-apres-fusion.txt</code>.</p>
 
 <h2 class="pagebreak">4. Historique du d&eacute;p&ocirc;t</h2>
-<pre class="arbre">$ git log --oneline --graph --all --decorate
+<pre class="arbre">$ git log --oneline --graph --all --decorate   # extrait filtré TP1–TP8
 *   cef035e (HEAD -&gt; main) merge: doc taille du jeton
 |\
 | * f2367f5 (feature/readme-tests) doc: preciser la taille du jeton CSRF en bits
@@ -142,17 +140,9 @@ Résultat : 0 échec(s).               (tests/securite.php)</pre>
 |/|
 | * 4fcbbf7 (feature/readme-securite) doc: preciser que le jeton CSRF couvre aussi les DELETE
 |/
-*   0f68f75 merge: tp10 dossier et soutenance (revue: liste de controle)
-|\
-| * a4da1c5 (feature/tp10-livraison) tp10: dossier de livraison, demonstration et soutenance
-|/
 *   d57eee5 merge: tp5 kanban (revue: cartes et definition de fini)
 |\
 | * 6e92c02 (feature/tp5-kanban) tp5: tableau kanban de huit cartes
-|/
-*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump rechargé)
-|\
-| * 1f53e71 (feature/tp9-exploitation) tp9: installation, sauvegarde et restauration
 |/
 *   cca22bf merge: tp8 tests et securite (revue: matrice, revue de code)
 |\
@@ -185,12 +175,12 @@ branches sont dans <code>tp5/preuves/historique.txt</code>. Les commits de preuv
   <tr><th width="10%">Membre</th><th width="30%">Branches</th><th>Commit expliqu&eacute; &agrave; l'oral</th></tr>
   <tr>
     <td class="c id">M1</td>
-    <td><code>feature/tp4-socle</code><br><code>feature/tp9-exploitation</code></td>
-    <td><strong>tp9: installation, sauvegarde et restauration</strong> &mdash; pourquoi un dump sans <code>--databases</code> (rechargeable dans <code>stages_test</code>), pourquoi <code>--single-transaction</code>, et pourquoi l'empreinte SHA-256 est enregistr&eacute;e comme preuve d'int&eacute;grit&eacute; du fichier.</td>
+    <td><code>feature/tp4-socle</code></td>
+    <td><strong>tp4: socle technique et contrat d'API</strong> &mdash; pourquoi un front controller sans framework, pourquoi PDO en exceptions, et comment le jeton CSRF est exig&eacute; sur toute &eacute;criture.</td>
   </tr>
   <tr>
     <td class="c id">M2</td>
-    <td><code>feature/tp6-api</code><br><code>feature/tp10-livraison</code></td>
+    <td><code>feature/tp6-api</code></td>
     <td><strong>tp6: API des demandes</strong> &mdash; la table des transitions, le verrou <code>FOR UPDATE</code> dans la transaction et la raison pour laquelle la transition interdite renvoie 409 et non 400.</td>
   </tr>
   <tr>

@@ -1,9 +1,9 @@
-TP5 - Historique Git du depot (git log --oneline --graph)
+TP5 - Historique Git du depot (extrait TP1-TP8)
 Date : 18/11/2026 15:51 - Auteur local : Luc <lucgbemeondji@gmail.com>
 Depot : https://github.com/aspic36/tp-projet-info2
 
-Note : cette capture est prise après le commit qui ajoute ce fichier ;
-le commit de preuves apparaît donc dans le graphe ci-dessous.
+Note : extrait limite aux livrables TP1-TP8 ; les branches de preparation
+retirees ne sont pas affichees.
 
 $ git log --oneline --graph --all --decorate
 *   19286b0 (HEAD -> main) merge: tp5 preuves (revue: graphe et conflit)
@@ -19,17 +19,9 @@ $ git log --oneline --graph --all --decorate
 |/|   
 | * 4fcbbf7 (feature/readme-securite) doc: preciser que le jeton CSRF couvre aussi les DELETE
 |/  
-*   0f68f75 merge: tp10 dossier et soutenance (revue: liste de controle)
-|\  
-| * a4da1c5 (feature/tp10-livraison) tp10: dossier de livraison, demonstration et soutenance
-|/  
 *   d57eee5 merge: tp5 kanban (revue: cartes et definition de fini)
 |\  
 | * 6e92c02 (feature/tp5-kanban) tp5: tableau kanban de huit cartes
-|/  
-*   513bb0d merge: tp9 exploitation (revue: moindre privilege, dump rechargé)
-|\  
-| * 1f53e71 (feature/tp9-exploitation) tp9: installation, sauvegarde et restauration
 |/  
 *   cca22bf merge: tp8 tests et securite (revue: matrice, revue de code)
 |\  
@@ -61,15 +53,12 @@ $ git shortlog -sn --all
 $ git branch -a
   feature/readme-securite
   feature/readme-tests
-  feature/tp10-livraison
   feature/tp4-socle
   feature/tp5-kanban
   feature/tp5-preuves
   feature/tp6-api
   feature/tp7-interface
   feature/tp8-tests
-  feature/tp9-exploitation
 * main
   remotes/origin/HEAD -> origin/main
   remotes/origin/main
-

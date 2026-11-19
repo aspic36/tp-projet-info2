@@ -20,8 +20,8 @@ commit signé la référence.
 | K-04 | API des demandes et transitions | M2 | 50 min | Six cas `tests/api-six-cas.php` sans échec ; 400/401/403/404/409 couverts | `tp6: API des demandes` |
 | K-05 | Interface web des deux rôles | M3 | 50 min | Parcours de bout en bout ; rendu par `textContent` ; dialogues accessibles | `tp7: interface web` |
 | K-06 | Tests de sécurité et revue de code | M3 | 45 min | 17 contrôles sans échec ; bug HY093 corrigé et documenté | `tp8: tests et sécurité` |
-| K-07 | Installation, sauvegarde et restauration | M1 | 45 min | Installation sur base neuve ; dump + restauration + `COUNT(*)` identiques | `tp9: installation et exploitation` |
-| K-08 | Dossier de livraison et soutenance | M2 + M3 | 40 min | Liste de contrôle des 8 éléments ; démonstration chronométrée ; rétrospective | `tp10: dossier et soutenance` |
+| K-07 | Installation locale et healthcheck | M1 | 45 min | `README.md` rejoué sur base neuve ; `/api/sante` 200 et 503 | `tp4: socle technique et contrat d'API` |
+| K-08 | Dossier de livraison TP1–TP8 | M2 + M3 | 40 min | Liste de contrôle des 8 TP ; démonstration chronométrée ; rétrospective | `tp8: tests et sécurité` |
 
 La séance TP5 dure 1 h : les huit estimations sont inférieures à 1 h. Vue imprimable : `kanban.html`, capture : `../tp5/preuves/kanban.png`.
 
@@ -47,15 +47,15 @@ La séance TP5 dure 1 h : les huit estimations sont inférieures à 1 h. Vue imp
 | S3 | K-04 | K-04 | Paramètre `:q` répété (voir INC-2026-11-18-01) |
 | S4 | K-05 | K-05 | Rendu des écrans masqués (`[hidden]`) |
 | S5 | K-06 | K-06 | Aucun |
-| S6 | K-07 | K-07 | Restauration à rejouer deux fois |
-| S7 | K-08 | K-08 | Répétition à 9 min, ramenée à 8 |
+| S6 | K-07 | K-07 | Healthcheck à rejouer après import SQL |
+| S7 | K-08 | K-08 | Démonstration à 9 min, ramenée à 8 |
 
 ## Contribution visible
 
 | Membre | Branches | Commits |
 | --- | --- | --- |
-| M1 | `feature/tp4-socle`, `feature/tp9-exploitation` | 2 |
-| M2 | `feature/tp6-api`, `feature/tp10-livraison` | 2 |
+| M1 | `feature/tp4-socle` | 1 |
+| M2 | `feature/tp6-api` | 1 |
 | M3 | `feature/tp7-interface`, `feature/tp8-tests` | 2 |
 
 Les libellés `M1` à `M3` sont conservés dans la version remise, comme demandé ;

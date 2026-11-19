@@ -47,7 +47,7 @@ Aucun framework, aucun gestionnaire de dépendances : l'autoload PSR-4 est écri
 
 ## Installation pas à pas
 
-Ces étapes ont été rejouées sur un second poste (voir `tp9/`).
+Ces étapes sont la procédure d'installation retenue pour le projet.
 
 1. **Cloner le dépôt**
 
@@ -186,7 +186,7 @@ config/
   routes.php            table de routage
 tests/                  scripts de test en ligne de commande
 docs/                   contrat d'API, ADR, Kanban, dossier technique
-tp1/ … tp10/            livrables du cours et preuves
+tp1/ … tp8/             livrables du cours et preuves
 ```
 
 ## Sécurité
@@ -215,8 +215,6 @@ tp1/ … tp10/            livrables du cours et preuves
 | TP6 | API des demandes | `src/`, `tp6/` (six cas réglementaires testés) |
 | TP7 | Interface et intégration | `public/`, `tp7/` (captures, test XSS, scénario complet) |
 | TP8 | Tests et sécurité | `tp8/` (matrice 12 contrôles, 4 cas limites, audit, revue classée) |
-| TP9 | Déploiement et sauvegarde | `tp9/` (installation, sauvegarde/restauration) |
-| TP10 | Dossier et soutenance | `tp10/` (dossier, scénario, rétrospective) |
 
 Chaque rapport est livré en trois formats : source HTML, PDF A4 et document Word
 `.docx`, afin de pouvoir être relu et corrigé dans l'outil du cours.

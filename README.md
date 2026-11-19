@@ -13,6 +13,7 @@ Données **fictives** uniquement. Dépôt partagé du groupe :
 - [Lancer l'application](#lancer-lapplication)
 - [Routes de l'API](#routes-de-lapi)
 - [Tests](#tests)
+- [Déploiement et sauvegarde](#déploiement-et-sauvegarde)
 - [Structure du projet](#structure-du-projet)
 - [Sécurité](#sécurité)
 - [Travaux pratiques livrés](#travaux-pratiques-livrés)
@@ -202,6 +203,22 @@ php tests/securite.php       # TP8 : autorisations, injection, hachage, CSRF
 
 Les sorties sont archivées dans `tp6/preuves/`, `tp7/preuves/` et `tp8/preuves/`.
 
+## Déploiement et sauvegarde
+
+La procédure complète est dans [`tp9/installation.md`](tp9/installation.md). Les
+scripts associés évitent tout root dans le `.env` et stockent les dumps hors Git.
+
+```sh
+export DB_HOST=127.0.0.1 DB_PORT=3308 DB_USER=root DB_PASS=mot-de-passe-admin
+bash tp9/scripts/sauvegarde.sh stages sauvegardes
+bash tp9/scripts/restauration.sh sauvegardes/stages-AAAAMMJJ-HHMMSS.sql stages_test
+bash tp9/scripts/comptage.sh stages stages_test
+```
+
+Le contrôle final doit afficher `Verdict : IDENTIQUES`. La perte simulée d'une
+table et sa restauration sont documentées dans [`tp9/incident.md`](tp9/incident.md),
+avec les preuves dans `tp9/preuves/`.
+
 ## Structure du projet
 
 ```
@@ -228,7 +245,12 @@ storage/                données générées, ignorées par Git
   exports/              archives CSV, PDF et ZIP
 tests/                  scripts de test en ligne de commande
 docs/                   contrat d'API, ADR, Kanban, dossier technique
-tp1/ … tp8/             livrables du cours et preuves
+tp1/ … tp9/             livrables du cours et preuves
+tp9/
+  installation.md       procédure de déploiement et sauvegarde
+  incident.md           ticket de perte de table simulée
+  scripts/              sauvegarde, restauration, comptage
+  preuves/              sorties réelles des contrôles
 ```
 
 ## Sécurité
@@ -259,9 +281,10 @@ tp1/ … tp8/             livrables du cours et preuves
 | TP6 | API des demandes | `src/`, `tp6/` (six cas réglementaires testés) |
 | TP7 | Interface et intégration | `public/`, `tp7/` (captures, test XSS, scénario complet) |
 | TP8 | Tests et sécurité | `tp8/` (matrice 12 contrôles, 4 cas limites, audit, revue classée) |
+| TP9 | Déploiement et sauvegarde | `tp9/` (procédure, scripts, preuves de restauration, ticket d'incident) |
 
-Chaque rapport est livré en trois formats : source HTML, PDF A4 et document Word
-`.docx`, afin de pouvoir être relu et corrigé dans l'outil du cours.
+Les rapports TP1 à TP8 sont livrés en trois formats : source HTML, PDF A4 et
+document Word `.docx`, afin de pouvoir être relus et corrigés dans l'outil du cours.
 
 ## Dette technique connue
 

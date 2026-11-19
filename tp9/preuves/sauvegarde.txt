@@ -1,0 +1,8 @@
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+Sauvegarde terminée
+  base    : stages_tp9_poste
+  fichier : sauvegardes/stages_tp9_poste-20261119-222227.sql
+  taille  : 30213 octets
+  lignes  : 594
+  sha256  : 9756afe5f196906100d45678c58b61b17bfedaa1f9093501f94c69261cd54939
+sauvegardes/stages_tp9_poste-20261119-222227.sql

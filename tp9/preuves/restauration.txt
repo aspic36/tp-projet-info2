@@ -1,0 +1,28 @@
+=== Restauration après incident ===
+Date : 19/11/2026 22:25
+Source : sauvegardes/stages_tp9_poste-20261119-222227.sql
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Restauration terminée : sauvegardes/stages_tp9_poste-20261119-222227.sql -> stages_tp9_restore
+
+--- Comparaison après restauration ---
+table                        stages_tp9_poste stages_tp9_restore
+--------------------------------------------------------------------
+commentaire_demande                     0            0
+demande_stage                           4            4
+encadreur                               2            2
+entreprise                             10           10
+etudiant                                3            3
+historique                              5            5
+journal_audit                           0            0
+notification                            0            0
+piece_jointe                            0            0
+reinitialisation_mot_de_passe            0            0
+salle                                   3            3
+soutenance                              1            1
+soutenance_jury                         1            1
+utilisateur                             8            8
+
+Totaux : stages_tp9_poste = 37 | stages_tp9_restore = 37
+Verdict : IDENTIQUES

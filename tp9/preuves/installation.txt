@@ -1,0 +1,23 @@
+=== TP9 — installation sur un second poste (simulation locale) ===
+Date : 19/11/2026 22:22
+Dépôt cloné depuis : /home/aspickiller/tp-projet-info2
+Commit cloné : aedf8dd3abb049da9d0f607c97490b137f54e068
+
+--- 1. Base créée avec un compte à droits limités ---
+stages_tp9_poste	14
+GRANT USAGE ON *.* TO `stages_tp9_app`@`%`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `stages_tp9_poste`.* TO `stages_tp9_app`@`%`
+
+--- 2. Tentative de DDL avec le compte applicatif (refus attendu) ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1142 (42000) at line 1: DROP command denied to user 'stages_tp9_app'@'172.17.0.1' for table 'utilisateur'
+
+--- 3. Connexion PDO depuis le clone ---
+Connexion PDO : OK
+Serveur MySQL : 8.0.46
+Base courante : stages_tp9_poste
+Tables         : 14
+Demandes       : 4
+
+--- 4. Sonde de santé HTTP ---
+{"status":"ok","database":"ok","php":"8.4.16","heure":"2026-11-19T22:22:05+01:00"}

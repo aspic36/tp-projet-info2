@@ -1,0 +1,31 @@
+=== Incident simulé — perte de la table soutenance_jury ===
+Date : 19/11/2026 22:25
+Commande exécutée : DROP TABLE stages_tp9_restore.soutenance_jury
+
+--- Nombre de tables après suppression ---
+13
+
+--- Lecture de la table supprimée (erreur attendue) ---
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1146 (42S02) at line 1: Table 'stages_tp9_restore.soutenance_jury' doesn't exist
+
+--- Comparaison avant restauration (écart attendu) ---
+table                        stages_tp9_poste stages_tp9_restore
+--------------------------------------------------------------------
+commentaire_demande                     0            0
+demande_stage                           4            4
+encadreur                               2            2
+entreprise                             10           10
+etudiant                                3            3
+historique                              5            5
+journal_audit                           0            0
+notification                            0            0
+piece_jointe                            0            0
+reinitialisation_mot_de_passe            0            0
+salle                                   3            3
+soutenance                              1            1
+soutenance_jury                         1           -1  <-- ECART
+utilisateur                             8            8
+
+Totaux : stages_tp9_poste = 37 | stages_tp9_restore = 35
+Verdict : DIFFERENTES
